@@ -4,6 +4,7 @@ members = [
     "crates/eo-indices",
     "crates/eo-radiometric",
     "crates/eo-pansharpen",
+    "crates/eo-geometric",
 ]
 
 [workspace.package]
