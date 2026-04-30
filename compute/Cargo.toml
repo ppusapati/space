@@ -28,6 +28,11 @@ members = [
     "crates/gs-fec",
     "crates/gs-antenna",
     "crates/gs-rf-driver",
+    "crates/gi-fusion-eng",
+    "crates/gi-abi",
+    "crates/gi-tile-render",
+    "crates/gi-report-render",
+    "crates/gi-export",
 ]
 
 [workspace.package]
