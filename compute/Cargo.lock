@@ -94,6 +94,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "cdh-edac"
+version = "0.1.0"
+dependencies = [
+ "thiserror",
+]
+
+[[package]]
 name = "cfg-if"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"

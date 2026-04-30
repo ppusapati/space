@@ -1,0 +1,25 @@
+[package]
+name = "cdh-edac"
+description = "Error Detection And Correction codes for radiation-hardened memory: Hamming(7,4), extended Hamming(8,4) SEC-DED, Hamming(72,64) ECC, memory scrubber."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+must_use_candidate = "allow"
+module_name_repetitions = "allow"
+similar_names = "allow"
+many_single_char_names = "allow"
+doc_markdown = "allow"
+cast_lossless = "allow"
+
+[dependencies]
+thiserror = { workspace = true }

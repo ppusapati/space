@@ -14,6 +14,7 @@ members = [
     "crates/adcs-actuators",
     "crates/orbit-prop",
     "crates/cdh-ccsds",
+    "crates/cdh-edac",
 ]
 
 [workspace.package]
