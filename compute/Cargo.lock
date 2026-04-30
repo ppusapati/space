@@ -279,6 +279,36 @@ dependencies = [
 ]
 
 [[package]]
+name = "gs-doppler"
+version = "0.1.0"
+dependencies = [
+ "approx",
+ "nalgebra",
+ "thiserror",
+]
+
+[[package]]
+name = "gs-pass-pred"
+version = "0.1.0"
+dependencies = [
+ "approx",
+ "gs-tle",
+ "nalgebra",
+ "orbit-prop",
+ "thiserror",
+]
+
+[[package]]
+name = "gs-tle"
+version = "0.1.0"
+dependencies = [
+ "approx",
+ "nalgebra",
+ "orbit-prop",
+ "thiserror",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.15.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"

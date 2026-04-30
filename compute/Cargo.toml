@@ -21,6 +21,9 @@ members = [
     "crates/eps-battery",
     "crates/sim-physics",
     "crates/sim-harness",
+    "crates/gs-tle",
+    "crates/gs-pass-pred",
+    "crates/gs-doppler",
 ]
 
 [workspace.package]
