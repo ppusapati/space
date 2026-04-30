@@ -1,0 +1,37 @@
+[package]
+name = "eo-sar"
+description = "SAR processing: multi-looking, speckle filters (Lee, Frost), polarimetric decomposition (Pauli, H/A/Alpha)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+must_use_candidate = "allow"
+module_name_repetitions = "allow"
+cast_possible_truncation = "allow"
+cast_sign_loss = "allow"
+cast_precision_loss = "allow"
+cast_possible_wrap = "allow"
+doc_markdown = "allow"
+similar_names = "allow"
+many_single_char_names = "allow"
+needless_range_loop = "allow"
+type_complexity = "allow"
+manual_is_multiple_of = "allow"
+
+[dependencies]
+nalgebra = { workspace = true }
+ndarray = { workspace = true }
+num-complex = "0.4"
+thiserror = { workspace = true }
+
+[dev-dependencies]
+approx = { workspace = true }

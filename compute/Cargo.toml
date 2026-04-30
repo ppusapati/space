@@ -6,6 +6,7 @@ members = [
     "crates/eo-pansharpen",
     "crates/eo-geometric",
     "crates/eo-mosaic",
+    "crates/eo-sar",
 ]
 
 [workspace.package]

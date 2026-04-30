@@ -106,6 +106,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "eo-sar"
+version = "0.1.0"
+dependencies = [
+ "approx",
+ "nalgebra",
+ "ndarray",
+ "num-complex",
+ "thiserror",
+]
+
+[[package]]
 name = "equivalent"
 version = "1.0.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
