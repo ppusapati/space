@@ -11,6 +11,7 @@ members = [
     "crates/adcs-ekf",
     "crates/adcs-ukf",
     "crates/adcs-control",
+    "crates/adcs-actuators",
 ]
 
 [workspace.package]
