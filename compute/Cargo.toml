@@ -12,6 +12,7 @@ members = [
     "crates/adcs-ukf",
     "crates/adcs-control",
     "crates/adcs-actuators",
+    "crates/orbit-prop",
 ]
 
 [workspace.package]
