@@ -19,6 +19,8 @@ members = [
     "crates/cdh-scheduler",
     "crates/eps-power",
     "crates/eps-battery",
+    "crates/sim-physics",
+    "crates/sim-harness",
 ]
 
 [workspace.package]

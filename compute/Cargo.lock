@@ -703,6 +703,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "sim-harness"
+version = "0.1.0"
+dependencies = [
+ "approx",
+ "nalgebra",
+ "sim-physics",
+ "thiserror",
+]
+
+[[package]]
+name = "sim-physics"
+version = "0.1.0"
+dependencies = [
+ "approx",
+ "nalgebra",
+ "thiserror",
+]
+
+[[package]]
 name = "simba"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
