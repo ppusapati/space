@@ -1,0 +1,9 @@
+go 1.24
+
+use (
+	./pkg
+	./services/earthobs
+	./services/satsubsys
+	./services/groundstation
+	./services/geoint
+)
