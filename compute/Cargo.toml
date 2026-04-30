@@ -10,6 +10,7 @@ members = [
     "crates/eo-atmos-corr",
     "crates/adcs-ekf",
     "crates/adcs-ukf",
+    "crates/adcs-control",
 ]
 
 [workspace.package]
