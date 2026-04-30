@@ -2,6 +2,7 @@
 resolver = "2"
 members = [
     "crates/eo-indices",
+    "crates/eo-radiometric",
 ]
 
 [workspace.package]
