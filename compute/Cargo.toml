@@ -17,6 +17,8 @@ members = [
     "crates/cdh-edac",
     "crates/cdh-fs",
     "crates/cdh-scheduler",
+    "crates/eps-power",
+    "crates/eps-battery",
 ]
 
 [workspace.package]
