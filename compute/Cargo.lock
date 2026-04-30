@@ -78,6 +78,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "eo-mosaic"
+version = "0.1.0"
+dependencies = [
+ "approx",
+ "ndarray",
+ "thiserror",
+]
+
+[[package]]
 name = "eo-pansharpen"
 version = "0.1.0"
 dependencies = [
