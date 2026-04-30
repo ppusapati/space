@@ -26,6 +26,8 @@ members = [
     "crates/gs-doppler",
     "crates/gs-bit-sync",
     "crates/gs-fec",
+    "crates/gs-antenna",
+    "crates/gs-rf-driver",
 ]
 
 [workspace.package]
