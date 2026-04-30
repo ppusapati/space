@@ -1,0 +1,339 @@
+**P9E MICROSYSTEMS PVT LTD**
+
+Chetana Space Technologies Division
+
+Space Technology Platform
+
+**Requirements Specification (RS)**
+
+| **Document ID:**    | P9E-SPACE-RS-2025-001 |
+| ------------------- | --------------------- |
+| **Version:**        | 1.0                   |
+| **Date:**           | December 27, 2025     |
+| **Status:**         | Draft                 |
+| **Classification:** | Company Confidential  |
+
+# Table of Contents
+
+# 1\. Executive Summary
+
+This Requirements Specification defines the comprehensive software platform for P9e Microsystems' space technology division. The platform encompasses four integrated modules: Earth Observation Analytics, Small Satellite Subsystems, Ground Station Software, and Geospatial Intelligence. Built on modern cloud-native architecture using Go/ConnectRPC backends with extensive AI/ML capabilities, this platform positions Chetana Space Technologies as a leader in the emerging commercial space sector.
+
+The platform leverages P9e's existing enterprise infrastructure including multi-tenant architecture, identity management, and policy decision enforcement systems developed for the Chetana brand ecosystem.
+
+# 2\. System Overview
+
+## 2.1 Platform Architecture
+
+The Space Technology Platform follows a modular microservices architecture integrated with P9e's core platform services. Each module operates independently while sharing common infrastructure for authentication, data management, and inter-service communication.
+
+### 2.1.1 Core Technology Stack
+
+- Backend Services: Go with ConnectRPC (gRPC + HTTP/JSON support)
+- API Definition: Protocol Buffers (protobuf) for schema-first development
+- Dependency Injection: Uber Fx for modular service composition
+- Database: PostgreSQL with Atlas CLI migrations, TimescaleDB for time-series
+- Message Queue: Apache Kafka for real-time telemetry streaming
+- AI/ML Framework: TensorFlow, PyTorch, ONNX Runtime for inference
+- Geospatial Processing: PostGIS, GDAL, Rasterio, GeoPandas
+- Container Orchestration: Kubernetes with Helm charts
+- Observability: OpenTelemetry, Prometheus, Grafana, Jaeger
+
+## 2.2 Module Overview
+
+| **Module**                      | **Primary Function**                                            | **Key Capabilities**                                                  |
+| ------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------- |
+| **Earth Observation Analytics** | Process and analyze satellite imagery for actionable insights   | Image processing, ML inference, change detection, object recognition  |
+| **Small Satellite Subsystems**  | Flight software and subsystem management for CubeSats/SmallSats | ADCS, C&DH, Power management, Thermal control, Payload operations     |
+| **Ground Station Software**     | Mission control and ground segment operations                   | TT&C, pass scheduling, antenna control, data reception                |
+| **Geospatial Intelligence**     | Transform spatial data into strategic intelligence products     | Fusion analytics, pattern recognition, predictive modeling, reporting |
+
+# 3\. Earth Observation Analytics Module
+
+## 3.1 Module Description
+
+The Earth Observation Analytics module provides comprehensive capabilities for ingesting, processing, analyzing, and distributing satellite imagery and derived products. It supports multispectral, hyperspectral, SAR, and optical imagery from various satellite platforms.
+
+## 3.2 Functional Requirements
+
+### 3.2.1 Image Ingestion & Management
+
+| **ID**    | **Requirement**                                                                                                       | **Priority** |
+| --------- | --------------------------------------------------------------------------------------------------------------------- | ------------ |
+| EO-FR-001 | Support ingestion of imagery from Sentinel-1/2, Landsat-8/9, MODIS, and commercial providers (Planet, Maxar, Capella) | High         |
+| EO-FR-002 | Automatic metadata extraction and cataloging using STAC (SpatioTemporal Asset Catalog) specification                  | High         |
+| EO-FR-003 | Support for Cloud Optimized GeoTIFF (COG) format for efficient streaming and partial reads                            | High         |
+| EO-FR-004 | Hierarchical data organization by mission, sensor, date, and geographic region                                        | Medium       |
+| EO-FR-005 | Automated quality assessment including cloud cover detection, radiometric validation, and geometric accuracy checks   | High         |
+
+### 3.2.2 Image Processing Pipeline
+
+| **ID**    | **Requirement**                                                                                             | **Priority** |
+| --------- | ----------------------------------------------------------------------------------------------------------- | ------------ |
+| EO-FR-010 | Radiometric calibration with support for TOA (Top of Atmosphere) and BOA (Bottom of Atmosphere) reflectance | High         |
+| EO-FR-011 | Geometric correction and orthorectification using DEM integration (SRTM, ASTER GDEM, custom DEMs)           | High         |
+| EO-FR-012 | Atmospheric correction using 6S, MODTRAN, or Sen2Cor algorithms                                             | High         |
+| EO-FR-013 | Pan-sharpening for multispectral imagery fusion with panchromatic bands                                     | Medium       |
+| EO-FR-014 | Image mosaicking and seamline generation for large-area coverage                                            | Medium       |
+| EO-FR-015 | SAR processing including speckle filtering, terrain correction, and polarimetric decomposition              | High         |
+
+### 3.2.3 AI/ML Analytics
+
+| **ID**    | **Requirement**                                                                                 | **Priority** |
+| --------- | ----------------------------------------------------------------------------------------------- | ------------ |
+| EO-FR-020 | Land use/land cover classification using deep learning (U-Net, DeepLabV3+, Vision Transformers) | High         |
+| EO-FR-021 | Object detection for infrastructure, vehicles, vessels, and aircraft using YOLO, Faster R-CNN   | High         |
+| EO-FR-022 | Change detection with bitemporal and time-series analysis capabilities                          | High         |
+| EO-FR-023 | Vegetation indices computation (NDVI, EVI, SAVI, NDWI) with temporal trend analysis             | Medium       |
+| EO-FR-024 | Building footprint extraction and height estimation using stereo imagery or SAR                 | Medium       |
+| EO-FR-025 | Crop type classification and yield prediction for agricultural applications                     | Medium       |
+| EO-FR-026 | Model training pipeline with MLflow integration for experiment tracking and model versioning    | High         |
+
+# 4\. Small Satellite Subsystems Module
+
+## 4.1 Module Description
+
+The Small Satellite Subsystems module provides flight software frameworks and simulation environments for CubeSat and SmallSat missions. It covers all critical subsystems including attitude determination and control, command and data handling, electrical power systems, thermal management, and payload operations.
+
+## 4.2 Functional Requirements
+
+### 4.2.1 Attitude Determination & Control System (ADCS)
+
+| **ID**     | **Requirement**                                                                                      | **Priority** |
+| ---------- | ---------------------------------------------------------------------------------------------------- | ------------ |
+| SAT-FR-001 | Support for attitude sensors: magnetometers, sun sensors, star trackers, gyroscopes, horizon sensors | High         |
+| SAT-FR-002 | Attitude estimation using Extended Kalman Filter (EKF) and Unscented Kalman Filter (UKF) algorithms  | High         |
+| SAT-FR-003 | Control algorithms: PID, LQR, sliding mode, and model predictive control (MPC)                       | High         |
+| SAT-FR-004 | Actuator drivers for reaction wheels, magnetorquers, and cold gas thrusters                          | High         |
+| SAT-FR-005 | Pointing modes: nadir, sun-pointing, target tracking, inertial hold, and safe mode                   | High         |
+| SAT-FR-006 | Orbit propagation using SGP4/SDP4 and numerical integrators (RK4, RK78)                              | High         |
+
+### 4.2.2 Command & Data Handling (C&DH)
+
+| **ID**     | **Requirement**                                                              | **Priority** |
+| ---------- | ---------------------------------------------------------------------------- | ------------ |
+| SAT-FR-010 | CCSDS-compliant packet telemetry and telecommand implementation              | High         |
+| SAT-FR-011 | Onboard file system for data storage with corruption recovery mechanisms     | High         |
+| SAT-FR-012 | Command scheduling with time-tagged command execution                        | High         |
+| SAT-FR-013 | Housekeeping telemetry collection, compression, and prioritized downlink     | High         |
+| SAT-FR-014 | Onboard scripting engine for autonomous operations (STOL/PLUTO compatible)   | Medium       |
+| SAT-FR-015 | Memory management with EDAC protection and scrubbing for radiation tolerance | High         |
+
+### 4.2.3 Electrical Power System (EPS)
+
+| **ID**     | **Requirement**                                                                    | **Priority** |
+| ---------- | ---------------------------------------------------------------------------------- | ------------ |
+| SAT-FR-020 | Power budget modeling and real-time power state estimation                         | High         |
+| SAT-FR-021 | Battery management with state-of-charge (SOC) and state-of-health (SOH) estimation | High         |
+| SAT-FR-022 | Maximum Power Point Tracking (MPPT) control for solar array optimization           | High         |
+| SAT-FR-023 | Load shedding and priority-based power distribution algorithms                     | High         |
+| SAT-FR-024 | Eclipse prediction and power planning for orbit phases                             | Medium       |
+
+### 4.2.4 Simulation & Testing
+
+| **ID**     | **Requirement**                                                                 | **Priority** |
+| ---------- | ------------------------------------------------------------------------------- | ------------ |
+| SAT-FR-030 | Software-in-the-loop (SITL) simulation environment with physics-based models    | High         |
+| SAT-FR-031 | Hardware-in-the-loop (HITL) interface for flatsat and engineering model testing | Medium       |
+| SAT-FR-032 | Monte Carlo simulation capability for mission analysis and risk assessment      | Medium       |
+| SAT-FR-033 | Flight software deployment packaging and versioning system                      | High         |
+
+# 5\. Ground Station Software Module
+
+## 5.1 Module Description
+
+The Ground Station Software module provides mission control capabilities including tracking, telemetry, and command (TT&C) operations, antenna network management, pass scheduling, and data reception processing. It supports both single-station and distributed ground network operations.
+
+## 5.2 Functional Requirements
+
+### 5.2.1 Mission Control & Operations
+
+| **ID**    | **Requirement**                                                                   | **Priority** |
+| --------- | --------------------------------------------------------------------------------- | ------------ |
+| GS-FR-001 | Real-time telemetry display with configurable dashboards and limit monitoring     | High         |
+| GS-FR-002 | Command generation, validation, and uplink with authentication and authorization  | High         |
+| GS-FR-003 | Mission timeline visualization with pass predictions and event scheduling         | High         |
+| GS-FR-004 | Anomaly detection and alerting based on telemetry parameter thresholds and trends | High         |
+| GS-FR-005 | Multi-mission support with mission-specific configuration and access control      | Medium       |
+| GS-FR-006 | Procedure automation for routine operations and contingency response              | Medium       |
+
+### 5.2.2 Antenna & RF Control
+
+| **ID**    | **Requirement**                                                                           | **Priority** |
+| --------- | ----------------------------------------------------------------------------------------- | ------------ |
+| GS-FR-010 | Antenna pointing control with program track, autotrack, and step-track modes              | High         |
+| GS-FR-011 | RF equipment control (LNA, SSPA, frequency synthesizers) via SNMP/Modbus/custom protocols | High         |
+| GS-FR-012 | Doppler compensation for uplink and downlink frequency control                            | High         |
+| GS-FR-013 | Signal quality monitoring (SNR, Eb/N0, BER) with real-time visualization                  | High         |
+| GS-FR-014 | Support for S-band, X-band, and UHF frequency operations                                  | High         |
+
+### 5.2.3 Pass Scheduling & Automation
+
+| **ID**    | **Requirement**                                                                                    | **Priority** |
+| --------- | -------------------------------------------------------------------------------------------------- | ------------ |
+| GS-FR-020 | Automated pass prediction using TLE propagation with configurable horizon constraints              | High         |
+| GS-FR-021 | Conflict resolution for multi-satellite scheduling with priority-based allocation                  | High         |
+| GS-FR-022 | Ground station network coordination for global coverage optimization                               | Medium       |
+| GS-FR-023 | Automated pre-pass calibration and post-pass reporting                                             | Medium       |
+| GS-FR-024 | Integration with commercial ground station networks (AWS Ground Station, Azure Orbital, KSAT, SSC) | Medium       |
+
+### 5.2.4 Data Reception & Processing
+
+| **ID**    | **Requirement**                                                                  | **Priority** |
+| --------- | -------------------------------------------------------------------------------- | ------------ |
+| GS-FR-030 | Bit synchronization, frame synchronization, and Reed-Solomon/LDPC/Turbo decoding | High         |
+| GS-FR-031 | Real-time data recording with lossless compression and timestamping              | High         |
+| GS-FR-032 | Data quality assessment and gap analysis reporting                               | Medium       |
+| GS-FR-033 | Automated data pipeline triggering for downstream processing systems             | High         |
+
+# 6\. Geospatial Intelligence Module
+
+## 6.1 Module Description
+
+The Geospatial Intelligence (GEOINT) module transforms raw spatial data into actionable intelligence products. It provides multi-source data fusion, advanced analytics, pattern recognition, and automated reporting capabilities for defense, security, environmental monitoring, and commercial applications.
+
+## 6.2 Functional Requirements
+
+### 6.2.1 Multi-Source Data Fusion
+
+| **ID**    | **Requirement**                                                                    | **Priority** |
+| --------- | ---------------------------------------------------------------------------------- | ------------ |
+| GI-FR-001 | Integration of optical, SAR, thermal, and hyperspectral imagery layers             | High         |
+| GI-FR-002 | Fusion with ground truth data, IoT sensors, and social media geolocation           | Medium       |
+| GI-FR-003 | Temporal data stacking with configurable time windows for trend analysis           | High         |
+| GI-FR-004 | Integration with open data sources (OpenStreetMap, Natural Earth, GADM boundaries) | Medium       |
+| GI-FR-005 | Support for real-time data streams and near-real-time tasking workflows            | High         |
+
+### 6.2.2 Intelligence Analytics
+
+| **ID**    | **Requirement**                                                                               | **Priority** |
+| --------- | --------------------------------------------------------------------------------------------- | ------------ |
+| GI-FR-010 | Activity-based intelligence (ABI) with pattern-of-life analysis and anomaly detection         | High         |
+| GI-FR-011 | Infrastructure monitoring: ports, airports, railways, roads, power grids                      | High         |
+| GI-FR-012 | Environmental intelligence: deforestation, flood extent, fire detection, pollution monitoring | High         |
+| GI-FR-013 | Maritime domain awareness: vessel tracking, port activity, dark vessel detection              | Medium       |
+| GI-FR-014 | Urban growth analysis and population density estimation                                       | Medium       |
+| GI-FR-015 | Supply chain intelligence: tracking infrastructure development and logistics patterns         | Medium       |
+
+### 6.2.3 Visualization & Reporting
+
+| **ID**    | **Requirement**                                                                  | **Priority** |
+| --------- | -------------------------------------------------------------------------------- | ------------ |
+| GI-FR-020 | Web-based mapping interface with support for WMS, WMTS, and vector tile services | High         |
+| GI-FR-021 | 3D terrain visualization with imagery draping and oblique view generation        | Medium       |
+| GI-FR-022 | Automated intelligence report generation with configurable templates             | High         |
+| GI-FR-023 | Annotation tools for imagery exploitation and collaborative marking              | Medium       |
+| GI-FR-024 | Export capabilities: GeoJSON, Shapefile, KML, GeoPackage, PDF reports            | High         |
+
+### 6.2.4 Predictive Analytics
+
+| **ID**    | **Requirement**                                                                | **Priority** |
+| --------- | ------------------------------------------------------------------------------ | ------------ |
+| GI-FR-030 | Predictive modeling for infrastructure development and land use change         | Medium       |
+| GI-FR-031 | Risk assessment mapping for natural disasters (floods, earthquakes, cyclones)  | High         |
+| GI-FR-032 | Agricultural forecasting: crop health prediction, drought risk, harvest timing | Medium       |
+| GI-FR-033 | Scenario modeling with what-if analysis capabilities                           | Low          |
+
+# 7\. Non-Functional Requirements
+
+## 7.1 Performance Requirements
+
+| **ID**    | **Requirement**                                                                               | **Priority** |
+| --------- | --------------------------------------------------------------------------------------------- | ------------ |
+| NFR-P-001 | Telemetry processing latency shall not exceed 100ms from reception to display                 | High         |
+| NFR-P-002 | Image processing pipeline shall handle minimum 100 scenes per hour at 10m resolution          | High         |
+| NFR-P-003 | Web mapping interface shall render tiles within 200ms for areas up to 10,000 km²              | Medium       |
+| NFR-P-004 | ML inference for object detection shall process 10 km² at 0.5m resolution in under 60 seconds | High         |
+| NFR-P-005 | System shall support concurrent operations for up to 20 active satellite missions             | Medium       |
+
+## 7.2 Scalability Requirements
+
+| **ID**    | **Requirement**                                                                   | **Priority** |
+| --------- | --------------------------------------------------------------------------------- | ------------ |
+| NFR-S-001 | Horizontal scaling support through Kubernetes auto-scaling based on workload      | High         |
+| NFR-S-002 | Data storage architecture shall scale to petabyte-level imagery archives          | High         |
+| NFR-S-003 | Multi-region deployment capability for latency optimization and disaster recovery | Medium       |
+
+## 7.3 Security Requirements
+
+| **ID**      | **Requirement**                                                                         | **Priority** |
+| ----------- | --------------------------------------------------------------------------------------- | ------------ |
+| NFR-SEC-001 | All data transmission shall use TLS 1.3 encryption minimum                              | High         |
+| NFR-SEC-002 | Authentication via OAuth 2.0/OIDC with multi-factor authentication support              | High         |
+| NFR-SEC-003 | Role-based access control (RBAC) with mission and data classification-level permissions | High         |
+| NFR-SEC-004 | Audit logging of all system access and data operations with tamper-evident storage      | High         |
+| NFR-SEC-005 | Compliance with ITAR/EAR export control requirements for applicable data                | High         |
+| NFR-SEC-006 | Data encryption at rest using AES-256 for all sensitive information                     | High         |
+
+## 7.4 Reliability & Availability
+
+| **ID**    | **Requirement**                                                                | **Priority** |
+| --------- | ------------------------------------------------------------------------------ | ------------ |
+| NFR-R-001 | Ground station control systems shall achieve 99.9% availability                | High         |
+| NFR-R-002 | Automated failover for critical services with RTO < 5 minutes                  | High         |
+| NFR-R-003 | Data backup with RPO < 1 hour for operational data and real-time for telemetry | High         |
+| NFR-R-004 | Graceful degradation under load with priority-based resource allocation        | Medium       |
+
+# 8\. Integration Requirements
+
+## 8.1 P9e Platform Integration
+
+The Space Technology Platform shall integrate with P9e's core Chetana platform services:
+
+- Identity Module: Tenant management, user authentication, JWT-based authorization
+- Platform Module: Policy decision points, feature flags, configuration management
+- Analytics Module: Workflow engine, form builder, reporting infrastructure
+- Notification Services: Email, SMS, webhook integrations for alerts
+
+## 8.2 External System Integration
+
+| **System Type** | **Integration Method**                  | **Examples**                        |
+| --------------- | --------------------------------------- | ----------------------------------- |
+| Data Providers  | STAC API, OpenSearch, custom connectors | Copernicus, USGS, Planet, Maxar     |
+| Ground Networks | REST APIs, gRPC, CCSDS SLE              | AWS Ground Station, Azure Orbital   |
+| GIS Platforms   | OGC WMS/WFS, ArcGIS REST, GeoServer     | ESRI, QGIS, Google Earth Engine     |
+| Cloud Services  | S3 API, Azure Blob, GCS                 | AWS, Azure, GCP for storage/compute |
+
+# 9\. Data Management Requirements
+
+## 9.1 Data Classification
+
+| **Classification** | **Description**                                | **Handling Requirements**              |
+| ------------------ | ---------------------------------------------- | -------------------------------------- |
+| Public             | Open data, derived products for public release | No special handling required           |
+| Internal           | Commercial imagery, operational telemetry      | Access control, encryption at rest     |
+| Confidential       | High-resolution imagery, intelligence products | Strict RBAC, audit logging, encryption |
+| Restricted         | Export-controlled, defense-related data        | ITAR/EAR compliance, isolated systems  |
+
+## 9.2 Data Retention
+
+- Raw satellite imagery: 7 years minimum, archive tier after 1 year
+- Processed products: 5 years, regenerable from raw data
+- Satellite telemetry: Indefinite retention with compression after 90 days
+- Intelligence reports: 10 years with annual review
+- Audit logs: 7 years in tamper-evident storage
+
+# 10\. Glossary
+
+| **Term** | **Definition**                                                               |
+| -------- | ---------------------------------------------------------------------------- |
+| ADCS     | Attitude Determination and Control System                                    |
+| BOA      | Bottom of Atmosphere - surface reflectance after atmospheric correction      |
+| C&DH     | Command and Data Handling                                                    |
+| CCSDS    | Consultative Committee for Space Data Systems - international standards body |
+| COG      | Cloud Optimized GeoTIFF - efficient cloud-native imagery format              |
+| EPS      | Electrical Power System                                                      |
+| GEOINT   | Geospatial Intelligence                                                      |
+| SAR      | Synthetic Aperture Radar                                                     |
+| STAC     | SpatioTemporal Asset Catalog - specification for geospatial data discovery   |
+| TLE      | Two-Line Element - orbital parameter format for satellite tracking           |
+| TT&C     | Tracking, Telemetry, and Command                                             |
+
+# 11\. Document Approval
+
+| **Role**        | **Name** | **Date / Signature** |
+| --------------- | -------- | -------------------- |
+| Author          |          |                      |
+| Technical Lead  |          |                      |
+| Project Manager |          |                      |
+| Approver        |          |                      |
