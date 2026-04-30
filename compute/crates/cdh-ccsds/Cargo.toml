@@ -1,0 +1,27 @@
+[package]
+name = "cdh-ccsds"
+description = "CCSDS protocols: Space Packet Protocol (133.0-B-2), Telecommand Transfer Frame (232.0-B-3), Telemetry Transfer Frame (132.0-B-2), CRC-CCITT."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+must_use_candidate = "allow"
+module_name_repetitions = "allow"
+similar_names = "allow"
+many_single_char_names = "allow"
+doc_markdown = "allow"
+cast_possible_truncation = "allow"
+cast_lossless = "allow"
+struct_excessive_bools = "allow"
+
+[dependencies]
+thiserror = { workspace = true }
