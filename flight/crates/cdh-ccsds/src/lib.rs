@@ -50,4 +50,15 @@ pub enum CcsdsError {
         /// Expected (received) CRC.
         expected: u16,
     },
+    /// Frame / packet header carried a protocol version that mission
+    /// policy does not accept at the decode boundary.
+    #[error("unsupported {field} version: got {got}, expected {expected}")]
+    UnsupportedVersion {
+        /// Header field whose version was rejected (e.g. `tc.version`).
+        field: &'static str,
+        /// Decoded version value.
+        got: u8,
+        /// Version permitted by mission policy.
+        expected: u8,
+    },
 }
