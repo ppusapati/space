@@ -4,11 +4,11 @@ package models
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"p9e.in/samavaya/packages/ulid"
 )
 
-// ChannelValueType mirrors satv1.ChannelValueType.
-type ChannelValueType int
+// ChannelValueType mirrors sattelemetryv1.ChannelValueType.
+type ChannelValueType int32
 
 // Value type constants.
 const (
@@ -21,9 +21,9 @@ const (
 
 // Channel is a named, typed measurement point on a satellite subsystem.
 type Channel struct {
-	ID           uuid.UUID
-	TenantID     uuid.UUID
-	SatelliteID  uuid.UUID
+	ID           ulid.ID
+	TenantID     ulid.ID
+	SatelliteID  ulid.ID
 	Subsystem    string
 	Name         string
 	Units        string
@@ -40,9 +40,9 @@ type Channel struct {
 
 // Frame is a single CCSDS-style packet recorded at the ground.
 type Frame struct {
-	ID               uuid.UUID
-	TenantID         uuid.UUID
-	SatelliteID      uuid.UUID
+	ID               ulid.ID
+	TenantID         ulid.ID
+	SatelliteID     ulid.ID
 	APID             uint32
 	VirtualChannel   uint32
 	SequenceCount    uint64
@@ -56,15 +56,23 @@ type Frame struct {
 
 // Sample is a single measurement of a channel at a point in time.
 type Sample struct {
-	ID          uuid.UUID
-	TenantID    uuid.UUID
-	SatelliteID uuid.UUID
-	FrameID     uuid.UUID // uuid.Nil when standalone
-	ChannelID   uuid.UUID
+	ID          ulid.ID
+	TenantID    ulid.ID
+	SatelliteID ulid.ID
+	FrameID     ulid.ID // ulid.Zero when standalone
+	ChannelID   ulid.ID
 	SampleTime  time.Time
 	ValueDouble float64
 	ValueInt    int64
 	ValueBool   bool
 	ValueText   string
 	IngestedAt  time.Time
+}
+
+// Page describes server-side pagination state.
+type Page struct {
+	TotalCount int32
+	PageOffset int32
+	PageSize   int32
+	HasNext    bool
 }

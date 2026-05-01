@@ -1,60 +1,106 @@
-// Package mappers converts proto / domain / sqlc types for sat-telemetry.
-package mappers
+// Package mapper converts proto / domain / sqlc types for sat-telemetry.
+package mapper
 
 import (
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"google.golang.org/protobuf/types/known/timestamppb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	commonv1 "github.com/ppusapati/space/api/p9e/space/common/v1"
-	satv1 "github.com/ppusapati/space/api/p9e/space/satsubsys/v1"
+	"p9e.in/samavaya/packages/api/v1/fields"
+	"p9e.in/samavaya/packages/api/v1/pagination"
+	"p9e.in/samavaya/packages/ulid"
+
+	pbtlm "github.com/ppusapati/space/services/sat-telemetry/api"
 	sattlmdb "github.com/ppusapati/space/services/sat-telemetry/db/generated"
 	"github.com/ppusapati/space/services/sat-telemetry/internal/models"
 )
 
-// PgUUID wraps uuid.UUID for sqlc.
-func PgUUID(id uuid.UUID) pgtype.UUID { return pgtype.UUID{Bytes: id, Valid: true} }
+// PgUUID converts a ulid.ID to a pgtype.UUID payload (16 bytes).
+func PgUUID(id ulid.ID) pgtype.UUID {
+	return pgtype.UUID{Bytes: [16]byte(id), Valid: true}
+}
 
-// FromPgUUID returns the uuid.UUID portion of a pgtype.UUID.
-func FromPgUUID(p pgtype.UUID) uuid.UUID {
+// PgUUIDOrNull treats ulid.Zero as NULL.
+func PgUUIDOrNull(id ulid.ID) pgtype.UUID {
+	if id.IsZero() {
+		return pgtype.UUID{Valid: false}
+	}
+	return pgtype.UUID{Bytes: [16]byte(id), Valid: true}
+}
+
+// FromPgUUID extracts ulid.ID from pgtype.UUID. Returns ulid.Zero on NULL.
+func FromPgUUID(p pgtype.UUID) ulid.ID {
 	if !p.Valid {
-		return uuid.Nil
+		return ulid.Zero
 	}
-	return p.Bytes
+	return ulid.ID(p.Bytes)
 }
 
-// PgUUIDPtr converts *uuid.UUID to pgtype.UUID.
-func PgUUIDPtr(id *uuid.UUID) pgtype.UUID {
-	if id == nil {
-		return pgtype.UUID{Valid: false}
-	}
-	return pgtype.UUID{Bytes: *id, Valid: true}
-}
-
-// PgUUIDOrNull converts a uuid.UUID to pgtype.UUID, treating uuid.Nil as NULL.
-func PgUUIDOrNull(id uuid.UUID) pgtype.UUID {
-	if id == uuid.Nil {
-		return pgtype.UUID{Valid: false}
-	}
-	return pgtype.UUID{Bytes: id, Valid: true}
-}
-
-// PgTimestamp converts time.Time to pgtype.Timestamptz (always Valid=true).
+// PgTimestamp converts time.Time to pgtype.Timestamptz.
 func PgTimestamp(t time.Time) pgtype.Timestamptz {
 	return pgtype.Timestamptz{Time: t, Valid: true}
 }
 
-// PgTimestampPtr converts *time.Time to pgtype.Timestamptz.
-func PgTimestampPtr(t *time.Time) pgtype.Timestamptz {
-	if t == nil {
+// PgTimestampOrNull returns NULL when t is the zero value.
+func PgTimestampOrNull(t time.Time) pgtype.Timestamptz {
+	if t.IsZero() {
 		return pgtype.Timestamptz{Valid: false}
 	}
-	return pgtype.Timestamptz{Time: *t, Valid: true}
+	return pgtype.Timestamptz{Time: t, Valid: true}
 }
 
-// ChannelFromRow converts a sqlc Channel row to a domain Channel.
+// PageRequest extracts (offset, size) from a PaginationRequest.
+func PageRequest(p *pagination.PaginationRequest) (offset, size int32) {
+	if p == nil {
+		return 0, 50
+	}
+	offset = p.GetPageOffset()
+	if offset < 0 {
+		offset = 0
+	}
+	size = p.GetPageSize()
+	switch {
+	case size <= 0:
+		size = 50
+	case size > 500:
+		size = 500
+	}
+	return offset, size
+}
+
+// PageResponse builds a PaginationResponse.
+func PageResponse(p models.Page) *pagination.PaginationResponse {
+	return &pagination.PaginationResponse{
+		TotalCount: p.TotalCount,
+		PageOffset: p.PageOffset,
+		PageSize:   p.PageSize,
+		HasNext:    p.HasNext,
+	}
+}
+
+// FieldsToProto builds an audit Fields message.
+func FieldsToProto(id ulid.ID, createdBy string, createdAt time.Time, updatedBy string, updatedAt time.Time) *fields.Fields {
+	out := &fields.Fields{Uuid: id.String(), IsActive: true}
+	if createdBy != "" {
+		out.CreatedBy = wrapperspb.String(createdBy)
+	}
+	if !createdAt.IsZero() {
+		out.CreatedAt = timestamppb.New(createdAt)
+	}
+	if updatedBy != "" {
+		out.UpdatedBy = wrapperspb.String(updatedBy)
+	}
+	if !updatedAt.IsZero() {
+		out.UpdatedAt = timestamppb.New(updatedAt)
+	}
+	return out
+}
+
+// ----- Channel -------------------------------------------------------------
+
+// ChannelFromRow converts a sqlc row to the domain model.
 func ChannelFromRow(row sattlmdb.Channel) *models.Channel {
 	return &models.Channel{
 		ID:           FromPgUUID(row.ID),
@@ -76,32 +122,29 @@ func ChannelFromRow(row sattlmdb.Channel) *models.Channel {
 }
 
 // ChannelToProto converts a domain Channel to its proto form.
-func ChannelToProto(c *models.Channel) *satv1.Channel {
+func ChannelToProto(c *models.Channel) *pbtlm.Channel {
 	if c == nil {
 		return nil
 	}
-	return &satv1.Channel{
+	return &pbtlm.Channel{
 		Id:           c.ID.String(),
 		TenantId:     c.TenantID.String(),
 		SatelliteId:  c.SatelliteID.String(),
 		Subsystem:    c.Subsystem,
 		Name:         c.Name,
 		Units:        c.Units,
-		ValueType:    satv1.ChannelValueType(c.ValueType),
+		ValueType:    pbtlm.ChannelValueType(c.ValueType),
 		MinValue:     c.MinValue,
 		MaxValue:     c.MaxValue,
 		SampleRateHz: c.SampleRateHz,
 		Active:       c.Active,
-		Audit: &commonv1.AuditFields{
-			CreatedAt: timestamppb.New(c.CreatedAt),
-			UpdatedAt: timestamppb.New(c.UpdatedAt),
-			CreatedBy: c.CreatedBy,
-			UpdatedBy: c.UpdatedBy,
-		},
+		Fields:       FieldsToProto(c.ID, c.CreatedBy, c.CreatedAt, c.UpdatedBy, c.UpdatedAt),
 	}
 }
 
-// FrameFromRow converts a sqlc TelemetryFrame row to a domain Frame.
+// ----- Frame ---------------------------------------------------------------
+
+// FrameFromRow converts a sqlc TelemetryFrame row to the domain model.
 func FrameFromRow(row sattlmdb.TelemetryFrame) *models.Frame {
 	return &models.Frame{
 		ID:               FromPgUUID(row.ID),
@@ -120,11 +163,11 @@ func FrameFromRow(row sattlmdb.TelemetryFrame) *models.Frame {
 }
 
 // FrameToProto converts a domain Frame to its proto form.
-func FrameToProto(f *models.Frame) *satv1.TelemetryFrame {
+func FrameToProto(f *models.Frame) *pbtlm.TelemetryFrame {
 	if f == nil {
 		return nil
 	}
-	return &satv1.TelemetryFrame{
+	return &pbtlm.TelemetryFrame{
 		Id:               f.ID.String(),
 		TenantId:         f.TenantID.String(),
 		SatelliteId:      f.SatelliteID.String(),
@@ -136,26 +179,19 @@ func FrameToProto(f *models.Frame) *satv1.TelemetryFrame {
 		PayloadSizeBytes: f.PayloadSizeBytes,
 		PayloadSha256:    f.PayloadSHA256,
 		FrameType:        f.FrameType,
-		Audit: &commonv1.AuditFields{
-			CreatedAt: timestamppb.New(f.GroundTime),
-			UpdatedAt: timestamppb.New(f.GroundTime),
-			CreatedBy: f.CreatedBy,
-			UpdatedBy: f.CreatedBy,
-		},
+		Fields:           FieldsToProto(f.ID, f.CreatedBy, f.GroundTime, f.CreatedBy, f.GroundTime),
 	}
 }
 
-// SampleFromQueryRow converts a TelemetrySample row to a domain Sample.
-func SampleFromQueryRow(row sattlmdb.TelemetrySample) *models.Sample {
-	frameID := uuid.Nil
-	if row.FrameID.Valid {
-		frameID = row.FrameID.Bytes
-	}
+// ----- Sample --------------------------------------------------------------
+
+// SampleFromRow converts a TelemetrySample row to the domain model.
+func SampleFromRow(row sattlmdb.TelemetrySample) *models.Sample {
 	return &models.Sample{
 		ID:          FromPgUUID(row.ID),
 		TenantID:    FromPgUUID(row.TenantID),
 		SatelliteID: FromPgUUID(row.SatelliteID),
-		FrameID:     frameID,
+		FrameID:     FromPgUUID(row.FrameID),
 		ChannelID:   FromPgUUID(row.ChannelID),
 		SampleTime:  row.SampleTime.Time,
 		ValueDouble: row.ValueDouble,
@@ -167,15 +203,15 @@ func SampleFromQueryRow(row sattlmdb.TelemetrySample) *models.Sample {
 }
 
 // SampleToProto converts a domain Sample to its proto form.
-func SampleToProto(s *models.Sample) *satv1.TelemetrySample {
+func SampleToProto(s *models.Sample) *pbtlm.TelemetrySample {
 	if s == nil {
 		return nil
 	}
 	frameID := ""
-	if s.FrameID != uuid.Nil {
+	if !s.FrameID.IsZero() {
 		frameID = s.FrameID.String()
 	}
-	return &satv1.TelemetrySample{
+	return &pbtlm.TelemetrySample{
 		Id:          s.ID.String(),
 		TenantId:    s.TenantID.String(),
 		SatelliteId: s.SatelliteID.String(),

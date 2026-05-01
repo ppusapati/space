@@ -6,12 +6,13 @@ import (
 	"errors"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"p9e.in/samavaya/packages/ulid"
+
 	sattlmdb "github.com/ppusapati/space/services/sat-telemetry/db/generated"
-	"github.com/ppusapati/space/services/sat-telemetry/internal/mappers"
+	"github.com/ppusapati/space/services/sat-telemetry/internal/mapper"
 	"github.com/ppusapati/space/services/sat-telemetry/internal/models"
 )
 
@@ -31,11 +32,11 @@ func New(pool *pgxpool.Pool) *Repo {
 
 // ----- Channels ------------------------------------------------------------
 
-// DefineChannelParams is the input to DefineChannel.
+// DefineChannelParams holds the input for [Repo.DefineChannel].
 type DefineChannelParams struct {
-	ID           uuid.UUID
-	TenantID     uuid.UUID
-	SatelliteID  uuid.UUID
+	ID           ulid.ID
+	TenantID     ulid.ID
+	SatelliteID  ulid.ID
 	Subsystem    string
 	Name         string
 	Units        string
@@ -49,9 +50,9 @@ type DefineChannelParams struct {
 // DefineChannel inserts a new channel row.
 func (r *Repo) DefineChannel(ctx context.Context, p DefineChannelParams) (*models.Channel, error) {
 	row, err := r.q.DefineChannel(ctx, sattlmdb.DefineChannelParams{
-		ID:           mappers.PgUUID(p.ID),
-		TenantID:     mappers.PgUUID(p.TenantID),
-		SatelliteID:  mappers.PgUUID(p.SatelliteID),
+		ID:           mapper.PgUUID(p.ID),
+		TenantID:     mapper.PgUUID(p.TenantID),
+		SatelliteID:  mapper.PgUUID(p.SatelliteID),
 		Subsystem:    p.Subsystem,
 		Name:         p.Name,
 		Units:        p.Units,
@@ -64,55 +65,70 @@ func (r *Repo) DefineChannel(ctx context.Context, p DefineChannelParams) (*model
 	if err != nil {
 		return nil, err
 	}
-	return mappers.ChannelFromRow(row), nil
+	return mapper.ChannelFromRow(row), nil
 }
 
 // GetChannel returns a channel by id.
-func (r *Repo) GetChannel(ctx context.Context, id uuid.UUID) (*models.Channel, error) {
-	row, err := r.q.GetChannel(ctx, mappers.PgUUID(id))
+func (r *Repo) GetChannel(ctx context.Context, id ulid.ID) (*models.Channel, error) {
+	row, err := r.q.GetChannel(ctx, mapper.PgUUID(id))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrNotFound
 		}
 		return nil, err
 	}
-	return mappers.ChannelFromRow(row), nil
+	return mapper.ChannelFromRow(row), nil
 }
 
-// ListChannelsParams is the input to ListChannels.
+// ListChannelsParams holds the input for [Repo.ListChannelsForTenant].
 type ListChannelsParams struct {
-	TenantID      uuid.UUID
-	SatelliteID   *uuid.UUID
-	Subsystem     *string
-	CursorCreated *time.Time
-	CursorID      uuid.UUID
-	Limit         int32
+	TenantID    ulid.ID
+	SatelliteID *ulid.ID
+	Subsystem   string
+	PageOffset  int32
+	PageSize    int32
 }
 
-// ListChannels returns one page of channels.
-func (r *Repo) ListChannels(ctx context.Context, p ListChannelsParams) ([]*models.Channel, error) {
-	rows, err := r.q.ListChannels(ctx, sattlmdb.ListChannelsParams{
-		TenantID:        mappers.PgUUID(p.TenantID),
-		SatelliteID:     mappers.PgUUIDPtr(p.SatelliteID),
-		Subsystem:       p.Subsystem,
-		CursorCreatedAt: mappers.PgTimestampPtr(p.CursorCreated),
-		CursorID:        mappers.PgUUID(p.CursorID),
-		Lim:             p.Limit,
+// ListChannelsForTenant returns one page of channels.
+func (r *Repo) ListChannelsForTenant(ctx context.Context, p ListChannelsParams) ([]*models.Channel, int32, error) {
+	var subsystemPtr *string
+	if p.Subsystem != "" {
+		v := p.Subsystem
+		subsystemPtr = &v
+	}
+	var satellitePg = mapper.PgUUIDOrNull(ulid.Zero)
+	if p.SatelliteID != nil {
+		satellitePg = mapper.PgUUID(*p.SatelliteID)
+	}
+	total, err := r.q.CountChannelsForTenant(ctx, sattlmdb.CountChannelsForTenantParams{
+		TenantID:    mapper.PgUUID(p.TenantID),
+		SatelliteID: satellitePg,
+		Subsystem:   subsystemPtr,
 	})
 	if err != nil {
-		return nil, err
+		return nil, 0, err
+	}
+	rows, err := r.q.ListChannelsForTenant(ctx, sattlmdb.ListChannelsForTenantParams{
+		TenantID:    mapper.PgUUID(p.TenantID),
+		SatelliteID: satellitePg,
+		Subsystem:   subsystemPtr,
+		PageOffset:  p.PageOffset,
+		PageSize:    p.PageSize,
+	})
+	if err != nil {
+		return nil, 0, err
 	}
 	out := make([]*models.Channel, 0, len(rows))
 	for _, row := range rows {
-		out = append(out, mappers.ChannelFromRow(row))
+		out = append(out, mapper.ChannelFromRow(row))
 	}
-	return out, nil
+	return out, int32(total), nil
 }
 
-// DeprecateChannel sets active=false on a channel.
-func (r *Repo) DeprecateChannel(ctx context.Context, id uuid.UUID, updatedBy string) (*models.Channel, error) {
+// DeprecateChannel marks a channel inactive.
+func (r *Repo) DeprecateChannel(ctx context.Context, id ulid.ID, updatedBy string) (*models.Channel, error) {
 	row, err := r.q.DeprecateChannel(ctx, sattlmdb.DeprecateChannelParams{
-		ID:        mappers.PgUUID(id),
+		ID:        mapper.PgUUID(id),
 		UpdatedBy: updatedBy,
 	})
 	if err != nil {
@@ -121,16 +137,16 @@ func (r *Repo) DeprecateChannel(ctx context.Context, id uuid.UUID, updatedBy str
 		}
 		return nil, err
 	}
-	return mappers.ChannelFromRow(row), nil
+	return mapper.ChannelFromRow(row), nil
 }
 
 // ----- Frames + Samples ----------------------------------------------------
 
-// IngestFrameParams is the input to IngestFrame.
+// IngestFrameParams holds the input for [Repo.IngestFrame].
 type IngestFrameParams struct {
-	FrameID          uuid.UUID
-	TenantID         uuid.UUID
-	SatelliteID      uuid.UUID
+	FrameID          ulid.ID
+	TenantID         ulid.ID
+	SatelliteID      ulid.ID
 	APID             uint32
 	VirtualChannel   uint32
 	SequenceCount    uint64
@@ -142,10 +158,10 @@ type IngestFrameParams struct {
 	Samples          []IngestSampleParams
 }
 
-// IngestSampleParams is one sample inside a frame ingest.
+// IngestSampleParams is one inline sample inside a frame ingest.
 type IngestSampleParams struct {
-	SampleID    uuid.UUID
-	ChannelID   uuid.UUID
+	SampleID    ulid.ID
+	ChannelID   ulid.ID
 	SampleTime  time.Time
 	ValueDouble float64
 	ValueInt    int64
@@ -162,13 +178,13 @@ func (r *Repo) IngestFrame(ctx context.Context, p IngestFrameParams) (*models.Fr
 	defer func() { _ = tx.Rollback(ctx) }()
 	q := r.q.WithTx(tx)
 	row, err := q.InsertTelemetryFrame(ctx, sattlmdb.InsertTelemetryFrameParams{
-		ID:               mappers.PgUUID(p.FrameID),
-		TenantID:         mappers.PgUUID(p.TenantID),
-		SatelliteID:      mappers.PgUUID(p.SatelliteID),
+		ID:               mapper.PgUUID(p.FrameID),
+		TenantID:         mapper.PgUUID(p.TenantID),
+		SatelliteID:      mapper.PgUUID(p.SatelliteID),
 		Apid:             int32(p.APID),
 		VirtualChannel:   int32(p.VirtualChannel),
 		SequenceCount:    int64(p.SequenceCount),
-		SatTime:          mappers.PgTimestamp(p.SatTime),
+		SatTime:          mapper.PgTimestamp(p.SatTime),
 		PayloadSizeBytes: int64(p.PayloadSizeBytes),
 		PayloadSha256:    p.PayloadSHA256,
 		FrameType:        p.FrameType,
@@ -179,12 +195,12 @@ func (r *Repo) IngestFrame(ctx context.Context, p IngestFrameParams) (*models.Fr
 	}
 	for _, s := range p.Samples {
 		if err := q.InsertSample(ctx, sattlmdb.InsertSampleParams{
-			ID:          mappers.PgUUID(s.SampleID),
-			TenantID:    mappers.PgUUID(p.TenantID),
-			SatelliteID: mappers.PgUUID(p.SatelliteID),
-			FrameID:     mappers.PgUUID(p.FrameID),
-			ChannelID:   mappers.PgUUID(s.ChannelID),
-			SampleTime:  mappers.PgTimestamp(s.SampleTime),
+			ID:          mapper.PgUUID(s.SampleID),
+			TenantID:    mapper.PgUUID(p.TenantID),
+			SatelliteID: mapper.PgUUID(p.SatelliteID),
+			FrameID:     mapper.PgUUID(p.FrameID),
+			ChannelID:   mapper.PgUUID(s.ChannelID),
+			SampleTime:  mapper.PgTimestamp(s.SampleTime),
 			ValueDouble: s.ValueDouble,
 			ValueInt:    s.ValueInt,
 			ValueBool:   s.ValueBool,
@@ -196,71 +212,88 @@ func (r *Repo) IngestFrame(ctx context.Context, p IngestFrameParams) (*models.Fr
 	if err := tx.Commit(ctx); err != nil {
 		return nil, err
 	}
-	return mappers.FrameFromRow(row), nil
+	return mapper.FrameFromRow(row), nil
 }
 
 // GetFrame returns a frame by id.
-func (r *Repo) GetFrame(ctx context.Context, id uuid.UUID) (*models.Frame, error) {
-	row, err := r.q.GetFrame(ctx, mappers.PgUUID(id))
+func (r *Repo) GetFrame(ctx context.Context, id ulid.ID) (*models.Frame, error) {
+	row, err := r.q.GetFrame(ctx, mapper.PgUUID(id))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrNotFound
 		}
 		return nil, err
 	}
-	return mappers.FrameFromRow(row), nil
+	return mapper.FrameFromRow(row), nil
 }
 
-// ListFramesParams is the input to ListFrames.
+// ListFramesParams holds the input for [Repo.ListFramesForTenant].
 type ListFramesParams struct {
-	TenantID          uuid.UUID
-	SatelliteID       *uuid.UUID
-	FrameType         *string
-	GroundTimeStart   *time.Time
-	GroundTimeEnd     *time.Time
-	CursorGroundTime  *time.Time
-	CursorID          uuid.UUID
-	Limit             int32
+	TenantID    ulid.ID
+	SatelliteID *ulid.ID
+	FrameType   string
+	TimeStart   time.Time
+	TimeEnd     time.Time
+	PageOffset  int32
+	PageSize    int32
 }
 
-// ListFrames returns one page of frames.
-func (r *Repo) ListFrames(ctx context.Context, p ListFramesParams) ([]*models.Frame, error) {
-	rows, err := r.q.ListFrames(ctx, sattlmdb.ListFramesParams{
-		TenantID:         mappers.PgUUID(p.TenantID),
-		SatelliteID:      mappers.PgUUIDPtr(p.SatelliteID),
-		FrameType:        p.FrameType,
-		TimeStart:        mappers.PgTimestampPtr(p.GroundTimeStart),
-		TimeEnd:          mappers.PgTimestampPtr(p.GroundTimeEnd),
-		CursorGroundTime: mappers.PgTimestampPtr(p.CursorGroundTime),
-		CursorID:         mappers.PgUUID(p.CursorID),
-		Lim:              p.Limit,
+// ListFramesForTenant returns one page of frames.
+func (r *Repo) ListFramesForTenant(ctx context.Context, p ListFramesParams) ([]*models.Frame, int32, error) {
+	var frameTypePtr *string
+	if p.FrameType != "" {
+		v := p.FrameType
+		frameTypePtr = &v
+	}
+	var satellitePg = mapper.PgUUIDOrNull(ulid.Zero)
+	if p.SatelliteID != nil {
+		satellitePg = mapper.PgUUID(*p.SatelliteID)
+	}
+	total, err := r.q.CountFramesForTenant(ctx, sattlmdb.CountFramesForTenantParams{
+		TenantID:    mapper.PgUUID(p.TenantID),
+		SatelliteID: satellitePg,
+		FrameType:   frameTypePtr,
+		TimeStart:   mapper.PgTimestampOrNull(p.TimeStart),
+		TimeEnd:     mapper.PgTimestampOrNull(p.TimeEnd),
 	})
 	if err != nil {
-		return nil, err
+		return nil, 0, err
+	}
+	rows, err := r.q.ListFramesForTenant(ctx, sattlmdb.ListFramesForTenantParams{
+		TenantID:    mapper.PgUUID(p.TenantID),
+		SatelliteID: satellitePg,
+		FrameType:   frameTypePtr,
+		TimeStart:   mapper.PgTimestampOrNull(p.TimeStart),
+		TimeEnd:     mapper.PgTimestampOrNull(p.TimeEnd),
+		PageOffset:  p.PageOffset,
+		PageSize:    p.PageSize,
+	})
+	if err != nil {
+		return nil, 0, err
 	}
 	out := make([]*models.Frame, 0, len(rows))
 	for _, row := range rows {
-		out = append(out, mappers.FrameFromRow(row))
+		out = append(out, mapper.FrameFromRow(row))
 	}
-	return out, nil
+	return out, int32(total), nil
 }
 
-// QuerySamplesParams is the input to QuerySamples.
+// QuerySamplesParams holds the input for [Repo.QuerySamples].
 type QuerySamplesParams struct {
-	TenantID  uuid.UUID
-	ChannelID uuid.UUID
-	TimeStart *time.Time
-	TimeEnd   *time.Time
+	TenantID  ulid.ID
+	ChannelID ulid.ID
+	TimeStart time.Time
+	TimeEnd   time.Time
 	Limit     int32
 }
 
 // QuerySamples returns one window of samples for a channel.
 func (r *Repo) QuerySamples(ctx context.Context, p QuerySamplesParams) ([]*models.Sample, error) {
 	rows, err := r.q.QuerySamples(ctx, sattlmdb.QuerySamplesParams{
-		TenantID:  mappers.PgUUID(p.TenantID),
-		ChannelID: mappers.PgUUID(p.ChannelID),
-		TimeStart: mappers.PgTimestampPtr(p.TimeStart),
-		TimeEnd:   mappers.PgTimestampPtr(p.TimeEnd),
+		TenantID:  mapper.PgUUID(p.TenantID),
+		ChannelID: mapper.PgUUID(p.ChannelID),
+		TimeStart: mapper.PgTimestampOrNull(p.TimeStart),
+		TimeEnd:   mapper.PgTimestampOrNull(p.TimeEnd),
 		Lim:       p.Limit,
 	})
 	if err != nil {
@@ -268,7 +301,7 @@ func (r *Repo) QuerySamples(ctx context.Context, p QuerySamplesParams) ([]*model
 	}
 	out := make([]*models.Sample, 0, len(rows))
 	for _, row := range rows {
-		out = append(out, mappers.SampleFromQueryRow(row))
+		out = append(out, mapper.SampleFromRow(row))
 	}
 	return out, nil
 }

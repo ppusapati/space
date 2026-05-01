@@ -1,0 +1,171 @@
+syntax = "proto3";
+
+package p9e.space.sattelemetry.v1;
+
+option go_package = "github.com/ppusapati/space/services/sat-telemetry/api;sattelemetryv1";
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// Satellite Telemetry — housekeeping ingest. Each satellite emits frames
+// (CCSDS Space Packet wrappers) carrying samples for channels (named,
+// typed, unit-bearing measurement points).
+// All identifiers are ULID strings (Crockford Base32, 26 chars).
+// =====================================================================
+
+enum ChannelValueType {
+  CHANNEL_VALUE_TYPE_UNSPECIFIED = 0;
+  CHANNEL_VALUE_TYPE_FLOAT       = 1;
+  CHANNEL_VALUE_TYPE_INT         = 2;
+  CHANNEL_VALUE_TYPE_BOOL        = 3;
+  CHANNEL_VALUE_TYPE_ENUM        = 4;
+}
+
+message Channel {
+  string id = 1;
+  string tenant_id = 2;
+  string satellite_id = 3;
+  string subsystem = 4;
+  string name = 5;
+  string units = 6;
+  ChannelValueType value_type = 7;
+  double min_value = 8;
+  double max_value = 9;
+  double sample_rate_hz = 10;
+  bool active = 11;
+  packages.api.v1.fields.Fields fields = 12;
+}
+
+message TelemetryFrame {
+  string id = 1;
+  string tenant_id = 2;
+  string satellite_id = 3;
+  uint32 apid = 4;
+  uint32 virtual_channel = 5;
+  uint64 sequence_count = 6;
+  google.protobuf.Timestamp sat_time = 7;
+  google.protobuf.Timestamp ground_time = 8;
+  uint64 payload_size_bytes = 9;
+  string payload_sha256 = 10;       // 64-char hex
+  string frame_type = 11;           // e.g. "HK", "EVT", "SCI"
+  packages.api.v1.fields.Fields fields = 12;
+}
+
+message TelemetrySample {
+  string id = 1;
+  string tenant_id = 2;
+  string satellite_id = 3;
+  string frame_id = 4;              // empty if standalone
+  string channel_id = 5;
+  google.protobuf.Timestamp sample_time = 6;
+  double value_double = 7;
+  int64  value_int = 8;
+  bool   value_bool = 9;
+  string value_text = 10;
+}
+
+// ----- Channel RPCs -------------------------------------------------------
+
+message DefineChannelRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 2 [(buf.validate.field).string = {len: 26}];
+  string subsystem = 3 [(buf.validate.field).string = {min_len: 1, max_len: 64}];
+  string name = 4 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  string units = 5;
+  ChannelValueType value_type = 6 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  double min_value = 7;
+  double max_value = 8;
+  double sample_rate_hz = 9 [(buf.validate.field).double = {gte: 0}];
+}
+message DefineChannelResponse { Channel channel = 1; }
+
+message GetChannelRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetChannelResponse { Channel channel = 1; }
+
+message ListChannelsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 2;
+  string subsystem = 3;
+  packages.api.v1.pagination.PaginationRequest page = 4;
+}
+message ListChannelsResponse {
+  repeated Channel channels = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message DeprecateChannelRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message DeprecateChannelResponse { Channel channel = 1; }
+
+// ----- Telemetry ingest ---------------------------------------------------
+
+message IngestTelemetryFrameRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 2 [(buf.validate.field).string = {len: 26}];
+  uint32 apid = 3;
+  uint32 virtual_channel = 4;
+  uint64 sequence_count = 5;
+  google.protobuf.Timestamp sat_time = 6;
+  uint64 payload_size_bytes = 7;
+  string payload_sha256 = 8 [(buf.validate.field).string = {len: 64}];
+  string frame_type = 9 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+  repeated InlineSample samples = 10;
+}
+message InlineSample {
+  string channel_id = 1 [(buf.validate.field).string = {len: 26}];
+  google.protobuf.Timestamp sample_time = 2;
+  double value_double = 3;
+  int64  value_int = 4;
+  bool   value_bool = 5;
+  string value_text = 6;
+}
+message IngestTelemetryFrameResponse {
+  TelemetryFrame frame = 1;
+  uint32 sample_count = 2;
+}
+
+message GetFrameRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetFrameResponse { TelemetryFrame frame = 1; }
+
+message ListFramesRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 2;
+  string frame_type = 3;
+  google.protobuf.Timestamp ground_time_start = 4;
+  google.protobuf.Timestamp ground_time_end = 5;
+  packages.api.v1.pagination.PaginationRequest page = 6;
+}
+message ListFramesResponse {
+  repeated TelemetryFrame frames = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message QuerySamplesRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string channel_id = 2 [(buf.validate.field).string = {len: 26}];
+  google.protobuf.Timestamp time_start = 3;
+  google.protobuf.Timestamp time_end = 4;
+  uint32 limit = 5 [(buf.validate.field).uint32 = {lte: 100000}];
+}
+message QuerySamplesResponse {
+  repeated TelemetrySample samples = 1;
+}
+
+service TelemetryService {
+  rpc DefineChannel(DefineChannelRequest) returns (DefineChannelResponse);
+  rpc GetChannel(GetChannelRequest) returns (GetChannelResponse);
+  rpc ListChannels(ListChannelsRequest) returns (ListChannelsResponse);
+  rpc DeprecateChannel(DeprecateChannelRequest) returns (DeprecateChannelResponse);
+  rpc IngestTelemetryFrame(IngestTelemetryFrameRequest) returns (IngestTelemetryFrameResponse);
+  rpc GetFrame(GetFrameRequest) returns (GetFrameResponse);
+  rpc ListFrames(ListFramesRequest) returns (ListFramesResponse);
+  rpc QuerySamples(QuerySamplesRequest) returns (QuerySamplesResponse);
+}

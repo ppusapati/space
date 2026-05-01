@@ -2,7 +2,7 @@
 // versions:
 //   sqlc v1.31.1
 
-package sattlmdb
+package sattelemetrydb
 
 import (
 	"context"
@@ -11,14 +11,16 @@ import (
 )
 
 type Querier interface {
+	CountChannelsForTenant(ctx context.Context, arg CountChannelsForTenantParams) (int64, error)
+	CountFramesForTenant(ctx context.Context, arg CountFramesForTenantParams) (int64, error)
 	DefineChannel(ctx context.Context, arg DefineChannelParams) (Channel, error)
 	DeprecateChannel(ctx context.Context, arg DeprecateChannelParams) (Channel, error)
 	GetChannel(ctx context.Context, id pgtype.UUID) (Channel, error)
 	GetFrame(ctx context.Context, id pgtype.UUID) (TelemetryFrame, error)
 	InsertSample(ctx context.Context, arg InsertSampleParams) error
 	InsertTelemetryFrame(ctx context.Context, arg InsertTelemetryFrameParams) (TelemetryFrame, error)
-	ListChannels(ctx context.Context, arg ListChannelsParams) ([]Channel, error)
-	ListFrames(ctx context.Context, arg ListFramesParams) ([]TelemetryFrame, error)
+	ListChannelsForTenant(ctx context.Context, arg ListChannelsForTenantParams) ([]Channel, error)
+	ListFramesForTenant(ctx context.Context, arg ListFramesForTenantParams) ([]TelemetryFrame, error)
 	QuerySamples(ctx context.Context, arg QuerySamplesParams) ([]TelemetrySample, error)
 }
 

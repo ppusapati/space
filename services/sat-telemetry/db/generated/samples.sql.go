@@ -3,7 +3,7 @@
 //   sqlc v1.31.1
 // source: samples.sql
 
-package sattlmdb
+package sattelemetrydb
 
 import (
 	"context"

@@ -3,31 +3,78 @@ package config
 
 import (
 	"errors"
-	"fmt"
-
-	pkgcfg "github.com/ppusapati/space/pkg/config"
+	"os"
+	"strings"
+	"time"
 )
 
-// Config is the sat-telemetry configuration.
+// Config is the sat-telemetry configuration loaded from environment.
 type Config struct {
-	pkgcfg.Common
-	DSN          string
-	CursorSecret string
+	ServiceName     string
+	Environment     string
+	LogLevel        string
+	HTTPAddr        string
+	MetricsAddr     string
+	ShutdownTimeout time.Duration
+	DSN             string
+	AllowedOrigins  []string
 }
 
 // Load reads the environment.
 func Load() (Config, error) {
-	c, err := pkgcfg.LoadCommon()
+	dsn := os.Getenv("DATABASE_URL")
+	if dsn == "" {
+		return Config{}, errors.New("sat-telemetry: DATABASE_URL required")
+	}
+	return Config{
+		ServiceName:     getenv("SERVICE_NAME", "sat-telemetry"),
+		Environment:     getenv("ENVIRONMENT", "development"),
+		LogLevel:        getenv("LOG_LEVEL", "info"),
+		HTTPAddr:        getenv("HTTP_ADDR", ":8080"),
+		MetricsAddr:     getenv("METRICS_ADDR", ":9090"),
+		ShutdownTimeout: getenvDuration("SHUTDOWN_TIMEOUT", 30*time.Second),
+		DSN:             dsn,
+		AllowedOrigins:  getenvList("ALLOWED_ORIGINS", []string{"*"}),
+	}, nil
+}
+
+// HTTPPort returns the port suffix from HTTPAddr (e.g. ":8080" -> "8080").
+func (c Config) HTTPPort() string {
+	if len(c.HTTPAddr) > 0 && c.HTTPAddr[0] == ':' {
+		return c.HTTPAddr[1:]
+	}
+	return c.HTTPAddr
+}
+
+func getenv(key, def string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return def
+}
+
+func getenvDuration(key string, def time.Duration) time.Duration {
+	v := os.Getenv(key)
+	if v == "" {
+		return def
+	}
+	d, err := time.ParseDuration(v)
 	if err != nil {
-		return Config{}, err
+		return def
 	}
-	dsn, err := pkgcfg.MustString("DATABASE_URL")
-	if err != nil {
-		return Config{}, fmt.Errorf("sat-telemetry: %w", err)
+	return d
+}
+
+func getenvList(key string, def []string) []string {
+	v := os.Getenv(key)
+	if v == "" {
+		return def
 	}
-	secret := pkgcfg.String("CURSOR_SECRET", "")
-	if len(secret) < 16 {
-		return Config{}, errors.New("sat-telemetry: CURSOR_SECRET must be at least 16 chars")
+	out := make([]string, 0)
+	for _, p := range strings.Split(v, ",") {
+		if s := strings.TrimSpace(p); s != "" {
+			out = append(out, s)
+		}
 	}
-	return Config{Common: c, DSN: dsn, CursorSecret: secret}, nil
+	return out
 }

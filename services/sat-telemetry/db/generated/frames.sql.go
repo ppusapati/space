@@ -3,13 +3,43 @@
 //   sqlc v1.31.1
 // source: frames.sql
 
-package sattlmdb
+package sattelemetrydb
 
 import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgtype"
 )
+
+const countFramesForTenant = `-- name: CountFramesForTenant :one
+SELECT COUNT(*)::bigint AS total FROM telemetry_frames
+WHERE tenant_id = $1::uuid
+  AND ($2::uuid IS NULL OR satellite_id = $2::uuid)
+  AND ($3::text   IS NULL OR frame_type   = $3::text)
+  AND ($4::timestamptz IS NULL OR ground_time >= $4::timestamptz)
+  AND ($5::timestamptz   IS NULL OR ground_time <= $5::timestamptz)
+`
+
+type CountFramesForTenantParams struct {
+	TenantID    pgtype.UUID
+	SatelliteID pgtype.UUID
+	FrameType   *string
+	TimeStart   pgtype.Timestamptz
+	TimeEnd     pgtype.Timestamptz
+}
+
+func (q *Queries) CountFramesForTenant(ctx context.Context, arg CountFramesForTenantParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countFramesForTenant,
+		arg.TenantID,
+		arg.SatelliteID,
+		arg.FrameType,
+		arg.TimeStart,
+		arg.TimeEnd,
+	)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
 
 const getFrame = `-- name: GetFrame :one
 SELECT id, tenant_id, satellite_id, apid, virtual_channel, sequence_count, sat_time, ground_time, payload_size_bytes, payload_sha256, frame_type, created_by FROM telemetry_frames WHERE id = $1
@@ -91,43 +121,37 @@ func (q *Queries) InsertTelemetryFrame(ctx context.Context, arg InsertTelemetryF
 	return i, err
 }
 
-const listFrames = `-- name: ListFrames :many
+const listFramesForTenant = `-- name: ListFramesForTenant :many
 SELECT id, tenant_id, satellite_id, apid, virtual_channel, sequence_count, sat_time, ground_time, payload_size_bytes, payload_sha256, frame_type, created_by FROM telemetry_frames
 WHERE tenant_id = $1::uuid
   AND ($2::uuid IS NULL OR satellite_id = $2::uuid)
   AND ($3::text   IS NULL OR frame_type   = $3::text)
   AND ($4::timestamptz IS NULL OR ground_time >= $4::timestamptz)
   AND ($5::timestamptz   IS NULL OR ground_time <= $5::timestamptz)
-  AND (
-        $6::timestamptz IS NULL
-        OR (ground_time, id) < ($6::timestamptz,
-                                $7::uuid)
-      )
 ORDER BY ground_time DESC, id DESC
-LIMIT $8::int
+OFFSET $6::int
+LIMIT  $7::int
 `
 
-type ListFramesParams struct {
-	TenantID         pgtype.UUID
-	SatelliteID      pgtype.UUID
-	FrameType        *string
-	TimeStart        pgtype.Timestamptz
-	TimeEnd          pgtype.Timestamptz
-	CursorGroundTime pgtype.Timestamptz
-	CursorID         pgtype.UUID
-	Lim              int32
+type ListFramesForTenantParams struct {
+	TenantID    pgtype.UUID
+	SatelliteID pgtype.UUID
+	FrameType   *string
+	TimeStart   pgtype.Timestamptz
+	TimeEnd     pgtype.Timestamptz
+	PageOffset  int32
+	PageSize    int32
 }
 
-func (q *Queries) ListFrames(ctx context.Context, arg ListFramesParams) ([]TelemetryFrame, error) {
-	rows, err := q.db.Query(ctx, listFrames,
+func (q *Queries) ListFramesForTenant(ctx context.Context, arg ListFramesForTenantParams) ([]TelemetryFrame, error) {
+	rows, err := q.db.Query(ctx, listFramesForTenant,
 		arg.TenantID,
 		arg.SatelliteID,
 		arg.FrameType,
 		arg.TimeStart,
 		arg.TimeEnd,
-		arg.CursorGroundTime,
-		arg.CursorID,
-		arg.Lim,
+		arg.PageOffset,
+		arg.PageSize,
 	)
 	if err != nil {
 		return nil, err

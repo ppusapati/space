@@ -7,4 +7,5 @@ use (
 	./eo-analytics
 	./sat-mission
 	./sat-fsw
+	./sat-telemetry
 )

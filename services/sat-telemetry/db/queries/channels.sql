@@ -11,18 +11,20 @@ RETURNING *;
 -- name: GetChannel :one
 SELECT * FROM channels WHERE id = $1;
 
--- name: ListChannels :many
+-- name: CountChannelsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM channels
+WHERE tenant_id = sqlc.arg('tenant_id')::uuid
+  AND (sqlc.narg('satellite_id')::uuid IS NULL OR satellite_id = sqlc.narg('satellite_id')::uuid)
+  AND (sqlc.narg('subsystem')::text    IS NULL OR subsystem    = sqlc.narg('subsystem')::text);
+
+-- name: ListChannelsForTenant :many
 SELECT * FROM channels
 WHERE tenant_id = sqlc.arg('tenant_id')::uuid
   AND (sqlc.narg('satellite_id')::uuid IS NULL OR satellite_id = sqlc.narg('satellite_id')::uuid)
   AND (sqlc.narg('subsystem')::text    IS NULL OR subsystem    = sqlc.narg('subsystem')::text)
-  AND (
-        sqlc.narg('cursor_created_at')::timestamptz IS NULL
-        OR (created_at, id) < (sqlc.narg('cursor_created_at')::timestamptz,
-                               sqlc.arg('cursor_id')::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT sqlc.arg('lim')::int;
+OFFSET sqlc.arg('page_offset')::int
+LIMIT  sqlc.arg('page_size')::int;
 
 -- name: DeprecateChannel :one
 UPDATE channels
