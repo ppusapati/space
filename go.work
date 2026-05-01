@@ -6,4 +6,5 @@ use (
 	./services/eo-catalog
 	./services/eo-pipeline
 	./services/eo-analytics
+	./services/sat-mission
 )
