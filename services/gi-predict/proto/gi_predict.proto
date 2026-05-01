@@ -1,0 +1,99 @@
+syntax = "proto3";
+
+package p9e.space.gipredict.v1;
+
+option go_package = "github.com/ppusapati/space/services/gi-predict/api;gipredictv1";
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// GEOINT Forecast — predictive jobs (NDVI trend, flood risk, drought,
+// land-cover change). All identifiers are ULIDs (26 chars).
+// =====================================================================
+
+enum ForecastType {
+  FORECAST_TYPE_UNSPECIFIED       = 0;
+  FORECAST_TYPE_NDVI_TREND        = 1;
+  FORECAST_TYPE_FLOOD_RISK        = 2;
+  FORECAST_TYPE_DROUGHT_INDEX     = 3;
+  FORECAST_TYPE_LANDCOVER_CHANGE  = 4;
+  FORECAST_TYPE_WEATHER           = 5;
+  FORECAST_TYPE_CUSTOM            = 6;
+}
+
+enum ForecastStatus {
+  FORECAST_STATUS_UNSPECIFIED = 0;
+  FORECAST_STATUS_QUEUED      = 1;
+  FORECAST_STATUS_RUNNING     = 2;
+  FORECAST_STATUS_COMPLETED   = 3;
+  FORECAST_STATUS_FAILED      = 4;
+  FORECAST_STATUS_CANCELED    = 5;
+}
+
+message ForecastJob {
+  string id = 1;
+  string tenant_id = 2;
+  ForecastType type = 3;
+  ForecastStatus status = 4;
+  string model_id = 5;                 // optional ML model ULID
+  repeated string input_uris = 6;
+  int32 horizon_days = 7;
+  string parameters_json = 8;
+  string output_uri = 9;
+  string results_summary_json = 10;
+  string error_message = 11;
+  google.protobuf.Timestamp started_at = 12;
+  google.protobuf.Timestamp finished_at = 13;
+  packages.api.v1.fields.Fields fields = 14;
+}
+
+message SubmitForecastJobRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  ForecastType type = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string model_id = 3;                 // optional
+  repeated string input_uris = 4;
+  int32 horizon_days = 5 [(buf.validate.field).int32 = {gt: 0, lte: 3650}];
+  string parameters_json = 6;
+}
+message SubmitForecastJobResponse { ForecastJob job = 1; }
+
+message GetForecastJobRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetForecastJobResponse { ForecastJob job = 1; }
+
+message ListForecastJobsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  optional ForecastStatus status = 2;
+  optional ForecastType type = 3;
+  packages.api.v1.pagination.PaginationRequest page = 4;
+}
+message ListForecastJobsResponse {
+  repeated ForecastJob jobs = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message UpdateForecastJobStatusRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  ForecastStatus status = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string output_uri = 3;
+  string results_summary_json = 4;
+  string error_message = 5;
+}
+message UpdateForecastJobStatusResponse { ForecastJob job = 1; }
+
+message CancelForecastJobRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message CancelForecastJobResponse { ForecastJob job = 1; }
+
+service ForecastService {
+  rpc SubmitForecastJob(SubmitForecastJobRequest) returns (SubmitForecastJobResponse);
+  rpc GetForecastJob(GetForecastJobRequest) returns (GetForecastJobResponse);
+  rpc ListForecastJobs(ListForecastJobsRequest) returns (ListForecastJobsResponse);
+  rpc UpdateForecastJobStatus(UpdateForecastJobStatusRequest) returns (UpdateForecastJobStatusResponse);
+  rpc CancelForecastJob(CancelForecastJobRequest) returns (CancelForecastJobResponse);
+}

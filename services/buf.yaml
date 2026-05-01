@@ -32,6 +32,10 @@ modules:
     name: buf.build/p9e/gi-analytics
   - path: gi-tiles/proto
     name: buf.build/p9e/gi-tiles
+  - path: gi-reports/proto
+    name: buf.build/p9e/gi-reports
+  - path: gi-predict/proto
+    name: buf.build/p9e/gi-predict
 deps:
   - buf.build/bufbuild/protovalidate
 breaking:

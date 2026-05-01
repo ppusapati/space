@@ -1,0 +1,136 @@
+syntax = "proto3";
+
+package p9e.space.gireports.v1;
+
+option go_package = "github.com/ppusapati/space/services/gi-reports/api;gireportsv1";
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// GEOINT Reports — report templates and generated reports.
+// All identifiers are ULIDs (26 chars).
+// =====================================================================
+
+enum ReportFormat {
+  REPORT_FORMAT_UNSPECIFIED = 0;
+  REPORT_FORMAT_PDF         = 1;
+  REPORT_FORMAT_HTML        = 2;
+  REPORT_FORMAT_DOCX        = 3;
+  REPORT_FORMAT_XLSX        = 4;
+}
+
+enum ReportStatus {
+  REPORT_STATUS_UNSPECIFIED = 0;
+  REPORT_STATUS_QUEUED      = 1;
+  REPORT_STATUS_GENERATING  = 2;
+  REPORT_STATUS_COMPLETED   = 3;
+  REPORT_STATUS_FAILED      = 4;
+  REPORT_STATUS_CANCELED    = 5;
+}
+
+message ReportTemplate {
+  string id = 1;
+  string tenant_id = 2;
+  string slug = 3;
+  string name = 4;
+  string description = 5;
+  string template_uri = 6;            // s3:// of template file
+  ReportFormat format = 7;
+  string parameters_schema = 8;        // JSON schema
+  bool active = 9;
+  packages.api.v1.fields.Fields fields = 10;
+}
+
+message Report {
+  string id = 1;
+  string tenant_id = 2;
+  string template_id = 3;
+  ReportStatus status = 4;
+  string parameters_json = 5;
+  string output_uri = 6;               // s3:// of generated artefact
+  string error_message = 7;
+  google.protobuf.Timestamp started_at = 8;
+  google.protobuf.Timestamp finished_at = 9;
+  packages.api.v1.fields.Fields fields = 10;
+}
+
+// ----- Template RPCs ------------------------------------------------------
+
+message CreateTemplateRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string slug = 2 [(buf.validate.field).string = {pattern: "^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$"}];
+  string name = 3 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  string description = 4;
+  string template_uri = 5 [(buf.validate.field).string = {min_len: 1, max_len: 1024}];
+  ReportFormat format = 6 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string parameters_schema = 7;
+}
+message CreateTemplateResponse { ReportTemplate template = 1; }
+
+message GetTemplateRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetTemplateResponse { ReportTemplate template = 1; }
+
+message ListTemplatesRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  optional ReportFormat format = 2;
+  packages.api.v1.pagination.PaginationRequest page = 3;
+}
+message ListTemplatesResponse {
+  repeated ReportTemplate templates = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message DeprecateTemplateRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message DeprecateTemplateResponse { ReportTemplate template = 1; }
+
+// ----- Report RPCs --------------------------------------------------------
+
+message GenerateReportRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string template_id = 2 [(buf.validate.field).string = {len: 26}];
+  string parameters_json = 3;
+}
+message GenerateReportResponse { Report report = 1; }
+
+message GetReportRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetReportResponse { Report report = 1; }
+
+message ListReportsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string template_id = 2;
+  optional ReportStatus status = 3;
+  packages.api.v1.pagination.PaginationRequest page = 4;
+}
+message ListReportsResponse {
+  repeated Report reports = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message UpdateReportStatusRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  ReportStatus status = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string output_uri = 3;
+  string error_message = 4;
+}
+message UpdateReportStatusResponse { Report report = 1; }
+
+service ReportsService {
+  rpc CreateTemplate(CreateTemplateRequest) returns (CreateTemplateResponse);
+  rpc GetTemplate(GetTemplateRequest) returns (GetTemplateResponse);
+  rpc ListTemplates(ListTemplatesRequest) returns (ListTemplatesResponse);
+  rpc DeprecateTemplate(DeprecateTemplateRequest) returns (DeprecateTemplateResponse);
+
+  rpc GenerateReport(GenerateReportRequest) returns (GenerateReportResponse);
+  rpc GetReport(GetReportRequest) returns (GetReportResponse);
+  rpc ListReports(ListReportsRequest) returns (ListReportsResponse);
+  rpc UpdateReportStatus(UpdateReportStatusRequest) returns (UpdateReportStatusResponse);
+}

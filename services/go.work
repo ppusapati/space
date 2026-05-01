@@ -17,4 +17,6 @@ use (
 	./gi-fusion
 	./gi-analytics
 	./gi-tiles
+	./gi-reports
+	./gi-predict
 )
