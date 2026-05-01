@@ -16,4 +16,5 @@ use (
 	./gs-ingest
 	./gi-fusion
 	./gi-analytics
+	./gi-tiles
 )

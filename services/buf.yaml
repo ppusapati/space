@@ -30,6 +30,8 @@ modules:
     name: buf.build/p9e/gi-fusion
   - path: gi-analytics/proto
     name: buf.build/p9e/gi-analytics
+  - path: gi-tiles/proto
+    name: buf.build/p9e/gi-tiles
 deps:
   - buf.build/bufbuild/protovalidate
 breaking:
