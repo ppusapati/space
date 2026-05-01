@@ -10,4 +10,5 @@ use (
 	./sat-telemetry
 	./sat-command
 	./sat-simulation
+	./gs-mc
 )
