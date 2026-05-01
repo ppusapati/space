@@ -7,40 +7,45 @@ RETURNING *;
 -- name: GetSatellite :one
 SELECT * FROM satellites WHERE id = $1;
 
--- name: ListSatellites :many
+-- name: CountSatellitesForTenant :one
+SELECT COUNT(*)::bigint AS total FROM satellites
+WHERE tenant_id = sqlc.arg('tenant_id')::uuid;
+
+-- name: ListSatellitesForTenant :many
 SELECT * FROM satellites
 WHERE tenant_id = sqlc.arg('tenant_id')::uuid
-  AND (
-        sqlc.narg('cursor_created_at')::timestamptz IS NULL
-        OR (created_at, id) < (sqlc.narg('cursor_created_at')::timestamptz,
-                               sqlc.arg('cursor_id')::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT sqlc.arg('lim')::int;
+OFFSET sqlc.arg('page_offset')::int
+LIMIT  sqlc.arg('page_size')::int;
 
 -- name: UpdateTLE :one
 UPDATE satellites
-SET tle_line1 = $2, tle_line2 = $3, updated_at = now(), updated_by = $4
-WHERE id = $1
+SET tle_line1 = sqlc.arg('tle_line1')::text,
+    tle_line2 = sqlc.arg('tle_line2')::text,
+    updated_at = now(),
+    updated_by = sqlc.arg('updated_by')::text
+WHERE id = sqlc.arg('id')::uuid
 RETURNING *;
 
 -- name: UpdateOrbitalState :one
 UPDATE satellites
 SET
-    last_state_rx_km   = $2,
-    last_state_ry_km   = $3,
-    last_state_rz_km   = $4,
-    last_state_vx_km_s = $5,
-    last_state_vy_km_s = $6,
-    last_state_vz_km_s = $7,
-    last_state_epoch   = $8,
+    last_state_rx_km   = sqlc.arg('rx_km')::double precision,
+    last_state_ry_km   = sqlc.arg('ry_km')::double precision,
+    last_state_rz_km   = sqlc.arg('rz_km')::double precision,
+    last_state_vx_km_s = sqlc.arg('vx_km_s')::double precision,
+    last_state_vy_km_s = sqlc.arg('vy_km_s')::double precision,
+    last_state_vz_km_s = sqlc.arg('vz_km_s')::double precision,
+    last_state_epoch   = sqlc.arg('epoch')::timestamptz,
     updated_at         = now(),
-    updated_by         = $9
-WHERE id = $1
+    updated_by         = sqlc.arg('updated_by')::text
+WHERE id = sqlc.arg('id')::uuid
 RETURNING *;
 
 -- name: SetMode :one
 UPDATE satellites
-SET current_mode = $2, updated_at = now(), updated_by = $3
-WHERE id = $1
+SET current_mode = sqlc.arg('mode')::int,
+    updated_at = now(),
+    updated_by = sqlc.arg('updated_by')::text
+WHERE id = sqlc.arg('id')::uuid
 RETURNING *;

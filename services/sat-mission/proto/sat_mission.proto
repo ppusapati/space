@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package p9e.space.satmission.v1;
+
+option go_package = "github.com/ppusapati/space/services/sat-mission/api;satmissionv1";
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// Satellite Mission Registry — the authoritative store of satellites
+// owned by a tenant, their orbital state, mission configuration, and
+// active mode.
+// All identifiers are ULID strings (Crockford Base32, 26 chars).
+// =====================================================================
+
+enum SatelliteMode {
+  SATELLITE_MODE_UNSPECIFIED      = 0;
+  SATELLITE_MODE_NADIR            = 1;
+  SATELLITE_MODE_SUN_POINTING     = 2;
+  SATELLITE_MODE_TARGET_TRACKING  = 3;
+  SATELLITE_MODE_INERTIAL_HOLD    = 4;
+  SATELLITE_MODE_SAFE             = 5;
+}
+
+message OrbitalState {
+  // ECI-frame position (km).
+  double rx_km = 1;
+  double ry_km = 2;
+  double rz_km = 3;
+  // ECI-frame velocity (km/s).
+  double vx_km_s = 4;
+  double vy_km_s = 5;
+  double vz_km_s = 6;
+  // Wall-clock epoch this state is valid at.
+  google.protobuf.Timestamp epoch = 7;
+}
+
+message Satellite {
+  string id = 1;                       // ULID
+  string tenant_id = 2;                // ULID
+  string name = 3;                     // human-readable
+  string norad_id = 4;                 // NORAD catalog ID, optional
+  string international_designator = 5; // e.g. "2024-001A"
+  string tle_line1 = 6;                // most-recent TLE line 1
+  string tle_line2 = 7;
+  SatelliteMode current_mode = 8;
+  OrbitalState last_state = 9;
+  // JSON config blob (subsystem trims, gain sets, etc.).
+  string config_json = 10;
+  bool active = 11;
+  packages.api.v1.fields.Fields fields = 12;
+}
+
+message RegisterSatelliteRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  string norad_id = 3;
+  string international_designator = 4;
+  string config_json = 5;
+}
+message RegisterSatelliteResponse { Satellite satellite = 1; }
+
+message GetSatelliteRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetSatelliteResponse { Satellite satellite = 1; }
+
+message ListSatellitesRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  packages.api.v1.pagination.PaginationRequest page = 2;
+}
+message ListSatellitesResponse {
+  repeated Satellite satellites = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message UpdateTLERequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  string tle_line1 = 2 [(buf.validate.field).string = {len: 69}];
+  string tle_line2 = 3 [(buf.validate.field).string = {len: 69}];
+}
+message UpdateTLEResponse { Satellite satellite = 1; }
+
+message UpdateOrbitalStateRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  OrbitalState state = 2;
+}
+message UpdateOrbitalStateResponse { Satellite satellite = 1; }
+
+message SetModeRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  SatelliteMode mode = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+}
+message SetModeResponse { Satellite satellite = 1; }
+
+service MissionService {
+  rpc RegisterSatellite(RegisterSatelliteRequest) returns (RegisterSatelliteResponse);
+  rpc GetSatellite(GetSatelliteRequest) returns (GetSatelliteResponse);
+  rpc ListSatellites(ListSatellitesRequest) returns (ListSatellitesResponse);
+  rpc UpdateTLE(UpdateTLERequest) returns (UpdateTLEResponse);
+  rpc UpdateOrbitalState(UpdateOrbitalStateRequest) returns (UpdateOrbitalStateResponse);
+  rpc SetMode(SetModeRequest) returns (SetModeResponse);
+}

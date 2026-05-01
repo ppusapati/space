@@ -11,6 +11,18 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countSatellitesForTenant = `-- name: CountSatellitesForTenant :one
+SELECT COUNT(*)::bigint AS total FROM satellites
+WHERE tenant_id = $1::uuid
+`
+
+func (q *Queries) CountSatellitesForTenant(ctx context.Context, tenantID pgtype.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countSatellitesForTenant, tenantID)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
 const getSatellite = `-- name: GetSatellite :one
 SELECT id, tenant_id, name, norad_id, international_designator, tle_line1, tle_line2, current_mode, last_state_rx_km, last_state_ry_km, last_state_rz_km, last_state_vx_km_s, last_state_vy_km_s, last_state_vz_km_s, last_state_epoch, config_json, active, created_at, updated_at, created_by, updated_by FROM satellites WHERE id = $1
 `
@@ -44,32 +56,22 @@ func (q *Queries) GetSatellite(ctx context.Context, id pgtype.UUID) (Satellite, 
 	return i, err
 }
 
-const listSatellites = `-- name: ListSatellites :many
+const listSatellitesForTenant = `-- name: ListSatellitesForTenant :many
 SELECT id, tenant_id, name, norad_id, international_designator, tle_line1, tle_line2, current_mode, last_state_rx_km, last_state_ry_km, last_state_rz_km, last_state_vx_km_s, last_state_vy_km_s, last_state_vz_km_s, last_state_epoch, config_json, active, created_at, updated_at, created_by, updated_by FROM satellites
 WHERE tenant_id = $1::uuid
-  AND (
-        $2::timestamptz IS NULL
-        OR (created_at, id) < ($2::timestamptz,
-                               $3::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT $4::int
+OFFSET $2::int
+LIMIT  $3::int
 `
 
-type ListSatellitesParams struct {
-	TenantID        pgtype.UUID
-	CursorCreatedAt pgtype.Timestamptz
-	CursorID        pgtype.UUID
-	Lim             int32
+type ListSatellitesForTenantParams struct {
+	TenantID   pgtype.UUID
+	PageOffset int32
+	PageSize   int32
 }
 
-func (q *Queries) ListSatellites(ctx context.Context, arg ListSatellitesParams) ([]Satellite, error) {
-	rows, err := q.db.Query(ctx, listSatellites,
-		arg.TenantID,
-		arg.CursorCreatedAt,
-		arg.CursorID,
-		arg.Lim,
-	)
+func (q *Queries) ListSatellitesForTenant(ctx context.Context, arg ListSatellitesForTenantParams) ([]Satellite, error) {
+	rows, err := q.db.Query(ctx, listSatellitesForTenant, arg.TenantID, arg.PageOffset, arg.PageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -166,19 +168,21 @@ func (q *Queries) RegisterSatellite(ctx context.Context, arg RegisterSatellitePa
 
 const setMode = `-- name: SetMode :one
 UPDATE satellites
-SET current_mode = $2, updated_at = now(), updated_by = $3
-WHERE id = $1
+SET current_mode = $1::int,
+    updated_at = now(),
+    updated_by = $2::text
+WHERE id = $3::uuid
 RETURNING id, tenant_id, name, norad_id, international_designator, tle_line1, tle_line2, current_mode, last_state_rx_km, last_state_ry_km, last_state_rz_km, last_state_vx_km_s, last_state_vy_km_s, last_state_vz_km_s, last_state_epoch, config_json, active, created_at, updated_at, created_by, updated_by
 `
 
 type SetModeParams struct {
-	ID          pgtype.UUID
-	CurrentMode int32
-	UpdatedBy   string
+	Mode      int32
+	UpdatedBy string
+	ID        pgtype.UUID
 }
 
 func (q *Queries) SetMode(ctx context.Context, arg SetModeParams) (Satellite, error) {
-	row := q.db.QueryRow(ctx, setMode, arg.ID, arg.CurrentMode, arg.UpdatedBy)
+	row := q.db.QueryRow(ctx, setMode, arg.Mode, arg.UpdatedBy, arg.ID)
 	var i Satellite
 	err := row.Scan(
 		&i.ID,
@@ -209,42 +213,42 @@ func (q *Queries) SetMode(ctx context.Context, arg SetModeParams) (Satellite, er
 const updateOrbitalState = `-- name: UpdateOrbitalState :one
 UPDATE satellites
 SET
-    last_state_rx_km   = $2,
-    last_state_ry_km   = $3,
-    last_state_rz_km   = $4,
-    last_state_vx_km_s = $5,
-    last_state_vy_km_s = $6,
-    last_state_vz_km_s = $7,
-    last_state_epoch   = $8,
+    last_state_rx_km   = $1::double precision,
+    last_state_ry_km   = $2::double precision,
+    last_state_rz_km   = $3::double precision,
+    last_state_vx_km_s = $4::double precision,
+    last_state_vy_km_s = $5::double precision,
+    last_state_vz_km_s = $6::double precision,
+    last_state_epoch   = $7::timestamptz,
     updated_at         = now(),
-    updated_by         = $9
-WHERE id = $1
+    updated_by         = $8::text
+WHERE id = $9::uuid
 RETURNING id, tenant_id, name, norad_id, international_designator, tle_line1, tle_line2, current_mode, last_state_rx_km, last_state_ry_km, last_state_rz_km, last_state_vx_km_s, last_state_vy_km_s, last_state_vz_km_s, last_state_epoch, config_json, active, created_at, updated_at, created_by, updated_by
 `
 
 type UpdateOrbitalStateParams struct {
-	ID             pgtype.UUID
-	LastStateRxKm  *float64
-	LastStateRyKm  *float64
-	LastStateRzKm  *float64
-	LastStateVxKmS *float64
-	LastStateVyKmS *float64
-	LastStateVzKmS *float64
-	LastStateEpoch pgtype.Timestamptz
-	UpdatedBy      string
+	RxKm      float64
+	RyKm      float64
+	RzKm      float64
+	VxKmS     float64
+	VyKmS     float64
+	VzKmS     float64
+	Epoch     pgtype.Timestamptz
+	UpdatedBy string
+	ID        pgtype.UUID
 }
 
 func (q *Queries) UpdateOrbitalState(ctx context.Context, arg UpdateOrbitalStateParams) (Satellite, error) {
 	row := q.db.QueryRow(ctx, updateOrbitalState,
-		arg.ID,
-		arg.LastStateRxKm,
-		arg.LastStateRyKm,
-		arg.LastStateRzKm,
-		arg.LastStateVxKmS,
-		arg.LastStateVyKmS,
-		arg.LastStateVzKmS,
-		arg.LastStateEpoch,
+		arg.RxKm,
+		arg.RyKm,
+		arg.RzKm,
+		arg.VxKmS,
+		arg.VyKmS,
+		arg.VzKmS,
+		arg.Epoch,
 		arg.UpdatedBy,
+		arg.ID,
 	)
 	var i Satellite
 	err := row.Scan(
@@ -275,24 +279,27 @@ func (q *Queries) UpdateOrbitalState(ctx context.Context, arg UpdateOrbitalState
 
 const updateTLE = `-- name: UpdateTLE :one
 UPDATE satellites
-SET tle_line1 = $2, tle_line2 = $3, updated_at = now(), updated_by = $4
-WHERE id = $1
+SET tle_line1 = $1::text,
+    tle_line2 = $2::text,
+    updated_at = now(),
+    updated_by = $3::text
+WHERE id = $4::uuid
 RETURNING id, tenant_id, name, norad_id, international_designator, tle_line1, tle_line2, current_mode, last_state_rx_km, last_state_ry_km, last_state_rz_km, last_state_vx_km_s, last_state_vy_km_s, last_state_vz_km_s, last_state_epoch, config_json, active, created_at, updated_at, created_by, updated_by
 `
 
 type UpdateTLEParams struct {
-	ID        pgtype.UUID
 	TleLine1  string
 	TleLine2  string
 	UpdatedBy string
+	ID        pgtype.UUID
 }
 
 func (q *Queries) UpdateTLE(ctx context.Context, arg UpdateTLEParams) (Satellite, error) {
 	row := q.db.QueryRow(ctx, updateTLE,
-		arg.ID,
 		arg.TleLine1,
 		arg.TleLine2,
 		arg.UpdatedBy,
+		arg.ID,
 	)
 	var i Satellite
 	err := row.Scan(

@@ -11,8 +11,9 @@ import (
 )
 
 type Querier interface {
+	CountSatellitesForTenant(ctx context.Context, tenantID pgtype.UUID) (int64, error)
 	GetSatellite(ctx context.Context, id pgtype.UUID) (Satellite, error)
-	ListSatellites(ctx context.Context, arg ListSatellitesParams) ([]Satellite, error)
+	ListSatellitesForTenant(ctx context.Context, arg ListSatellitesForTenantParams) ([]Satellite, error)
 	RegisterSatellite(ctx context.Context, arg RegisterSatelliteParams) (Satellite, error)
 	SetMode(ctx context.Context, arg SetModeParams) (Satellite, error)
 	UpdateOrbitalState(ctx context.Context, arg UpdateOrbitalStateParams) (Satellite, error)

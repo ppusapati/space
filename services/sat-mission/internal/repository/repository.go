@@ -4,84 +4,98 @@ package repository
 import (
 	"context"
 	"errors"
-	"time"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"p9e.in/samavaya/packages/ulid"
+
 	satmissiondb "github.com/ppusapati/space/services/sat-mission/db/generated"
-	"github.com/ppusapati/space/services/sat-mission/internal/mappers"
+	"github.com/ppusapati/space/services/sat-mission/internal/mapper"
 	"github.com/ppusapati/space/services/sat-mission/internal/models"
 )
 
 // ErrNotFound is returned when no row matches.
 var ErrNotFound = errors.New("repository: not found")
 
-// SatelliteRepository persists Satellites.
-type SatelliteRepository struct {
+// Repo persists Satellites.
+type Repo struct {
 	q    *satmissiondb.Queries
 	pool *pgxpool.Pool
 }
 
-// NewSatelliteRepository constructs a SatelliteRepository.
-func NewSatelliteRepository(pool *pgxpool.Pool) *SatelliteRepository {
-	return &SatelliteRepository{q: satmissiondb.New(pool), pool: pool}
+// New constructs a Repo.
+func New(pool *pgxpool.Pool) *Repo {
+	return &Repo{q: satmissiondb.New(pool), pool: pool}
 }
 
-// Register inserts a new Satellite.
-func (r *SatelliteRepository) Register(ctx context.Context, s *models.Satellite) (*models.Satellite, error) {
+// RegisterSatelliteParams holds the input for [Repo.RegisterSatellite].
+type RegisterSatelliteParams struct {
+	ID                      ulid.ID
+	TenantID                ulid.ID
+	Name                    string
+	NoradID                 string
+	InternationalDesignator string
+	ConfigJSON              string
+	CreatedBy               string
+}
+
+// RegisterSatellite inserts a new satellite row.
+func (r *Repo) RegisterSatellite(ctx context.Context, p RegisterSatelliteParams) (*models.Satellite, error) {
 	row, err := r.q.RegisterSatellite(ctx, satmissiondb.RegisterSatelliteParams{
-		ID:                      mappers.PgUUID(s.ID),
-		TenantID:                mappers.PgUUID(s.TenantID),
-		Name:                    s.Name,
-		NoradID:                 s.NORADID,
-		InternationalDesignator: s.InternationalDesignator,
-		ConfigJson:              []byte(s.ConfigJSON),
-		CreatedBy:               s.CreatedBy,
+		ID:                      mapper.PgUUID(p.ID),
+		TenantID:                mapper.PgUUID(p.TenantID),
+		Name:                    p.Name,
+		NoradID:                 p.NoradID,
+		InternationalDesignator: p.InternationalDesignator,
+		ConfigJson:              []byte(mapper.NormalizeJSON(p.ConfigJSON)),
+		CreatedBy:               p.CreatedBy,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return mappers.SatelliteFromRow(row), nil
+	return mapper.SatelliteFromRow(row), nil
 }
 
-// Get fetches by id.
-func (r *SatelliteRepository) Get(ctx context.Context, id uuid.UUID) (*models.Satellite, error) {
-	row, err := r.q.GetSatellite(ctx, mappers.PgUUID(id))
+// GetSatellite returns a satellite by id.
+func (r *Repo) GetSatellite(ctx context.Context, id ulid.ID) (*models.Satellite, error) {
+	row, err := r.q.GetSatellite(ctx, mapper.PgUUID(id))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrNotFound
 		}
 		return nil, err
 	}
-	return mappers.SatelliteFromRow(row), nil
+	return mapper.SatelliteFromRow(row), nil
 }
 
-// List returns one page of Satellites for a tenant.
-func (r *SatelliteRepository) List(
-	ctx context.Context, tenantID uuid.UUID, cursorTS *time.Time, cursorID uuid.UUID, limit int32,
-) ([]*models.Satellite, error) {
-	rows, err := r.q.ListSatellites(ctx, satmissiondb.ListSatellitesParams{
-		TenantID:        mappers.PgUUID(tenantID),
-		CursorCreatedAt: mappers.PgTimestampPtr(cursorTS),
-		CursorID:        mappers.PgUUID(cursorID),
-		Lim:             limit,
+// ListSatellitesForTenant returns one page of satellites.
+func (r *Repo) ListSatellitesForTenant(
+	ctx context.Context, tenantID ulid.ID, offset, size int32,
+) ([]*models.Satellite, int32, error) {
+	total, err := r.q.CountSatellitesForTenant(ctx, mapper.PgUUID(tenantID))
+	if err != nil {
+		return nil, 0, err
+	}
+	rows, err := r.q.ListSatellitesForTenant(ctx, satmissiondb.ListSatellitesForTenantParams{
+		TenantID:   mapper.PgUUID(tenantID),
+		PageOffset: offset,
+		PageSize:   size,
 	})
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 	out := make([]*models.Satellite, 0, len(rows))
 	for _, row := range rows {
-		out = append(out, mappers.SatelliteFromRow(row))
+		out = append(out, mapper.SatelliteFromRow(row))
 	}
-	return out, nil
+	return out, int32(total), nil
 }
 
-// UpdateTLE writes new TLE lines.
-func (r *SatelliteRepository) UpdateTLE(ctx context.Context, id uuid.UUID, line1, line2, updatedBy string) (*models.Satellite, error) {
+// UpdateTLE updates the TLE lines for a satellite.
+func (r *Repo) UpdateTLE(ctx context.Context, id ulid.ID, line1, line2, updatedBy string) (*models.Satellite, error) {
 	row, err := r.q.UpdateTLE(ctx, satmissiondb.UpdateTLEParams{
-		ID:        mappers.PgUUID(id),
+		ID:        mapper.PgUUID(id),
 		TleLine1:  line1,
 		TleLine2:  line2,
 		UpdatedBy: updatedBy,
@@ -92,27 +106,21 @@ func (r *SatelliteRepository) UpdateTLE(ctx context.Context, id uuid.UUID, line1
 		}
 		return nil, err
 	}
-	return mappers.SatelliteFromRow(row), nil
+	return mapper.SatelliteFromRow(row), nil
 }
 
-// UpdateOrbitalState writes a new orbital state snapshot.
-func (r *SatelliteRepository) UpdateOrbitalState(ctx context.Context, id uuid.UUID, state models.OrbitalState, updatedBy string) (*models.Satellite, error) {
-	rx := state.RxKm
-	ry := state.RyKm
-	rz := state.RzKm
-	vx := state.VxKmS
-	vy := state.VyKmS
-	vz := state.VzKmS
+// UpdateOrbitalState updates the last_state_* columns.
+func (r *Repo) UpdateOrbitalState(ctx context.Context, id ulid.ID, s models.OrbitalState, updatedBy string) (*models.Satellite, error) {
 	row, err := r.q.UpdateOrbitalState(ctx, satmissiondb.UpdateOrbitalStateParams{
-		ID:                mappers.PgUUID(id),
-		LastStateRxKm:     &rx,
-		LastStateRyKm:     &ry,
-		LastStateRzKm:     &rz,
-		LastStateVxKmS:    &vx,
-		LastStateVyKmS:    &vy,
-		LastStateVzKmS:    &vz,
-		LastStateEpoch:    mappers.PgTimestampPtr(&state.Epoch),
-		UpdatedBy:         updatedBy,
+		ID:        mapper.PgUUID(id),
+		RxKm:      s.RxKm,
+		RyKm:      s.RyKm,
+		RzKm:      s.RzKm,
+		VxKmS:     s.VxKmS,
+		VyKmS:     s.VyKmS,
+		VzKmS:     s.VzKmS,
+		Epoch:     mapper.PgTimestamp(s.Epoch),
+		UpdatedBy: updatedBy,
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -120,15 +128,15 @@ func (r *SatelliteRepository) UpdateOrbitalState(ctx context.Context, id uuid.UU
 		}
 		return nil, err
 	}
-	return mappers.SatelliteFromRow(row), nil
+	return mapper.SatelliteFromRow(row), nil
 }
 
-// SetMode updates the current mode.
-func (r *SatelliteRepository) SetMode(ctx context.Context, id uuid.UUID, mode models.SatelliteMode, updatedBy string) (*models.Satellite, error) {
+// SetMode updates the satellite's current mode.
+func (r *Repo) SetMode(ctx context.Context, id ulid.ID, mode models.SatelliteMode, updatedBy string) (*models.Satellite, error) {
 	row, err := r.q.SetMode(ctx, satmissiondb.SetModeParams{
-		ID:          mappers.PgUUID(id),
-		CurrentMode: int32(mode),
-		UpdatedBy:   updatedBy,
+		ID:        mapper.PgUUID(id),
+		Mode:      int32(mode),
+		UpdatedBy: updatedBy,
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -136,5 +144,5 @@ func (r *SatelliteRepository) SetMode(ctx context.Context, id uuid.UUID, mode mo
 		}
 		return nil, err
 	}
-	return mappers.SatelliteFromRow(row), nil
+	return mapper.SatelliteFromRow(row), nil
 }
