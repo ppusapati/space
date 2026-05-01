@@ -1,0 +1,124 @@
+{
+  "select": {
+    "container": {
+      "base": {
+        "value": "relative"
+      },
+      "fullWidth": {
+        "value": "w-full"
+      }
+    },
+    "trigger": {
+      "base": {
+        "value": "flex items-center justify-between w-full border rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+      },
+      "size": {
+        "sm": {
+          "value": "px-3 py-1.5 text-sm min-h-[32px]"
+        },
+        "md": {
+          "value": "px-3 py-2 text-base min-h-[40px]"
+        },
+        "lg": {
+          "value": "px-4 py-3 text-lg min-h-[48px]"
+        }
+      },
+      "state": {
+        "default": {
+          "value": "border-color-neutral-300 bg-color-neutral-white focus:ring-color-brand-primary-500 focus:border-color-brand-primary-500"
+        },
+        "error": {
+          "value": "border-color-semantic-error-500 focus:ring-color-semantic-error-500 focus:border-color-semantic-error-500"
+        },
+        "success": {
+          "value": "border-color-semantic-success-500 focus:ring-color-semantic-success-500 focus:border-color-semantic-success-500"
+        },
+        "open": {
+          "value": "ring-2 ring-color-brand-primary-500 border-color-brand-primary-500"
+        }
+      }
+    },
+    "placeholder": {
+      "value": "text-color-neutral-400"
+    },
+    "dropdown": {
+      "base": {
+        "value": "absolute z-dropdown mt-1 w-full bg-color-neutral-white border border-color-neutral-200 rounded-md shadow-lg max-h-60 overflow-auto"
+      }
+    },
+    "option": {
+      "base": {
+        "value": "px-3 py-2 cursor-pointer transition-colors duration-150"
+      },
+      "state": {
+        "default": {
+          "value": "text-color-neutral-700 hover:bg-color-neutral-100"
+        },
+        "selected": {
+          "value": "bg-color-brand-primary-50 text-color-brand-primary-700"
+        },
+        "highlighted": {
+          "value": "bg-color-neutral-100"
+        },
+        "disabled": {
+          "value": "opacity-50 cursor-not-allowed"
+        }
+      }
+    },
+    "optionGroup": {
+      "label": {
+        "value": "px-3 py-2 text-xs font-semibold text-color-neutral-500 uppercase tracking-wider"
+      }
+    },
+    "search": {
+      "container": {
+        "value": "p-2 border-b border-color-neutral-200"
+      },
+      "input": {
+        "value": "w-full px-3 py-2 text-sm border border-color-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-color-brand-primary-500"
+      }
+    },
+    "chevron": {
+      "base": {
+        "value": "w-4 h-4 text-color-neutral-400 transition-transform duration-200"
+      },
+      "open": {
+        "value": "rotate-180"
+      }
+    },
+    "clear": {
+      "button": {
+        "value": "p-1 text-color-neutral-400 hover:text-color-neutral-600 rounded focus:outline-none"
+      }
+    },
+    "multi": {
+      "tag": {
+        "value": "inline-flex items-center gap-1 px-2 py-0.5 text-sm bg-color-brand-primary-100 text-color-brand-primary-700 rounded"
+      },
+      "tagRemove": {
+        "value": "hover:text-color-brand-primary-900"
+      }
+    },
+    "label": {
+      "base": {
+        "value": "block text-sm font-medium text-color-neutral-700 mb-1"
+      }
+    },
+    "required": {
+      "value": "text-color-semantic-error-500 ml-1"
+    },
+    "helper": {
+      "base": {
+        "value": "mt-1 text-sm"
+      },
+      "state": {
+        "default": {
+          "value": "text-color-neutral-500"
+        },
+        "error": {
+          "value": "text-color-semantic-error-500"
+        }
+      }
+    }
+  }
+}

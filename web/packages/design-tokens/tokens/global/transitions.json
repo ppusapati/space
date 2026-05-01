@@ -1,0 +1,32 @@
+{
+  "transition": {
+    "duration": {
+      "fast": {
+        "value": "150ms",
+        "type": "duration"
+      },
+      "normal": {
+        "value": "300ms",
+        "type": "duration"
+      },
+      "slow": {
+        "value": "500ms",
+        "type": "duration"
+      }
+    },
+    "easing": {
+      "easeOut": {
+        "value": "ease-out",
+        "type": "cubicBezier"
+      },
+      "easeIn": {
+        "value": "ease-in",
+        "type": "cubicBezier"
+      },
+      "easeInOut": {
+        "value": "ease-in-out",
+        "type": "cubicBezier"
+      }
+    }
+  }
+}

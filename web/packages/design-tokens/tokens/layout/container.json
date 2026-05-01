@@ -1,0 +1,42 @@
+{
+  "layout": {
+    "container": {
+      "xs": { "value": "320px", "type": "dimension" },
+      "sm": { "value": "384px", "type": "dimension" },
+      "md": { "value": "448px", "type": "dimension" },
+      "lg": { "value": "512px", "type": "dimension" },
+      "xl": { "value": "576px", "type": "dimension" },
+      "2xl": { "value": "672px", "type": "dimension" },
+      "3xl": { "value": "768px", "type": "dimension" },
+      "4xl": { "value": "896px", "type": "dimension" },
+      "5xl": { "value": "1024px", "type": "dimension" },
+      "6xl": { "value": "1152px", "type": "dimension" },
+      "7xl": { "value": "1280px", "type": "dimension" },
+      "full": { "value": "100%", "type": "dimension" }
+    },
+    "card": {
+      "width": {
+        "xs": { "value": "240px", "type": "dimension" },
+        "sm": { "value": "280px", "type": "dimension" },
+        "md": { "value": "320px", "type": "dimension" },
+        "lg": { "value": "384px", "type": "dimension" },
+        "xl": { "value": "448px", "type": "dimension" },
+        "full": { "value": "100%", "type": "dimension" }
+      },
+      "aspectRatio": {
+        "square": { "value": "1 / 1", "type": "string" },
+        "landscape": { "value": "4 / 3", "type": "string" },
+        "portrait": { "value": "3 / 4", "type": "string" },
+        "wide": { "value": "16 / 9", "type": "string" },
+        "ultraWide": { "value": "21 / 9", "type": "string" }
+      },
+      "padding": {
+        "xs": { "value": "{spacing.3}", "type": "dimension" },
+        "sm": { "value": "{spacing.4}", "type": "dimension" },
+        "md": { "value": "{spacing.6}", "type": "dimension" },
+        "lg": { "value": "{spacing.8}", "type": "dimension" },
+        "xl": { "value": "{spacing.10}", "type": "dimension" }
+      }
+    }
+  }
+}

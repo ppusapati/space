@@ -1,0 +1,27 @@
+{
+  "name": "@samavāya/proto",
+  "version": "0.0.1",
+  "description": "Generated TypeScript protobuf types and ConnectRPC service descriptors",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./gen/*": "./src/gen/*"
+  },
+  "scripts": {
+    "generate": "buf generate",
+    "generate:clean": "rimraf src/gen && buf generate",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.0.0",
+    "@connectrpc/connect": "^2.0.0"
+  },
+  "devDependencies": {
+    "@bufbuild/buf": "latest",
+    "@bufbuild/protoc-gen-es": "^2.0.0",
+    "typescript": "^5.7.0",
+    "rimraf": "^5.0.0"
+  }
+}

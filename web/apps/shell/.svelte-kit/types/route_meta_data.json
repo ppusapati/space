@@ -1,0 +1,39 @@
+{
+	"/(auth)": [
+		"src/routes/+layout.server.ts"
+	],
+	"/(app)": [
+		"src/routes/+layout.server.ts"
+	],
+	"/": [
+		"src/routes/+layout.server.ts",
+		"src/routes/+layout.server.ts"
+	],
+	"/(app)/approvals": [
+		"src/routes/+layout.server.ts"
+	],
+	"/(app)/dashboard": [
+		"src/routes/+layout.server.ts"
+	],
+	"/(app)/forms": [
+		"src/routes/+layout.server.ts"
+	],
+	"/(app)/forms/[module]": [
+		"src/routes/+layout.server.ts"
+	],
+	"/(app)/forms/[module]/[formId]": [
+		"src/routes/+layout.server.ts"
+	],
+	"/(app)/forms/[module]/[formId]/submissions": [
+		"src/routes/+layout.server.ts"
+	],
+	"/(auth)/login": [
+		"src/routes/+layout.server.ts"
+	],
+	"/(app)/[domain]": [
+		"src/routes/+layout.server.ts"
+	],
+	"/(app)/[domain]/[entity]": [
+		"src/routes/+layout.server.ts"
+	]
+}

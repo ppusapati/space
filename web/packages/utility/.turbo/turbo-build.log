@@ -1,0 +1,36 @@
+
+> @p9e.in/utils@1.0.0 build E:\Brahma\accounts\web\packages\utility
+> vite build && tsc --emitDeclarationOnly --outDir dist
+
+[36mvite v7.3.0 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32m✓[39m 7 modules transformed.
+rendering chunks...
+
+[vite:dts] Start generate declaration files...
+computing gzip size...
+[2mdist/[22m[36mnumber/index.js      [39m[1m[2m3.64 kB[22m[1m[22m[2m │ gzip: 1.41 kB[22m[2m │ map: 11.92 kB[22m
+[2mdist/[22m[36mvalidation/index.js  [39m[1m[2m3.65 kB[22m[1m[22m[2m │ gzip: 1.30 kB[22m[2m │ map: 11.36 kB[22m
+[2mdist/[22m[36mstring/index.js      [39m[1m[2m3.93 kB[22m[1m[22m[2m │ gzip: 1.61 kB[22m[2m │ map: 11.09 kB[22m
+[2mdist/[22m[36mformatting/index.js  [39m[1m[2m4.76 kB[22m[1m[22m[2m │ gzip: 1.92 kB[22m[2m │ map: 15.55 kB[22m
+[2mdist/[22m[36mindex.js             [39m[1m[2m4.99 kB[22m[1m[22m[2m │ gzip: 1.79 kB[22m[2m │ map:  0.10 kB[22m
+[2mdist/[22m[36mdate/index.js        [39m[1m[2m5.16 kB[22m[1m[22m[2m │ gzip: 1.58 kB[22m[2m │ map: 16.96 kB[22m
+[2mdist/[22m[36mfile/index.js        [39m[1m[2m5.92 kB[22m[1m[22m[2m │ gzip: 2.06 kB[22m[2m │ map: 15.51 kB[22m
+[vite:dts] Start rollup declaration files...
+Analysis will use the bundled TypeScript version 5.8.2
+*** The target project appears to use TypeScript 5.9.3 which is newer than the bundled compiler engine; consider upgrading API Extractor.
+Analysis will use the bundled TypeScript version 5.8.2
+*** The target project appears to use TypeScript 5.9.3 which is newer than the bundled compiler engine; consider upgrading API Extractor.
+Analysis will use the bundled TypeScript version 5.8.2
+*** The target project appears to use TypeScript 5.9.3 which is newer than the bundled compiler engine; consider upgrading API Extractor.
+Analysis will use the bundled TypeScript version 5.8.2
+*** The target project appears to use TypeScript 5.9.3 which is newer than the bundled compiler engine; consider upgrading API Extractor.
+Analysis will use the bundled TypeScript version 5.8.2
+*** The target project appears to use TypeScript 5.9.3 which is newer than the bundled compiler engine; consider upgrading API Extractor.
+Analysis will use the bundled TypeScript version 5.8.2
+*** The target project appears to use TypeScript 5.9.3 which is newer than the bundled compiler engine; consider upgrading API Extractor.
+Analysis will use the bundled TypeScript version 5.8.2
+*** The target project appears to use TypeScript 5.9.3 which is newer than the bundled compiler engine; consider upgrading API Extractor.
+[vite:dts] Declaration files built in 10433ms.
+
+[32m✓ built in 10.80s[39m

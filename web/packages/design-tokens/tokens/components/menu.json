@@ -1,0 +1,103 @@
+{
+  "menu": {
+    "container": {
+      "base": {
+        "value": "relative inline-block"
+      }
+    },
+    "trigger": {
+      "base": {
+        "value": "cursor-pointer focus:outline-none"
+      }
+    },
+    "dropdown": {
+      "base": {
+        "value": "absolute z-dropdown min-w-[160px] bg-color-neutral-white border border-color-neutral-200 rounded-lg shadow-lg overflow-hidden"
+      },
+      "position": {
+        "bottomStart": {
+          "value": "top-full left-0 mt-1"
+        },
+        "bottomEnd": {
+          "value": "top-full right-0 mt-1"
+        },
+        "topStart": {
+          "value": "bottom-full left-0 mb-1"
+        },
+        "topEnd": {
+          "value": "bottom-full right-0 mb-1"
+        }
+      }
+    },
+    "list": {
+      "base": {
+        "value": "py-1"
+      }
+    },
+    "item": {
+      "base": {
+        "value": "flex items-center gap-2 w-full px-3 py-2 text-left transition-colors duration-150 cursor-pointer focus:outline-none"
+      },
+      "size": {
+        "sm": {
+          "value": "text-sm"
+        },
+        "md": {
+          "value": "text-base"
+        },
+        "lg": {
+          "value": "text-lg px-4 py-3"
+        }
+      },
+      "state": {
+        "default": {
+          "value": "text-color-neutral-700 hover:bg-color-neutral-100"
+        },
+        "active": {
+          "value": "bg-color-brand-primary-50 text-color-brand-primary-700"
+        },
+        "disabled": {
+          "value": "text-color-neutral-400 cursor-not-allowed hover:bg-transparent"
+        },
+        "danger": {
+          "value": "text-color-semantic-error-600 hover:bg-color-semantic-error-50"
+        }
+      }
+    },
+    "icon": {
+      "base": {
+        "value": "flex-shrink-0"
+      },
+      "size": {
+        "sm": {
+          "value": "w-4 h-4"
+        },
+        "md": {
+          "value": "w-5 h-5"
+        },
+        "lg": {
+          "value": "w-6 h-6"
+        }
+      }
+    },
+    "shortcut": {
+      "value": "ml-auto text-xs text-color-neutral-400"
+    },
+    "divider": {
+      "value": "my-1 h-px bg-color-neutral-200"
+    },
+    "group": {
+      "label": {
+        "value": "px-3 py-2 text-xs font-semibold text-color-neutral-500 uppercase"
+      }
+    },
+    "submenu": {
+      "indicator": {
+        "value": "ml-auto w-4 h-4 text-color-neutral-400"
+      },
+      "panel": {
+        "value": "absolute left-full top-0 ml-1"
+      }
+    }
+  }
+}

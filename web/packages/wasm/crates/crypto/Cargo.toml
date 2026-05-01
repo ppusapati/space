@@ -1,0 +1,29 @@
+[package]
+name = "samavaya-crypto"
+version.workspace = true
+edition.workspace = true
+description = "Cryptographic utilities - hashing, encryption, digital signatures"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+log.workspace = true
+console_log.workspace = true
+console_error_panic_hook.workspace = true
+serde-wasm-bindgen.workspace = true
+sha2 = "0.10"
+sha3 = "0.10"
+hmac = "0.12"
+pbkdf2 = { version = "0.12", features = ["simple"] }
+aes-gcm = "0.10"
+base64 = "0.21"
+hex = "0.4"
+rand = { version = "0.8", features = ["getrandom"] }
+getrandom = { version = "0.2", features = ["js"] }

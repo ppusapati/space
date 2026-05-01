@@ -1,0 +1,151 @@
+{
+  "sidebar": {
+    "container": {
+      "base": {
+        "value": "flex flex-col h-full bg-color-neutral-white border-r border-color-neutral-200 transition-all duration-300"
+      },
+      "width": {
+        "expanded": {
+          "value": "w-64"
+        },
+        "collapsed": {
+          "value": "w-16"
+        }
+      },
+      "position": {
+        "left": {
+          "value": "left-0"
+        },
+        "right": {
+          "value": "right-0 border-r-0 border-l"
+        }
+      },
+      "fixed": {
+        "value": "fixed top-0 bottom-0 z-sidebar"
+      }
+    },
+    "header": {
+      "base": {
+        "value": "flex items-center px-4 py-4 border-b border-color-neutral-200"
+      },
+      "collapsed": {
+        "value": "justify-center"
+      }
+    },
+    "logo": {
+      "base": {
+        "value": "flex items-center gap-3"
+      },
+      "image": {
+        "value": "w-8 h-8 object-contain"
+      },
+      "text": {
+        "value": "font-bold text-lg text-color-neutral-900"
+      }
+    },
+    "nav": {
+      "base": {
+        "value": "flex-1 overflow-y-auto py-4"
+      },
+      "list": {
+        "value": "space-y-1 px-3"
+      }
+    },
+    "item": {
+      "base": {
+        "value": "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-inset focus:ring-color-brand-primary-500"
+      },
+      "collapsed": {
+        "value": "justify-center px-0"
+      },
+      "state": {
+        "default": {
+          "value": "text-color-neutral-600 hover:bg-color-neutral-100 hover:text-color-neutral-900"
+        },
+        "active": {
+          "value": "bg-color-brand-primary-50 text-color-brand-primary-700"
+        },
+        "disabled": {
+          "value": "opacity-50 cursor-not-allowed"
+        }
+      }
+    },
+    "icon": {
+      "base": {
+        "value": "flex-shrink-0"
+      },
+      "size": {
+        "value": "w-5 h-5"
+      }
+    },
+    "label": {
+      "base": {
+        "value": "font-medium truncate"
+      },
+      "collapsed": {
+        "value": "hidden"
+      }
+    },
+    "badge": {
+      "base": {
+        "value": "ml-auto px-2 py-0.5 text-xs font-medium rounded-full"
+      },
+      "variant": {
+        "default": {
+          "value": "bg-color-neutral-200 text-color-neutral-600"
+        },
+        "primary": {
+          "value": "bg-color-brand-primary-100 text-color-brand-primary-700"
+        },
+        "error": {
+          "value": "bg-color-semantic-error-100 text-color-semantic-error-700"
+        }
+      }
+    },
+    "group": {
+      "container": {
+        "value": "mt-4"
+      },
+      "label": {
+        "base": {
+          "value": "px-3 py-2 text-xs font-semibold text-color-neutral-500 uppercase tracking-wider"
+        },
+        "collapsed": {
+          "value": "sr-only"
+        }
+      }
+    },
+    "submenu": {
+      "container": {
+        "value": "mt-1 ml-4 pl-4 border-l border-color-neutral-200"
+      },
+      "item": {
+        "value": "py-1.5 text-sm"
+      },
+      "indicator": {
+        "value": "ml-auto w-4 h-4 transition-transform duration-200"
+      },
+      "expanded": {
+        "value": "rotate-90"
+      }
+    },
+    "footer": {
+      "base": {
+        "value": "mt-auto px-4 py-4 border-t border-color-neutral-200"
+      }
+    },
+    "toggle": {
+      "base": {
+        "value": "flex items-center justify-center w-8 h-8 rounded-full bg-color-neutral-100 hover:bg-color-neutral-200 transition-colors cursor-pointer"
+      },
+      "icon": {
+        "value": "w-4 h-4 text-color-neutral-600"
+      }
+    },
+    "overlay": {
+      "base": {
+        "value": "fixed inset-0 bg-color-neutral-black/50 z-sidebar-overlay"
+      }
+    }
+  }
+}

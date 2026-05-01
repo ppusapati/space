@@ -1,0 +1,99 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/core",
+    "crates/tax-engine",
+    "crates/validation",
+    "crates/barcode",
+    "crates/ledger",
+    "crates/pricing",
+    "crates/payroll",
+    "crates/bom",
+    "crates/depreciation",
+    "crates/compliance",
+    "crates/crypto",
+    "crates/i18n",
+    "crates/offline",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+authors = ["Samavaya Team"]
+license = "MIT"
+repository = "https://github.com/samavaya/web"
+
+[workspace.dependencies]
+# WASM bindings
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+web-sys = { version = "0.3", features = ["console"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+serde-wasm-bindgen = "0.6"
+
+# Numbers and precision
+rust_decimal = { version = "1.36", features = ["serde", "serde-with-str"] }
+rust_decimal_macros = "1.36"
+
+# Date/Time
+chrono = { version = "0.4", features = ["wasmbind", "serde"] }
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Crypto
+sha2 = "0.10"
+hmac = "0.12"
+pbkdf2 = { version = "0.12", features = ["simple"] }
+aes-gcm = "0.10"
+base64 = "0.22"
+rand = { version = "0.8", features = ["getrandom"] }
+getrandom = { version = "0.2", features = ["js"] }
+hex = "0.4"
+
+# Barcode/QR
+qrcode = "0.14"
+barcoders = "2.0"
+image = { version = "0.25", default-features = false, features = ["png"] }
+
+# PDF (for future use)
+# printpdf = "0.7"
+
+# Regex and parsing
+regex = "1.10"
+lazy_static = "1.4"
+
+# Logging
+log = "0.4"
+console_log = "1.0"
+console_error_panic_hook = "0.1"
+
+# UUID
+uuid = { version = "1.0", features = ["v4", "js", "serde"] }
+
+# Internal crates
+samavaya-core = { path = "crates/core" }
+samavaya-tax-engine = { path = "crates/tax-engine" }
+samavaya-validation = { path = "crates/validation" }
+samavaya-barcode = { path = "crates/barcode" }
+samavaya-ledger = { path = "crates/ledger" }
+samavaya-pricing = { path = "crates/pricing" }
+samavaya-payroll = { path = "crates/payroll" }
+samavaya-bom = { path = "crates/bom" }
+samavaya-depreciation = { path = "crates/depreciation" }
+samavaya-compliance = { path = "crates/compliance" }
+samavaya-crypto = { path = "crates/crypto" }
+samavaya-i18n = { path = "crates/i18n" }
+samavaya-offline = { path = "crates/offline" }
+
+[profile.release]
+opt-level = "s"         # Optimize for size
+lto = true              # Link-time optimization
+codegen-units = 1       # Better optimization
+panic = "abort"         # Smaller binary size
+strip = true            # Strip symbols

@@ -1,0 +1,114 @@
+{
+  "header": {
+    "container": {
+      "base": {
+        "value": "w-full bg-white transition-all duration-200 z-40"
+      },
+      "sticky": {
+        "value": "sticky top-0"
+      },
+      "shadow": {
+        "value": "shadow-sm"
+      },
+      "bordered": {
+        "value": "border-b border-color-neutral-200"
+      }
+    },
+    "inner": {
+      "base": {
+        "value": "flex items-center justify-between w-full mx-auto max-w-7xl"
+      },
+      "size": {
+        "sm": {
+          "value": "px-4 py-2"
+        },
+        "md": {
+          "value": "px-6 py-3"
+        },
+        "lg": {
+          "value": "px-8 py-4"
+        }
+      }
+    },
+    "logo": {
+      "container": {
+        "value": "flex items-center space-x-3 flex-shrink-0"
+      },
+      "button": {
+        "value": "flex items-center space-x-3 focus:outline-none focus:ring-2 focus:ring-color-brand-primary-500 focus:ring-offset-2 rounded-md transition-all duration-200 hover:opacity-80"
+      },
+      "image": {
+        "value": "w-8 h-8 flex-shrink-0"
+      },
+      "textContainer": {
+        "value": "flex flex-col"
+      }
+    },
+    "title": {
+      "value": "text-lg font-semibold text-color-neutral-900 leading-tight"
+    },
+    "subtitle": {
+      "value": "text-sm text-color-neutral-500 leading-none"
+    },
+    "content": {
+      "value": "flex-1 px-4"
+    },
+    "actions": {
+      "container": {
+        "value": "flex items-center space-x-2"
+      },
+      "button": {
+        "base": {
+          "value": "inline-flex items-center px-3 py-2 text-sm font-medium rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-color-brand-primary-500"
+        },
+        "variants": {
+          "primary": {
+            "value": "text-color-neutral-white bg-color-brand-primary-500 hover:bg-color-brand-primary-600 disabled:bg-color-brand-primary-300"
+          },
+          "secondary": {
+            "value": "text-color-brand-primary-500 bg-color-brand-primary-100 hover:bg-color-brand-primary-200 disabled:bg-color-neutral-100 disabled:text-color-neutral-400"
+          },
+          "ghost": {
+            "value": "text-color-neutral-600 hover:text-color-neutral-900 hover:bg-color-neutral-100 disabled:text-color-neutral-400 disabled:hover:bg-transparent"
+          }
+        },
+        "disabled": {
+          "value": "cursor-not-allowed opacity-50"
+        }
+      },
+      "label": {
+        "value": "hidden sm:inline ml-2"
+      },
+      "icon": {
+        "value": "w-5 h-5"
+      }
+    },
+    "user": {
+      "container": {
+        "value": "flex items-center space-x-3 cursor-pointer hover:bg-color-neutral-100 px-3 py-2 rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-color-brand-primary-500 focus:ring-offset-2"
+      },
+      "avatar": {
+        "container": {
+          "value": "w-8 h-8 bg-color-brand-primary-500 text-color-neutral-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0"
+        },
+        "image": {
+          "value": "w-full h-full rounded-full object-cover"
+        }
+      },
+      "info": {
+        "container": {
+          "value": "flex flex-col min-w-0"
+        },
+        "name": {
+          "value": "text-sm font-medium text-color-neutral-900 truncate"
+        },
+        "email": {
+          "value": "text-xs text-color-neutral-500 truncate"
+        }
+      },
+      "chevron": {
+        "value": "w-4 h-4 text-color-neutral-400"
+      }
+    }
+  }
+}

@@ -1,0 +1,27 @@
+[package]
+name = "samavaya-barcode"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Barcode and QR code generation/parsing for inventory and documents"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde-wasm-bindgen.workspace = true
+thiserror.workspace = true
+log.workspace = true
+base64.workspace = true
+qrcode.workspace = true
+image.workspace = true
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"

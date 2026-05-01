@@ -1,0 +1,16 @@
+{
+  "name": "samavaya-depreciation",
+  "type": "module",
+  "description": "Asset depreciation calculations - SLM, WDV, custom schedules",
+  "version": "0.1.0",
+  "files": [
+    "samavaya_depreciation_bg.wasm",
+    "samavaya_depreciation.js",
+    "samavaya_depreciation.d.ts"
+  ],
+  "main": "samavaya_depreciation.js",
+  "types": "samavaya_depreciation.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "name": "@p9e.in/configs",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/uno/index.js",
+      "types": "./dist/uno/index.d.ts"
+    },
+    "./uno": {
+      "import": "./dist/uno/index.js",
+      "types": "./dist/uno/index.d.ts"
+    },
+    "./eslint": {
+      "import": "./dist/eslint/index.js",
+      "types": "./dist/eslint/index.d.ts"
+    },
+    "./typescript": {
+      "import": "./dist/typescript/index.js",
+      "types": "./dist/typescript/index.d.ts"
+    },
+    "./typescript/base.json": "./dist/typescript/base.json",
+    "./typescript/nextjs.json": "./dist/typescript/nextjs.json",
+    "./qwik": {
+      "import": "./dist/qwik/index.js",
+      "types": "./dist/qwik/index.d.ts"
+    },
+    "./qwik/qwikjs-library.json": "./dist/qwik/qwikjs-library.json",
+    "./uno/preset-p9e": {
+      "import": "./dist/uno/preset-p9e.js",
+      "types": "./dist/uno/preset-p9e.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "xcopy /s /i /y src\\eslint dist\\eslint && xcopy /s /i /y src\\typescript dist\\typescript && xcopy /y src\\uno\\preset-p9e.js dist\\uno\\",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "unocss": "^66.3.3",
+    "@p9e.in/samavaya": "workspace:*"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "@next/eslint-plugin-next": "^15.4.2",
+    "@unocss/core": "^66.3.3",
+    "eslint": "^9.31.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-turbo": "^2.5.0",
+    "globals": "^16.3.0",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.37.0"
+  }
+}

@@ -1,0 +1,28 @@
+[package]
+name = "samavaya-pricing"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+description = "Pricing calculations, discounts, and price list evaluation"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde-wasm-bindgen.workspace = true
+rust_decimal.workspace = true
+rust_decimal_macros.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+log.workspace = true
+samavaya-core.workspace = true
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"

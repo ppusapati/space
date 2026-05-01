@@ -1,0 +1,6 @@
+# Generated proto files — regenerate with `pnpm proto:generate`
+# Uncomment the line below to track generated files in git (recommended for CI)
+# !src/gen/
+
+dist/
+node_modules/

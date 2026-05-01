@@ -1,0 +1,110 @@
+{
+  "color": {
+    "surface": {
+      "primary": {
+        "value": "{color.neutral.900}",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "{color.neutral.800}",
+        "type": "color"
+      },
+      "tertiary": {
+        "value": "{color.neutral.700}",
+        "type": "color"
+      },
+      "inverse": {
+        "value": "{color.neutral.50}",
+        "type": "color"
+      },
+      "overlay": {
+        "value": "rgba(0, 0, 0, 0.7)",
+        "type": "color"
+      }
+    },
+    "text": {
+      "primary": {
+        "value": "{color.neutral.50}",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "{color.neutral.300}",
+        "type": "color"
+      },
+      "tertiary": {
+        "value": "{color.neutral.400}",
+        "type": "color"
+      },
+      "inverse": {
+        "value": "{color.neutral.900}",
+        "type": "color"
+      },
+      "placeholder": {
+        "value": "{color.neutral.500}",
+        "type": "color"
+      },
+      "disabled": {
+        "value": "{color.neutral.600}",
+        "type": "color"
+      }
+    },
+    "border": {
+      "primary": {
+        "value": "{color.neutral.700}",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "{color.neutral.600}",
+        "type": "color"
+      },
+      "focus": {
+        "value": "{color.brand.primary.400}",
+        "type": "color"
+      },
+      "inverse": {
+        "value": "{color.neutral.300}",
+        "type": "color"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "value": "{color.brand.primary.400}",
+        "type": "color"
+      },
+      "primaryHover": {
+        "value": "{color.brand.primary.300}",
+        "type": "color"
+      },
+      "primaryActive": {
+        "value": "{color.brand.primary.200}",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "{color.neutral.700}",
+        "type": "color"
+      },
+      "secondaryHover": {
+        "value": "{color.neutral.600}",
+        "type": "color"
+      },
+      "secondaryActive": {
+        "value": "{color.neutral.500}",
+        "type": "color"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "value": "0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3)",
+      "type": "shadow"
+    },
+    "modal": {
+      "value": "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+      "type": "shadow"
+    },
+    "dropdown": {
+      "value": "0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3)",
+      "type": "shadow"
+    }
+  }
+}

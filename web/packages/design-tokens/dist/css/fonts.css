@@ -1,0 +1,60 @@
+/* Auto-generated font face declarations */
+@import url('./dist/fonts/inter.css');
+@import url('./dist/fonts/inter-display.css');
+@import url('./dist/fonts/roboto-mono.css');
+
+/* Base font styles using design tokens */
+:root {
+  --font-sans: var(--font-family-sans, 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif);
+  --font-mono: var(--font-family-mono, 'Roboto Mono', 'Courier New', Courier, monospace);
+  --font-display: var(--font-family-display, 'Inter Display', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif);
+  
+  /* Set default font family */
+  font-family: var(--font-sans);
+}
+
+/* Font family utility classes */
+.font-sans {
+  font-family: var(--font-sans);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* Font weight utilities */
+.font-regular {
+  font-weight: var(--font-weight-regular, 400);
+}
+
+.font-medium {
+  font-weight: var(--font-weight-medium, 500);
+}
+
+.font-semibold {
+  font-weight: var(--font-weight-semibold, 600);
+}
+
+.font-bold {
+  font-weight: var(--font-weight-bold, 700);
+}
+
+.font-extrabold {
+  font-weight: var(--font-weight-extrabold, 800);
+}
+
+/* Text size utilities */
+.text-xs { font-size: var(--font-size-xs, 0.75rem); }
+.text-sm { font-size: var(--font-size-sm, 0.875rem); }
+.text-base { font-size: var(--font-size-base, 1rem); }
+.text-lg { font-size: var(--font-size-lg, 1.125rem); }
+.text-xl { font-size: var(--font-size-xl, 1.25rem); }
+.text-2xl { font-size: var(--font-size-2xl, 1.5rem); }
+.text-3xl { font-size: var(--font-size-3xl, 1.875rem); }
+.text-4xl { font-size: var(--font-size-4xl, 2.25rem); }
+.text-5xl { font-size: var(--font-size-5xl, 3rem); }
+.text-6xl { font-size: var(--font-size-6xl, 3.75rem); }

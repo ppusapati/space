@@ -1,0 +1,640 @@
+[?9001h[?1004h[?25l[2J[m[2;1H> @p9e.in/design-tokens@1.0.0 dev D:\Maheshwari\UGCL\web\ugcl\packages\design-tokens
+> pnpm build:watch[5;1H]0;C:\WINDOWS\system32\cmd.exe[?25h[?25l
+> @p9e.in/design-tokens@1.0.0 build:watch D:\Maheshwari\UGCL\web\ugcl\packages\design-tokens
+> nodemon --watch tokens --ext json --exec "pnpm.cmd run build"[9;1H[?25h[33m[nodemon] 3.1.10[m
+[33m[nodemon] to restart at any time, enter `rs`[m
+[33m[nodemon] watching path(s): tokens\**\*[m
+[33m[nodemon] watching extensions: json[m
+[32m[nodemon] starting `pnpm.cmd run build`[m
+
+> @p9e.in/design-tokens@1.0.0 prebuild D:\Maheshwari\UGCL\web\ugcl\packages\design-tokens
+> pnpm generate:fonts
+
+
+> @p9e.in/design-tokens@1.0.0 generate:fonts D:\Maheshwari\UGCL\web\ugcl\packages\design-tokens
+> node scripts/generate-fonts.js
+
+🚀 Generating font files...
+
+📝 Processing Inter...
+✅ Generated Inter (5 weights)
+
+📝 Processing Inter Display...
+✅ Generated Inter Display (5 weights)
+
+📝 Processing Roboto Mono...
+✅ Generated Roboto Mono (3 weights)
+
+✨ All fonts generated successfully!
+
+> @p9e.in/design-tokens@1.0.0 build D:\Maheshwari\UGCL\web\ugcl\packages\design-tokens
+> node scripts/build-themes.js
+
+🎨 Building optimized design tokens...
+✅ Copied fonts.css to dist/css/
+☀️  Building light theme...
+
+[38;2;255;140;0m[1mToken collisions detected (116):[m[K
+
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: 1px, New value: 1px[m[K
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: tokens/global/spacing.json, New value: tokens/global/spacing.json[m[K
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: 150ms, New value: 150ms[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: duration, New value: duration[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: 300ms, New value: 300ms[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: duration, New value: duration[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: 500ms, New value: 500ms[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: duration, New value: duration[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: ease-out, New value: ease-out[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: cubicBezier, New value: cubicBezier[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: ease-in, New value: ease-in[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: cubicBezier, New value: cubicBezier[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: ease-in-out, New value: ease-in-out[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: cubicBezier, New value: cubicBezier[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: 1000, New value: 1000[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: 1040, New value: 1050[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: 1060, New value: 1070[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: 1035, New value: 1040[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: 100%, New value: 320px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: 640px, New value: 384px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: 768px, New value: 448px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: 1024px, New value: 512px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xl! Original value: 1280px, New value: 576px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xl! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCol[m[K[38;2;255;140;0m[1mlision detected at: layout.container.xl! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m
+[38;2;255;140;0m[1mCollision detected at: layout.container.xl! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: 1536px, New value: 672px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: repeat(1, minmax(0, 1fr)), New value: repeat(1, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: repeat(2, minmax(0, 1fr)), New value: repeat(2, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: repeat(3, minmax(0, 1fr)), New value: repeat(3, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: repeat(4, minmax(0, 1fr)), New value: repeat(4, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: repeat(5, minmax(0, 1fr)), New value: repeat(5, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: repeat(6, minmax(0, 1fr)), New value: repeat(6, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: repeat(12, minmax(0, 1fr)), New value: repeat(12, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: 4px, New value: {spacing.2}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: 8px, New value: {spacing.4}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: 16px, New value: {spacing.6}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: 24px, New value: {spacing.8}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: 32px, New value: {spacing.12}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: true, New value: true[m[K
+
+
+
+uno
+[32m[1m✔︎ dist/uno/theme.ts[m
+
+css
+[32m[1m✔︎ dist/css/tokens-light.css[m
+
+css-keyframes
+[32m[1m✔︎ dist/css/keyframes.css[m[K
+
+js
+[32m[1m✔︎ dist/js/tokens.js[m
+🌙 Building dark theme...
+
+[38;2;255;140;0m[1mToken collisions detected (116):[m[K
+
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: 1px, New value: 1px[m[K
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: tokens/global/spacing.json, New value: tokens/global/spacing.json[m[K
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: 150ms, New value: 150ms[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: duration, New value: duration[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: 300ms, New value: 300ms[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: duration, New value: duration[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: 500ms, New value: 500ms[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: duration, New value: duration[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: ease-out, New value: ease-out[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: cubicBezier, New value: cubicBezier[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: ease-in, New value: ease-in[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: cubicBezier, New value: cubicBezier[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: ease-in-out, New value: ease-in-out[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: cubicBezier, New value: cubicBezier[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: 1000, New value: 1000[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: 1040, New value: 1050[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: 1060, New value: 1070[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: 1035, New value: 1040[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: 100%, New value: 320px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: 640px, New value: 384px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: 768px, New value: 448px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: 1024px, New value: 512px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xl! Original value: 1280px, New value: 576px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xl! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCol[m[K[38;2;255;140;0m[1mlision detected at: layout.container.xl! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m
+[38;2;255;140;0m[1mCollision detected at: layout.container.xl! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: 1536px, New value: 672px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: repeat(1, minmax(0, 1fr)), New value: repeat(1, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: repeat(2, minmax(0, 1fr)), New value: repeat(2, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: repeat(3, minmax(0, 1fr)), New value: repeat(3, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: repeat(4, minmax(0, 1fr)), New value: repeat(4, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: repeat(5, minmax(0, 1fr)), New value: repeat(5, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: repeat(6, minmax(0, 1fr)), New value: repeat(6, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: repeat(12, minmax(0, 1fr)), New value: repeat(12, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: 4px, New value: {spacing.2}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: 8px, New value: {spacing.4}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: 16px, New value: {spacing.6}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: 24px, New value: {spacing.8}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: 32px, New value: {spacing.12}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: true, New value: true[m[K
+
+
+
+css
+[32m[1m✔︎ dist/css/tokens-dark.css[m
+🔗 Creating optimized combined CSS...
+✅ Created optimized tokens.css
+🛠️ Creating theme utilities...
+✅ Created theme-utils.js
+✅ Created theme-utils.d.ts
+✅ Created dist/uno/index.ts
+🏭 Compiling P9E Enterprise Preset...
+⚠️ P9E preset source not found, skipping compilation
+✅ Created dist/uno/index.js
+📝 Generating TypeScript types...
+✅ Generated TypeScript types
+✅ Design tokens built successfully!
+
+📦 Generated files:
+├── dist/css/
+│   ├── tokens.css (🎯 MAIN FILE - combined themes + animations)
+│   ├── tokens-light.css (light theme only)
+│   ├── tokens-dark.css (dark theme only)
+│   └── keyframes.css (CSS animations)
+├── dist/js/
+│   ├── tokens.js (JavaScript tokens)
+│   └── theme-utils.js (theme switching utilities)
+└── dist/uno/
+    ├── index.ts (🎯 MAIN FILE - UnoCSS config)
+    └── theme.ts (light UnoCSS theme + shortcuts)
+
+🎨 Ready for your MFEs! Use tokens.css and index.ts
+
+[32m[nodemon] clean exit - waiting for changes before restart[m
+[32m[nodemon] restarting child process[m
+[32m[nodemon] starting `pnpm.cmd run build`[m
+
+> @p9e.in/design-tokens@1.0.0 prebuild D:\Maheshwari\UGCL\web\ugcl\packages\design-tokens
+> pnpm generate:fonts
+
+
+> @p9e.in/design-tokens@1.0.0 generate:fonts D:\Maheshwari\UGCL\web\ugcl\packages\design-tokens
+> node scripts/generate-fonts.js
+
+🚀 Generating font files...
+
+📝 Processing Inter...
+✅ Generated Inter (5 weights)
+
+📝 Processing Inter Display...
+✅ Generated Inter Display (5 weights)
+
+📝 Processing Roboto Mono...
+✅ Generated Roboto Mono (3 weights)
+
+✨ All fonts generated successfully!
+
+> @p9e.in/design-tokens@1.0.0 build D:\Maheshwari\UGCL\web\ugcl\packages\design-tokens
+> node scripts/build-themes.js
+
+🎨 Building optimized design tokens...
+✅ Copied fonts.css to dist/css/
+☀️  Building light theme...
+
+[38;2;255;140;0m[1mToken collisions detected (116):[m[K
+
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: 1px, New value: 1px[m[K
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: tokens/global/spacing.json, New value: tokens/global/spacing.json[m[K
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: 150ms, New value: 150ms[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: duration, New value: duration[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: 300ms, New value: 300ms[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: duration, New value: duration[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: 500ms, New value: 500ms[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: duration, New value: duration[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: ease-out, New value: ease-out[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: cubicBezier, New value: cubicBezier[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: ease-in, New value: ease-in[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: cubicBezier, New value: cubicBezier[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: ease-in-out, New value: ease-in-out[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: cubicBezier, New value: cubicBezier[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: 1000, New value: 1000[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: 1040, New value: 1050[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: 1060, New value: 1070[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: 1035, New value: 1040[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: 100%, New value: 320px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: 640px, New value: 384px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: 768px, New value: 448px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: 1024px, New value: 512px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xl! Original value: 1280px, New value: 576px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xl! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCol[m[K[38;2;255;140;0m[1mlision detected at: layout.container.xl! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m
+[38;2;255;140;0m[1mCollision detected at: layout.container.xl! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: 1536px, New value: 672px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: repeat(1, minmax(0, 1fr)), New value: repeat(1, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: repeat(2, minmax(0, 1fr)), New value: repeat(2, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: repeat(3, minmax(0, 1fr)), New value: repeat(3, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: repeat(4, minmax(0, 1fr)), New value: repeat(4, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: repeat(5, minmax(0, 1fr)), New value: repeat(5, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: repeat(6, minmax(0, 1fr)), New value: repeat(6, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: repeat(12, minmax(0, 1fr)), New value: repeat(12, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: 4px, New value: {spacing.2}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: 8px, New value: {spacing.4}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: 16px, New value: {spacing.6}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: 24px, New value: {spacing.8}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: 32px, New value: {spacing.12}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: true, New value: true[m[K
+
+
+
+uno
+[32m[1m✔︎ dist/uno/theme.ts[m
+
+css
+[32m[1m✔︎ dist/css/tokens-light.css[m[K
+
+css-keyframes
+[32m[1m✔︎ dist/css/keyframes.css[m[K
+
+js
+[32m[1m✔︎ dist/js/tokens.js[m
+🌙 Building dark theme...
+
+[38;2;255;140;0m[1mToken collisions detected (116):[m[K
+
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: 1px, New value: 1px[m[K
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: tokens/global/spacing.json, New value: tokens/global/spacing.json[m[K
+[38;2;255;140;0m[1mCollision detected at: borderWidth.default! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: 150ms, New value: 150ms[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: duration, New value: duration[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.fast! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: 300ms, New value: 300ms[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: duration, New value: duration[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.normal! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: 500ms, New value: 500ms[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: duration, New value: duration[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.duration.slow! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: ease-out, New value: ease-out[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: cubicBezier, New value: cubicBezier[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeOut! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: ease-in, New value: ease-in[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: cubicBezier, New value: cubicBezier[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeIn! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: ease-in-out, New value: ease-in-out[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: cubicBezier, New value: cubicBezier[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: tokens/global/transitions.json, New value: tokens/global/transitions.json[m[K
+[38;2;255;140;0m[1mCollision detected at: transition.easing.easeInOut! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: 1000, New value: 1000[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.dropdown! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: 1040, New value: 1050[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.modal! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: 1060, New value: 1070[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.tooltip! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: 1035, New value: 1040[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: number, New value: number[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: tokens/global/z-index.json, New value: tokens/global/z-index.json[m[K
+[38;2;255;140;0m[1mCollision detected at: zIndex.overlay! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: 100%, New value: 320px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xs! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: 640px, New value: 384px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.sm! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: 768px, New value: 448px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.md! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: 1024px, New value: 512px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.lg! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xl! Original value: 1280px, New value: 576px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.xl! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCol[m[K[38;2;255;140;0m[1mlision detected at: layout.container.xl! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m
+[38;2;255;140;0m[1mCollision detected at: layout.container.xl! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: 1536px, New value: 672px[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: tokens/layout/container.json, New value: tokens/layout/container.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.container.2xl! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: repeat(1, minmax(0, 1fr)), New value: repeat(1, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.1! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: repeat(2, minmax(0, 1fr)), New value: repeat(2, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.2! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: repeat(3, minmax(0, 1fr)), New value: repeat(3, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.3! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: repeat(4, minmax(0, 1fr)), New value: repeat(4, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.4! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: repeat(5, minmax(0, 1fr)), New value: repeat(5, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.5! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: repeat(6, minmax(0, 1fr)), New value: repeat(6, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.6! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: repeat(12, minmax(0, 1fr)), New value: repeat(12, minmax(0, 1fr))[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: string, New value: string[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.columns.12! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: 4px, New value: {spacing.2}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xs! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: 8px, New value: {spacing.4}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.sm! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: 16px, New value: {spacing.6}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.md! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: 24px, New value: {spacing.8}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.lg! Original value: true, New value: true[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: 32px, New value: {spacing.12}[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: dimension, New value: dimension[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: tokens/layout/grid.json, New value: tokens/layout/grid.json[m[K
+[38;2;255;140;0m[1mCollision detected at: layout.grid.gap.xl! Original value: true, New value: true[m[K
+
+
+
+css
+[32m[1m✔︎ dist/css/tokens-dark.css[m
+🔗 Creating optimized combined CSS...
+✅ Created optimized tokens.css
+🛠️ Creating theme utilities...
+✅ Created theme-utils.js
+✅ Created theme-utils.d.ts
+✅ Created dist/uno/index.ts
+🏭 Compiling P9E Enterprise Preset...
+⚠️ P9E preset source not found, skipping compilation
+✅ Created dist/uno/index.js
+📝 Generating TypeScript types...
+✅ Generated TypeScript types
+✅ Design tokens built successfully!
+
+📦 Generated files:
+├── dist/css/
+│   ├── tokens.css (🎯 MAIN FILE - combined themes + animations)
+│   ├── tokens-light.css (light theme only)
+│   ├── tokens-dark.css (dark theme only)
+│   └── keyframes.css (CSS animations)
+├── dist/js/
+│   ├── tokens.js (JavaScript tokens)
+│   └── theme-utils.js (theme switching utilities)
+└── dist/uno/
+    ├── index.ts (🎯 MAIN FILE - UnoCSS config)
+    └── theme.ts (light UnoCSS theme + shortcuts)
+
+🎨 Ready for your MFEs! Use tokens.css and index.ts
+
+[32m[nodemon] clean exit - waiting for changes before restart[m
+^C[30m[41m ELIFECYCLE [m [31mCommand failed with exit code 3221225786.[m
+[30m[41m ELIFECYCLE [m [31mCommand failed with exit code 3221225786.[?9001l[?1004l[m

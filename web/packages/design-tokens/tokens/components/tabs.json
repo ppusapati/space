@@ -1,0 +1,123 @@
+{
+  "tabs": {
+    "container": {
+      "base": {
+        "value": "w-full"
+      }
+    },
+    "list": {
+      "base": {
+        "value": "flex"
+      },
+      "variant": {
+        "line": {
+          "value": "border-b border-color-neutral-200"
+        },
+        "enclosed": {
+          "value": "bg-color-neutral-100 p-1 rounded-lg"
+        },
+        "pills": {
+          "value": "gap-2"
+        }
+      },
+      "orientation": {
+        "horizontal": {
+          "value": "flex-row"
+        },
+        "vertical": {
+          "value": "flex-col border-b-0 border-r border-color-neutral-200"
+        }
+      }
+    },
+    "tab": {
+      "base": {
+        "value": "relative flex items-center justify-center gap-2 font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-color-brand-primary-500 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+      },
+      "size": {
+        "sm": {
+          "value": "px-3 py-1.5 text-sm"
+        },
+        "md": {
+          "value": "px-4 py-2 text-base"
+        },
+        "lg": {
+          "value": "px-6 py-3 text-lg"
+        }
+      },
+      "variant": {
+        "line": {
+          "base": {
+            "value": "-mb-px"
+          },
+          "inactive": {
+            "value": "text-color-neutral-600 hover:text-color-neutral-900 border-b-2 border-transparent"
+          },
+          "active": {
+            "value": "text-color-brand-primary-600 border-b-2 border-color-brand-primary-500"
+          }
+        },
+        "enclosed": {
+          "inactive": {
+            "value": "text-color-neutral-600 hover:text-color-neutral-900 rounded-md"
+          },
+          "active": {
+            "value": "text-color-neutral-900 bg-color-neutral-white rounded-md shadow-sm"
+          }
+        },
+        "pills": {
+          "inactive": {
+            "value": "text-color-neutral-600 hover:text-color-neutral-900 hover:bg-color-neutral-100 rounded-full"
+          },
+          "active": {
+            "value": "text-color-neutral-white bg-color-brand-primary-500 rounded-full"
+          }
+        }
+      }
+    },
+    "indicator": {
+      "line": {
+        "value": "absolute bottom-0 left-0 h-0.5 bg-color-brand-primary-500 transition-all duration-300"
+      }
+    },
+    "icon": {
+      "size": {
+        "sm": {
+          "value": "w-4 h-4"
+        },
+        "md": {
+          "value": "w-5 h-5"
+        },
+        "lg": {
+          "value": "w-6 h-6"
+        }
+      }
+    },
+    "badge": {
+      "base": {
+        "value": "ml-2 px-2 py-0.5 text-xs font-medium rounded-full"
+      },
+      "inactive": {
+        "value": "bg-color-neutral-200 text-color-neutral-600"
+      },
+      "active": {
+        "value": "bg-color-brand-primary-100 text-color-brand-primary-700"
+      }
+    },
+    "panel": {
+      "base": {
+        "value": "focus:outline-none"
+      },
+      "padding": {
+        "sm": {
+          "value": "p-3"
+        },
+        "md": {
+          "value": "p-4"
+        },
+        "lg": {
+          "value": "p-6"
+        }
+      }
+    }
+  }
+}

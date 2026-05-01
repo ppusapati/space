@@ -1,0 +1,76 @@
+{
+  "tree": {
+    "container": {
+      "base": {
+        "value": "w-full"
+      }
+    },
+    "node": {
+      "base": {
+        "value": "select-none"
+      },
+      "content": {
+        "base": {
+          "value": "flex items-center gap-1 py-1 px-2 rounded hover:bg-color-neutral-100 transition-colors"
+        },
+        "selected": {
+          "value": "bg-color-brand-primary-50 text-color-brand-primary-700 hover:bg-color-brand-primary-100"
+        },
+        "disabled": {
+          "value": "opacity-50 cursor-not-allowed hover:bg-transparent"
+        }
+      }
+    },
+    "expandIcon": {
+      "base": {
+        "value": "w-4 h-4 transition-transform shrink-0"
+      },
+      "expanded": {
+        "value": "rotate-90"
+      }
+    },
+    "checkbox": {
+      "value": "mr-1"
+    },
+    "icon": {
+      "value": "w-4 h-4 shrink-0"
+    },
+    "label": {
+      "value": "truncate"
+    },
+    "children": {
+      "base": {
+        "value": "ml-4"
+      },
+      "lines": {
+        "value": "border-l border-color-neutral-200 ml-2"
+      }
+    },
+    "size": {
+      "sm": {
+        "nodeContent": {
+          "value": "py-0.5 px-1.5 text-sm"
+        },
+        "icon": {
+          "value": "w-3 h-3"
+        }
+      },
+      "md": {
+        "nodeContent": {
+          "value": "py-1 px-2 text-base"
+        },
+        "icon": {
+          "value": "w-4 h-4"
+        }
+      },
+      "lg": {
+        "nodeContent": {
+          "value": "py-1.5 px-2.5 text-lg"
+        },
+        "icon": {
+          "value": "w-5 h-5"
+        }
+      }
+    }
+  }
+}

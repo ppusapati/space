@@ -1,0 +1,64 @@
+/**
+ * Insights Service Factories
+ * Typed ConnectRPC clients for BI analytics, dashboards, reports, search
+ */
+import type { Client } from '@connectrpc/connect';
+import { BIAnalyticsService } from '@samavāya/proto/gen/business/insights/bianalytics/proto/bianalytics_pb.js';
+import { DashboardService } from '@samavāya/proto/gen/business/insights/dashboard/proto/dashboard_pb.js';
+import { ReportService } from '@samavāya/proto/gen/business/insights/insighthub/proto/insighthub_pb.js';
+import { ReportExecutionService, ReportSchedulingService, ReportSubscriptionService, ReportAlertsService, CacheService } from '@samavāya/proto/gen/business/insights/insightviewer/proto/insightviewer_pb.js';
+import { SearchService } from '@samavāya/proto/gen/business/insights/metasearch/proto/metasearch_pb.js';
+import { SavedSearchService } from '@samavāya/proto/gen/business/insights/savedsearch/proto/savedsearch_pb.js';
+import { AgricultureBIAnalyticsService } from '@samavāya/proto/gen/business/insights/bianalytics/proto/agriculture/bianalytics_agriculture_pb.js';
+import { AgricultureDashboardService } from '@samavāya/proto/gen/business/insights/dashboard/proto/agriculture/dashboard_agriculture_pb.js';
+import { AgricultureReportService } from '@samavāya/proto/gen/business/insights/insighthub/proto/agriculture/insighthub_agriculture_pb.js';
+import { AgricultureReportViewerService } from '@samavāya/proto/gen/business/insights/insightviewer/proto/agriculture/insightviewer_agriculture_pb.js';
+import { AgricultureSearchService } from '@samavāya/proto/gen/business/insights/metasearch/proto/agriculture/metasearch_agriculture_pb.js';
+import { AgricultureSavedSearchService } from '@samavāya/proto/gen/business/insights/savedsearch/proto/agriculture/savedsearch_agriculture_pb.js';
+import { ConstructionDashboardService } from '@samavāya/proto/gen/business/insights/dashboard/proto/construction/dashboard_construction_pb.js';
+import { MfgVerticalBIAnalyticsService } from '@samavāya/proto/gen/business/insights/bianalytics/proto/mfgvertical/bianalytics_mfgvertical_pb.js';
+import { MfgVerticalDashboardService } from '@samavāya/proto/gen/business/insights/dashboard/proto/mfgvertical/dashboard_mfgvertical_pb.js';
+import { MfgVerticalReportService } from '@samavāya/proto/gen/business/insights/insighthub/proto/mfgvertical/insighthub_mfgvertical_pb.js';
+import { MfgVerticalReportViewerService } from '@samavāya/proto/gen/business/insights/insightviewer/proto/mfgvertical/insightviewer_mfgvertical_pb.js';
+import { MfgVerticalSearchService } from '@samavāya/proto/gen/business/insights/metasearch/proto/mfgvertical/metasearch_mfgvertical_pb.js';
+import { MfgVerticalSavedSearchService } from '@samavāya/proto/gen/business/insights/savedsearch/proto/mfgvertical/savedsearch_mfgvertical_pb.js';
+import { solarBIAnalyticsService } from '@samavāya/proto/gen/business/insights/bianalytics/proto/solar/bianalytics_solar_pb.js';
+import { solarDashboardService } from '@samavāya/proto/gen/business/insights/dashboard/proto/solar/dashboard_solar_pb.js';
+import { solarReportService } from '@samavāya/proto/gen/business/insights/insighthub/proto/solar/insighthub_solar_pb.js';
+import { solarReportViewerService } from '@samavāya/proto/gen/business/insights/insightviewer/proto/solar/insightviewer_solar_pb.js';
+import { solarSearchService } from '@samavāya/proto/gen/business/insights/metasearch/proto/solar/metasearch_solar_pb.js';
+import { solarSavedSearchService } from '@samavāya/proto/gen/business/insights/savedsearch/proto/solar/savedsearch_solar_pb.js';
+import { WaterDashboardService } from '@samavāya/proto/gen/business/insights/dashboard/proto/water/dashboard_water_pb.js';
+export { BIAnalyticsService, DashboardService, ReportService, ReportExecutionService, ReportSchedulingService, ReportSubscriptionService, ReportAlertsService, CacheService, SearchService, SavedSearchService, };
+export declare function getBIAnalyticsService(): Client<typeof BIAnalyticsService>;
+export declare function getDashboardService(): Client<typeof DashboardService>;
+export declare function getReportService(): Client<typeof ReportService>;
+export declare function getReportExecutionService(): Client<typeof ReportExecutionService>;
+export declare function getReportSchedulingService(): Client<typeof ReportSchedulingService>;
+export declare function getReportSubscriptionService(): Client<typeof ReportSubscriptionService>;
+export declare function getReportAlertsService(): Client<typeof ReportAlertsService>;
+export declare function getCacheService(): Client<typeof CacheService>;
+export declare function getSearchService(): Client<typeof SearchService>;
+export declare function getSavedSearchService(): Client<typeof SavedSearchService>;
+export { AgricultureBIAnalyticsService, MfgVerticalBIAnalyticsService, solarBIAnalyticsService, AgricultureDashboardService, ConstructionDashboardService, MfgVerticalDashboardService, solarDashboardService, WaterDashboardService, AgricultureReportService, MfgVerticalReportService, solarReportService, AgricultureReportViewerService, MfgVerticalReportViewerService, solarReportViewerService, AgricultureSearchService, MfgVerticalSearchService, solarSearchService, AgricultureSavedSearchService, MfgVerticalSavedSearchService, solarSavedSearchService, };
+export declare function getAgricultureBIAnalyticsService(): Client<typeof AgricultureBIAnalyticsService>;
+export declare function getAgricultureDashboardService(): Client<typeof AgricultureDashboardService>;
+export declare function getAgricultureReportService(): Client<typeof AgricultureReportService>;
+export declare function getAgricultureReportViewerService(): Client<typeof AgricultureReportViewerService>;
+export declare function getAgricultureSearchService(): Client<typeof AgricultureSearchService>;
+export declare function getAgricultureSavedSearchService(): Client<typeof AgricultureSavedSearchService>;
+export declare function getConstructionDashboardService(): Client<typeof ConstructionDashboardService>;
+export declare function getMfgVerticalBIAnalyticsService(): Client<typeof MfgVerticalBIAnalyticsService>;
+export declare function getMfgVerticalDashboardService(): Client<typeof MfgVerticalDashboardService>;
+export declare function getMfgVerticalReportService(): Client<typeof MfgVerticalReportService>;
+export declare function getMfgVerticalReportViewerService(): Client<typeof MfgVerticalReportViewerService>;
+export declare function getMfgVerticalSearchService(): Client<typeof MfgVerticalSearchService>;
+export declare function getMfgVerticalSavedSearchService(): Client<typeof MfgVerticalSavedSearchService>;
+export declare function getSolarBIAnalyticsService(): Client<typeof solarBIAnalyticsService>;
+export declare function getSolarDashboardService(): Client<typeof solarDashboardService>;
+export declare function getSolarReportService(): Client<typeof solarReportService>;
+export declare function getSolarReportViewerService(): Client<typeof solarReportViewerService>;
+export declare function getSolarSearchService(): Client<typeof solarSearchService>;
+export declare function getSolarSavedSearchService(): Client<typeof solarSavedSearchService>;
+export declare function getWaterDashboardService(): Client<typeof WaterDashboardService>;
+//# sourceMappingURL=insights.d.ts.map

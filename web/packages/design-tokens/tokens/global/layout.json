@@ -1,0 +1,94 @@
+{
+  "layout": {
+    "breakpoint": {
+      "xs": { "value": "320px", "type": "dimension" },
+      "sm": { "value": "640px", "type": "dimension" },
+      "md": { "value": "768px", "type": "dimension" },
+      "lg": { "value": "1024px", "type": "dimension" },
+      "xl": { "value": "1280px", "type": "dimension" },
+      "2xl": { "value": "1536px", "type": "dimension" },
+      "3xl": { "value": "1920px", "type": "dimension" }
+    },
+    "container": {
+      "xs": { "value": "100%", "type": "sizing" },
+      "sm": { "value": "640px", "type": "sizing" },
+      "md": { "value": "768px", "type": "sizing" },
+      "lg": { "value": "1024px", "type": "sizing" },
+      "xl": { "value": "1280px", "type": "sizing" },
+      "2xl": { "value": "1536px", "type": "sizing" }
+    },
+    "aspect": {
+      "square": { "value": "1 / 1", "type": "other" },
+      "video": { "value": "16 / 9", "type": "other" },
+      "cinema": { "value": "21 / 9", "type": "other" },
+      "photo": { "value": "4 / 3", "type": "other" },
+      "portrait": { "value": "3 / 4", "type": "other" },
+      "landscape": { "value": "3 / 2", "type": "other" },
+      "golden": { "value": "1.618 / 1", "type": "other" },
+      "wide": { "value": "2 / 1", "type": "other" },
+      "ultrawide": { "value": "32 / 9", "type": "other" }
+    },
+    "radius": {
+      "none": { "value": "0px", "type": "borderRadius" },
+      "xs": { "value": "2px", "type": "borderRadius" },
+      "sm": { "value": "4px", "type": "borderRadius" },
+      "md": { "value": "6px", "type": "borderRadius" },
+      "lg": { "value": "8px", "type": "borderRadius" },
+      "xl": { "value": "12px", "type": "borderRadius" },
+      "2xl": { "value": "16px", "type": "borderRadius" },
+      "3xl": { "value": "24px", "type": "borderRadius" },
+      "4xl": { "value": "32px", "type": "borderRadius" },
+      "full": { "value": "9999px", "type": "borderRadius" }
+    },
+    "grid": {
+      "columns": {
+        "1": { "value": "repeat(1, minmax(0, 1fr))", "type": "other" },
+        "2": { "value": "repeat(2, minmax(0, 1fr))", "type": "other" },
+        "3": { "value": "repeat(3, minmax(0, 1fr))", "type": "other" },
+        "4": { "value": "repeat(4, minmax(0, 1fr))", "type": "other" },
+        "5": { "value": "repeat(5, minmax(0, 1fr))", "type": "other" },
+        "6": { "value": "repeat(6, minmax(0, 1fr))", "type": "other" },
+        "12": { "value": "repeat(12, minmax(0, 1fr))", "type": "other" }
+      },
+      "gap": {
+        "xs": { "value": "4px", "type": "spacing" },
+        "sm": { "value": "8px", "type": "spacing" },
+        "md": { "value": "16px", "type": "spacing" },
+        "lg": { "value": "24px", "type": "spacing" },
+        "xl": { "value": "32px", "type": "spacing" },
+        "2xl": { "value": "48px", "type": "spacing" }
+      }
+    },
+    "viewport": {
+      "mobile": {
+        "min": { "value": "320px", "type": "dimension" },
+        "max": { "value": "767px", "type": "dimension" }
+      },
+      "tablet": {
+        "min": { "value": "768px", "type": "dimension" },
+        "max": { "value": "1023px", "type": "dimension" }
+      },
+      "desktop": {
+        "min": { "value": "1024px", "type": "dimension" },
+        "max": { "value": "1919px", "type": "dimension" }
+      },
+      "wide": {
+        "min": { "value": "1920px", "type": "dimension" }
+      }
+    },
+    "z-index": {
+      "hide": { "value": "-1", "type": "other" },
+      "base": { "value": "0", "type": "other" },
+      "docked": { "value": "10", "type": "other" },
+      "dropdown": { "value": "1000", "type": "other" },
+      "sticky": { "value": "1100", "type": "other" },
+      "banner": { "value": "1200", "type": "other" },
+      "overlay": { "value": "1300", "type": "other" },
+      "modal": { "value": "1400", "type": "other" },
+      "popover": { "value": "1500", "type": "other" },
+      "skipLink": { "value": "1600", "type": "other" },
+      "toast": { "value": "1700", "type": "other" },
+      "tooltip": { "value": "1800", "type": "other" }
+    }
+  }
+}

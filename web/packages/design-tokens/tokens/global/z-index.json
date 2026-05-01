@@ -1,0 +1,24 @@
+{
+  "zIndex": {
+    "base": {
+      "value": "1",
+      "type": "number"
+    },
+    "dropdown": {
+      "value": "1000",
+      "type": "number"
+    },
+    "modal": {
+      "value": "1050",
+      "type": "number"
+    },
+    "tooltip": {
+      "value": "1070",
+      "type": "number"
+    },
+    "overlay": {
+      "value": "1040",
+      "type": "number"
+    }
+  }
+}

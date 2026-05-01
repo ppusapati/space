@@ -1,0 +1,120 @@
+{
+  "switch": {
+    "container": {
+      "base": {
+        "value": "inline-flex items-center"
+      }
+    },
+    "track": {
+      "base": {
+        "value": "relative inline-flex flex-shrink-0 border-2 border-transparent rounded-full cursor-pointer transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+      },
+      "size": {
+        "sm": {
+          "value": "w-8 h-4"
+        },
+        "md": {
+          "value": "w-11 h-6"
+        },
+        "lg": {
+          "value": "w-14 h-7"
+        }
+      },
+      "state": {
+        "off": {
+          "value": "bg-color-neutral-300"
+        },
+        "on": {
+          "value": "bg-color-brand-primary-500"
+        },
+        "error": {
+          "value": "bg-color-semantic-error-500"
+        },
+        "success": {
+          "value": "bg-color-semantic-success-500"
+        }
+      },
+      "focus": {
+        "value": "focus:ring-color-brand-primary-500"
+      }
+    },
+    "thumb": {
+      "base": {
+        "value": "pointer-events-none inline-block rounded-full bg-color-neutral-white shadow transform ring-0 transition-transform duration-200"
+      },
+      "size": {
+        "sm": {
+          "value": "w-3 h-3"
+        },
+        "md": {
+          "value": "w-5 h-5"
+        },
+        "lg": {
+          "value": "w-6 h-6"
+        }
+      },
+      "position": {
+        "off": {
+          "sm": {
+            "value": "translate-x-0"
+          },
+          "md": {
+            "value": "translate-x-0"
+          },
+          "lg": {
+            "value": "translate-x-0"
+          }
+        },
+        "on": {
+          "sm": {
+            "value": "translate-x-4"
+          },
+          "md": {
+            "value": "translate-x-5"
+          },
+          "lg": {
+            "value": "translate-x-7"
+          }
+        }
+      }
+    },
+    "label": {
+      "base": {
+        "value": "ml-3 text-color-neutral-700 cursor-pointer"
+      },
+      "size": {
+        "sm": {
+          "value": "text-sm"
+        },
+        "md": {
+          "value": "text-base"
+        },
+        "lg": {
+          "value": "text-lg"
+        }
+      },
+      "disabled": {
+        "value": "opacity-50 cursor-not-allowed"
+      }
+    },
+    "description": {
+      "value": "text-sm text-color-neutral-500"
+    },
+    "icon": {
+      "base": {
+        "value": "absolute inset-0 flex items-center justify-center transition-opacity duration-200"
+      },
+      "size": {
+        "sm": {
+          "value": "w-2 h-2"
+        },
+        "md": {
+          "value": "w-3 h-3"
+        },
+        "lg": {
+          "value": "w-4 h-4"
+        }
+      }
+    }
+  }
+}

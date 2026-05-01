@@ -1,0 +1,51 @@
+{
+  "picture": {
+    "container": {
+      "base": {
+        "value": ""
+      }
+    },
+    "image": {
+      "base": {
+        "value": ""
+      },
+      "fit": {
+        "contain": {
+          "value": "object-contain"
+        },
+        "cover": {
+          "value": "object-cover"
+        },
+        "fill": {
+          "value": "object-fill"
+        },
+        "none": {
+          "value": "object-none"
+        },
+        "scale-down": {
+          "value": "object-scale-down"
+        }
+      },
+      "rounded": {
+        "none": {
+          "value": ""
+        },
+        "sm": {
+          "value": "rounded-sm"
+        },
+        "md": {
+          "value": "rounded-md"
+        },
+        "lg": {
+          "value": "rounded-lg"
+        },
+        "xl": {
+          "value": "rounded-xl"
+        },
+        "full": {
+          "value": "rounded-full"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "samavaya-payroll",
+  "type": "module",
+  "description": "Payroll calculations - Income tax, PF, ESI, CTC breakdown",
+  "version": "0.1.0",
+  "files": [
+    "samavaya_payroll_bg.wasm",
+    "samavaya_payroll.js",
+    "samavaya_payroll.d.ts"
+  ],
+  "main": "samavaya_payroll.js",
+  "types": "samavaya_payroll.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

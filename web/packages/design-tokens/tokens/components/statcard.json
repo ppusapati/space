@@ -1,0 +1,69 @@
+{
+  "statcard": {
+    "container": {
+      "base": {
+        "value": "block p-5 rounded-xl bg-color-neutral-white border border-color-neutral-200"
+      },
+      "clickable": {
+        "value": "hover:border-color-brand-primary-500 hover:shadow-md transition-all"
+      }
+    },
+    "header": {
+      "base": {
+        "value": "flex items-start justify-between"
+      }
+    },
+    "content": {
+      "base": {
+        "value": "flex-1"
+      }
+    },
+    "title": {
+      "base": {
+        "value": "text-sm font-medium text-color-neutral-600"
+      }
+    },
+    "value": {
+      "base": {
+        "value": "mt-2 text-2xl font-bold text-color-neutral-900 tabular-nums"
+      }
+    },
+    "loading": {
+      "skeleton": {
+        "value": "mt-2 h-8 w-24 bg-color-neutral-200 rounded animate-pulse"
+      }
+    },
+    "trend": {
+      "container": {
+        "value": "flex items-center gap-2 mt-2"
+      },
+      "badge": {
+        "base": {
+          "value": "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
+        },
+        "up": {
+          "value": "bg-color-semantic-success-100 text-color-semantic-success-700"
+        },
+        "down": {
+          "value": "bg-color-semantic-error-100 text-color-semantic-error-700"
+        },
+        "neutral": {
+          "value": "bg-color-neutral-200 text-color-neutral-600"
+        }
+      },
+      "label": {
+        "value": "text-xs text-color-neutral-500"
+      },
+      "icon": {
+        "size": {
+          "value": "w-4 h-4"
+        }
+      }
+    },
+    "icon": {
+      "container": {
+        "value": "p-3 rounded-lg"
+      }
+    }
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "colorpicker": {
+    "container": {
+      "base": {
+        "value": "relative"
+      }
+    },
+    "trigger": {
+      "base": {
+        "value": "flex items-center gap-2 border rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+      },
+      "size": {
+        "sm": {
+          "value": "px-2 py-1.5 text-sm"
+        },
+        "md": {
+          "value": "px-3 py-2 text-base"
+        },
+        "lg": {
+          "value": "px-4 py-3 text-lg"
+        }
+      },
+      "state": {
+        "default": {
+          "value": "border-color-neutral-300 bg-color-neutral-white focus:ring-color-brand-primary-500"
+        },
+        "error": {
+          "value": "border-color-semantic-error-500 focus:ring-color-semantic-error-500"
+        }
+      }
+    },
+    "swatch": {
+      "trigger": {
+        "value": "w-6 h-6 rounded border border-color-neutral-300 shadow-inner"
+      },
+      "preset": {
+        "value": "w-6 h-6 rounded cursor-pointer border-2 border-transparent hover:border-color-neutral-400 transition-all duration-150"
+      },
+      "selected": {
+        "value": "ring-2 ring-color-brand-primary-500 ring-offset-2"
+      }
+    },
+    "panel": {
+      "base": {
+        "value": "absolute z-dropdown mt-1 p-4 bg-color-neutral-white border border-color-neutral-200 rounded-lg shadow-lg"
+      },
+      "width": {
+        "value": "w-64"
+      }
+    },
+    "gradient": {
+      "base": {
+        "value": "relative w-full h-40 rounded cursor-crosshair"
+      },
+      "pointer": {
+        "value": "absolute w-4 h-4 -translate-x-1/2 -translate-y-1/2 border-2 border-color-neutral-white rounded-full shadow-md"
+      }
+    },
+    "hue": {
+      "track": {
+        "value": "relative w-full h-3 rounded cursor-pointer mt-3"
+      },
+      "thumb": {
+        "value": "absolute top-1/2 w-4 h-4 -translate-x-1/2 -translate-y-1/2 bg-color-neutral-white border-2 border-color-neutral-400 rounded-full shadow cursor-grab"
+      }
+    },
+    "alpha": {
+      "track": {
+        "value": "relative w-full h-3 rounded cursor-pointer mt-2"
+      },
+      "thumb": {
+        "value": "absolute top-1/2 w-4 h-4 -translate-x-1/2 -translate-y-1/2 bg-color-neutral-white border-2 border-color-neutral-400 rounded-full shadow cursor-grab"
+      }
+    },
+    "input": {
+      "container": {
+        "value": "flex items-center gap-2 mt-3"
+      },
+      "field": {
+        "value": "flex-1 px-2 py-1 text-sm border border-color-neutral-300 rounded focus:outline-none focus:ring-2 focus:ring-color-brand-primary-500"
+      },
+      "label": {
+        "value": "text-xs text-color-neutral-500 uppercase"
+      }
+    },
+    "presets": {
+      "container": {
+        "value": "mt-3 pt-3 border-t border-color-neutral-200"
+      },
+      "label": {
+        "value": "text-xs font-medium text-color-neutral-500 uppercase mb-2"
+      },
+      "grid": {
+        "value": "flex flex-wrap gap-1"
+      }
+    },
+    "label": {
+      "base": {
+        "value": "block text-sm font-medium text-color-neutral-700 mb-1"
+      }
+    },
+    "helper": {
+      "base": {
+        "value": "mt-1 text-sm text-color-neutral-500"
+      },
+      "error": {
+        "value": "text-color-semantic-error-500"
+      }
+    }
+  }
+}

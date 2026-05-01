@@ -1,0 +1,157 @@
+{
+  "taginput": {
+    "container": {
+      "base": {
+        "value": "relative"
+      }
+    },
+    "field": {
+      "base": {
+        "value": "flex flex-wrap items-center gap-1.5 w-full border rounded-md transition-all duration-200 focus-within:ring-2 focus-within:ring-offset-1"
+      },
+      "size": {
+        "sm": {
+          "value": "px-2 py-1 min-h-[32px]"
+        },
+        "md": {
+          "value": "px-3 py-1.5 min-h-[40px]"
+        },
+        "lg": {
+          "value": "px-4 py-2 min-h-[48px]"
+        }
+      },
+      "state": {
+        "default": {
+          "value": "border-color-neutral-300 bg-color-neutral-white focus-within:ring-color-brand-primary-500 focus-within:border-color-brand-primary-500"
+        },
+        "error": {
+          "value": "border-color-semantic-error-500 focus-within:ring-color-semantic-error-500"
+        },
+        "disabled": {
+          "value": "bg-color-neutral-50 opacity-50 cursor-not-allowed"
+        }
+      }
+    },
+    "input": {
+      "base": {
+        "value": "flex-1 min-w-[60px] border-none outline-none bg-transparent text-color-neutral-900 placeholder-color-neutral-400"
+      },
+      "size": {
+        "sm": {
+          "value": "text-sm"
+        },
+        "md": {
+          "value": "text-base"
+        },
+        "lg": {
+          "value": "text-lg"
+        }
+      }
+    },
+    "tag": {
+      "base": {
+        "value": "inline-flex items-center gap-1 rounded transition-all duration-150"
+      },
+      "size": {
+        "sm": {
+          "value": "px-1.5 py-0.5 text-xs"
+        },
+        "md": {
+          "value": "px-2 py-0.5 text-sm"
+        },
+        "lg": {
+          "value": "px-2.5 py-1 text-base"
+        }
+      },
+      "variant": {
+        "default": {
+          "value": "bg-color-neutral-100 text-color-neutral-700"
+        },
+        "primary": {
+          "value": "bg-color-brand-primary-100 text-color-brand-primary-700"
+        },
+        "success": {
+          "value": "bg-color-semantic-success-100 text-color-semantic-success-700"
+        },
+        "warning": {
+          "value": "bg-color-semantic-warning-100 text-color-semantic-warning-700"
+        },
+        "error": {
+          "value": "bg-color-semantic-error-100 text-color-semantic-error-700"
+        }
+      },
+      "remove": {
+        "base": {
+          "value": "ml-0.5 rounded-full hover:bg-color-neutral-black/10 focus:outline-none focus:ring-1"
+        },
+        "icon": {
+          "sm": {
+            "value": "w-3 h-3"
+          },
+          "md": {
+            "value": "w-3.5 h-3.5"
+          },
+          "lg": {
+            "value": "w-4 h-4"
+          }
+        }
+      }
+    },
+    "suggestions": {
+      "container": {
+        "value": "absolute z-dropdown mt-1 w-full bg-color-neutral-white border border-color-neutral-200 rounded-md shadow-lg max-h-48 overflow-auto"
+      },
+      "item": {
+        "base": {
+          "value": "px-3 py-2 cursor-pointer transition-colors duration-150"
+        },
+        "state": {
+          "default": {
+            "value": "text-color-neutral-700 hover:bg-color-neutral-100"
+          },
+          "highlighted": {
+            "value": "bg-color-neutral-100"
+          },
+          "selected": {
+            "value": "bg-color-brand-primary-50 text-color-brand-primary-700"
+          }
+        }
+      },
+      "empty": {
+        "value": "px-3 py-2 text-sm text-color-neutral-500"
+      }
+    },
+    "label": {
+      "base": {
+        "value": "block text-sm font-medium text-color-neutral-700 mb-1"
+      }
+    },
+    "required": {
+      "value": "text-color-semantic-error-500 ml-1"
+    },
+    "counter": {
+      "base": {
+        "value": "text-xs text-color-neutral-500 mt-1"
+      },
+      "warning": {
+        "value": "text-color-semantic-warning-500"
+      },
+      "error": {
+        "value": "text-color-semantic-error-500"
+      }
+    },
+    "helper": {
+      "base": {
+        "value": "mt-1 text-sm"
+      },
+      "state": {
+        "default": {
+          "value": "text-color-neutral-500"
+        },
+        "error": {
+          "value": "text-color-semantic-error-500"
+        }
+      }
+    }
+  }
+}

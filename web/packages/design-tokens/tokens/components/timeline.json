@@ -1,0 +1,190 @@
+{
+  "timeline": {
+    "container": {
+      "base": {
+        "value": "relative"
+      },
+      "orientation": {
+        "vertical": {
+          "value": "flex flex-col"
+        },
+        "horizontal": {
+          "value": "flex overflow-x-auto"
+        }
+      },
+      "gap": {
+        "sm": {
+          "value": "gap-4"
+        },
+        "md": {
+          "value": "gap-6"
+        },
+        "lg": {
+          "value": "gap-8"
+        }
+      }
+    },
+    "item": {
+      "base": {
+        "value": "relative"
+      },
+      "vertical": {
+        "value": "flex"
+      },
+      "horizontal": {
+        "value": "flex flex-col items-center flex-shrink-0 min-w-[200px]"
+      },
+      "alternating": {
+        "left": {
+          "value": "flex-row-reverse"
+        },
+        "right": {
+          "value": "flex-row"
+        }
+      }
+    },
+    "marker": {
+      "container": {
+        "value": "flex flex-col items-center"
+      },
+      "horizontal": {
+        "value": "flex-row"
+      }
+    },
+    "dot": {
+      "base": {
+        "value": "rounded-full flex items-center justify-center z-10"
+      },
+      "size": {
+        "sm": {
+          "value": "w-3 h-3"
+        },
+        "md": {
+          "value": "w-4 h-4"
+        },
+        "lg": {
+          "value": "w-5 h-5"
+        }
+      },
+      "color": {
+        "primary": {
+          "value": "bg-color-brand-primary-500"
+        },
+        "success": {
+          "value": "bg-color-semantic-success-500"
+        },
+        "warning": {
+          "value": "bg-color-semantic-warning-500"
+        },
+        "error": {
+          "value": "bg-color-semantic-error-500"
+        },
+        "info": {
+          "value": "bg-color-semantic-info-500"
+        },
+        "neutral": {
+          "value": "bg-color-neutral-400"
+        }
+      },
+      "state": {
+        "current": {
+          "value": "ring-4 ring-color-brand-primary-500/30"
+        },
+        "upcoming": {
+          "value": "opacity-50"
+        }
+      }
+    },
+    "connector": {
+      "base": {
+        "value": "bg-color-neutral-200"
+      },
+      "vertical": {
+        "value": "h-full min-h-[40px]"
+      },
+      "horizontal": {
+        "value": "w-full min-w-[40px] h-0.5"
+      },
+      "width": {
+        "sm": {
+          "value": "w-0.5"
+        },
+        "md": {
+          "value": "w-0.5"
+        },
+        "lg": {
+          "value": "w-1"
+        }
+      }
+    },
+    "content": {
+      "base": {
+        "value": "flex-1"
+      },
+      "vertical": {
+        "value": "pl-4 pb-4"
+      },
+      "horizontal": {
+        "value": "pt-4 text-center"
+      },
+      "alternating": {
+        "left": {
+          "value": "text-right pr-6"
+        },
+        "right": {
+          "value": "text-left pl-6"
+        }
+      }
+    },
+    "date": {
+      "base": {
+        "value": "font-medium text-color-neutral-500 text-sm"
+      }
+    },
+    "title": {
+      "base": {
+        "value": "font-semibold text-color-neutral-900"
+      },
+      "size": {
+        "sm": {
+          "value": "text-sm"
+        },
+        "md": {
+          "value": "text-base"
+        },
+        "lg": {
+          "value": "text-lg"
+        }
+      }
+    },
+    "description": {
+      "base": {
+        "value": "text-color-neutral-600 mt-1"
+      },
+      "size": {
+        "sm": {
+          "value": "text-xs"
+        },
+        "md": {
+          "value": "text-sm"
+        },
+        "lg": {
+          "value": "text-base"
+        }
+      }
+    },
+    "metadata": {
+      "container": {
+        "value": "flex flex-wrap gap-2 mt-2"
+      },
+      "item": {
+        "value": "text-xs px-2 py-0.5 rounded bg-color-neutral-100 text-color-neutral-500"
+      }
+    },
+    "icon": {
+      "base": {
+        "value": "text-color-neutral-white text-xs"
+      }
+    }
+  }
+}

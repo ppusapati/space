@@ -1,0 +1,150 @@
+{
+  "kanban": {
+    "board": {
+      "base": {
+        "value": "flex gap-4 overflow-x-auto pb-4"
+      }
+    },
+    "column": {
+      "base": {
+        "value": "flex flex-col rounded-lg bg-color-neutral-100"
+      },
+      "width": {
+        "min": {
+          "value": "min-w-[280px]"
+        },
+        "max": {
+          "value": "max-w-[350px]"
+        }
+      },
+      "state": {
+        "overLimit": {
+          "value": "ring-2 ring-color-semantic-error-500"
+        }
+      }
+    },
+    "columnHeader": {
+      "base": {
+        "value": "flex items-center justify-between p-3 rounded-t-lg"
+      },
+      "hover": {
+        "value": "hover:bg-color-neutral-200 transition-colors"
+      },
+      "focus": {
+        "value": "focus:outline-none focus:ring-2 focus:ring-inset focus:ring-color-brand-primary-500"
+      }
+    },
+    "columnTitle": {
+      "base": {
+        "value": "font-semibold text-color-neutral-900"
+      }
+    },
+    "columnCount": {
+      "base": {
+        "value": "text-xs px-2 py-0.5 rounded-full bg-color-neutral-200 text-color-neutral-600"
+      },
+      "overLimit": {
+        "value": "bg-color-semantic-error-500 text-color-neutral-white"
+      }
+    },
+    "cardsContainer": {
+      "base": {
+        "value": "flex-1 p-2 space-y-2 overflow-y-auto max-h-[calc(100vh-200px)]"
+      }
+    },
+    "card": {
+      "base": {
+        "value": "p-3 rounded-lg cursor-pointer bg-color-neutral-white border border-color-neutral-200"
+      },
+      "hover": {
+        "value": "hover:border-color-brand-primary-500 hover:shadow-md transition-all"
+      },
+      "dropTarget": {
+        "value": "border-t-2 border-t-color-brand-primary-500"
+      },
+      "dragging": {
+        "value": "opacity-50"
+      }
+    },
+    "cardTitle": {
+      "base": {
+        "value": "font-medium text-color-neutral-900 text-sm"
+      }
+    },
+    "cardDescription": {
+      "base": {
+        "value": "text-xs text-color-neutral-500 mt-1 line-clamp-2"
+      }
+    },
+    "cardFooter": {
+      "base": {
+        "value": "flex items-center justify-between mt-3 pt-2 border-t border-color-neutral-200"
+      }
+    },
+    "label": {
+      "base": {
+        "value": "text-xs px-2 py-0.5 rounded text-color-neutral-white"
+      },
+      "container": {
+        "value": "flex flex-wrap gap-1 mb-2"
+      }
+    },
+    "priority": {
+      "base": {
+        "value": "text-xs px-1.5 py-0.5 rounded font-medium"
+      },
+      "variant": {
+        "low": {
+          "value": "bg-color-semantic-success-100 text-color-semantic-success-700"
+        },
+        "medium": {
+          "value": "bg-color-semantic-warning-100 text-color-semantic-warning-700"
+        },
+        "high": {
+          "value": "bg-color-semantic-error-100 text-color-semantic-error-700"
+        },
+        "urgent": {
+          "value": "bg-color-semantic-error-500 text-color-neutral-white"
+        }
+      }
+    },
+    "dueDate": {
+      "base": {
+        "value": "text-xs flex items-center gap-1 text-color-neutral-500"
+      },
+      "overdue": {
+        "value": "text-color-semantic-error-500"
+      }
+    },
+    "assignee": {
+      "avatar": {
+        "value": "w-6 h-6 rounded-full"
+      },
+      "fallback": {
+        "value": "w-6 h-6 rounded-full bg-color-brand-primary-500 flex items-center justify-center text-color-neutral-white text-xs font-medium"
+      }
+    },
+    "addCard": {
+      "base": {
+        "value": "flex items-center justify-center gap-2 p-3 text-color-neutral-500 rounded-b-lg"
+      },
+      "hover": {
+        "value": "hover:text-color-neutral-900 hover:bg-color-neutral-200 transition-colors"
+      },
+      "focus": {
+        "value": "focus:outline-none focus:ring-2 focus:ring-inset focus:ring-color-brand-primary-500"
+      },
+      "icon": {
+        "value": "h-4 w-4"
+      },
+      "text": {
+        "value": "text-sm"
+      }
+    },
+    "dropZone": {
+      "base": {
+        "value": "h-16 border-2 border-dashed border-color-brand-primary-500 rounded-lg bg-color-brand-primary-50"
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+E:\Brahma\accounts\web\packages\wasm\target\wasm32-unknown-unknown\release\deps\serde-5c1e4d41c060414a.d: C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs E:\Brahma\accounts\web\packages\wasm\target\wasm32-unknown-unknown\release\build\serde-37dc4199083f4c7a\out/private.rs
+
+E:\Brahma\accounts\web\packages\wasm\target\wasm32-unknown-unknown\release\deps\libserde-5c1e4d41c060414a.rlib: C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs E:\Brahma\accounts\web\packages\wasm\target\wasm32-unknown-unknown\release\build\serde-37dc4199083f4c7a\out/private.rs
+
+E:\Brahma\accounts\web\packages\wasm\target\wasm32-unknown-unknown\release\deps\libserde-5c1e4d41c060414a.rmeta: C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs E:\Brahma\accounts\web\packages\wasm\target\wasm32-unknown-unknown\release\build\serde-37dc4199083f4c7a\out/private.rs
+
+C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\lib.rs:
+C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\integer128.rs:
+C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\mod.rs:
+C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\de.rs:
+C:\Users\ppusa\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\serde-1.0.228\src\private\ser.rs:
+E:\Brahma\accounts\web\packages\wasm\target\wasm32-unknown-unknown\release\build\serde-37dc4199083f4c7a\out/private.rs:
+
+# env-dep:OUT_DIR=E:\\Brahma\\accounts\\web\\packages\\wasm\\target\\wasm32-unknown-unknown\\release\\build\\serde-37dc4199083f4c7a\\out

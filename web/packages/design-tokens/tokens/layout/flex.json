@@ -1,0 +1,39 @@
+{
+  "layout": {
+    "flex": {
+      "direction": {
+        "row": { "value": "row", "type": "string" },
+        "rowReverse": { "value": "row-reverse", "type": "string" },
+        "column": { "value": "column", "type": "string" },
+        "columnReverse": { "value": "column-reverse", "type": "string" }
+      },
+      "wrap": {
+        "noWrap": { "value": "nowrap", "type": "string" },
+        "wrap": { "value": "wrap", "type": "string" },
+        "wrapReverse": { "value": "wrap-reverse", "type": "string" }
+      },
+      "justify": {
+        "start": { "value": "flex-start", "type": "string" },
+        "end": { "value": "flex-end", "type": "string" },
+        "center": { "value": "center", "type": "string" },
+        "between": { "value": "space-between", "type": "string" },
+        "around": { "value": "space-around", "type": "string" },
+        "evenly": { "value": "space-evenly", "type": "string" }
+      },
+      "align": {
+        "start": { "value": "flex-start", "type": "string" },
+        "end": { "value": "flex-end", "type": "string" },
+        "center": { "value": "center", "type": "string" },
+        "baseline": { "value": "baseline", "type": "string" },
+        "stretch": { "value": "stretch", "type": "string" }
+      },
+      "gap": {
+        "xs": { "value": "{spacing.2}", "type": "dimension" },
+        "sm": { "value": "{spacing.4}", "type": "dimension" },
+        "md": { "value": "{spacing.6}", "type": "dimension" },
+        "lg": { "value": "{spacing.8}", "type": "dimension" },
+        "xl": { "value": "{spacing.12}", "type": "dimension" }
+      }
+    }
+  }
+}

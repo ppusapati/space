@@ -1,0 +1,16 @@
+{
+  "name": "samavaya-bom",
+  "type": "module",
+  "description": "Bill of Materials calculations - BOM explosion, costing, where-used analysis",
+  "version": "0.1.0",
+  "files": [
+    "samavaya_bom_bg.wasm",
+    "samavaya_bom.js",
+    "samavaya_bom.d.ts"
+  ],
+  "main": "samavaya_bom.js",
+  "types": "samavaya_bom.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

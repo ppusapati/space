@@ -1,0 +1,109 @@
+
+> @p9e.in/samavaya@1.0.0 prebuild E:\Brahma\accounts\web\packages\design-tokens
+> pnpm generate:fonts
+
+
+> @p9e.in/samavaya@1.0.0 generate:fonts E:\Brahma\accounts\web\packages\design-tokens
+> node scripts/generate-fonts.js
+
+🚀 Generating font files...
+
+📝 Processing Inter...
+✅ Generated Inter (5 weights)
+
+📝 Processing Inter Display...
+✅ Generated Inter Display (5 weights)
+
+📝 Processing Roboto Mono...
+✅ Generated Roboto Mono (3 weights)
+
+✨ All fonts generated successfully!
+
+> @p9e.in/samavaya@1.0.0 build E:\Brahma\accounts\web\packages\design-tokens
+> node scripts/build-themes.js
+
+🎨 Building optimized design tokens...
+✅ Copied fonts.css to dist/css/
+☀️  Building light theme...
+
+Token collisions detected (14):
+
+Collision detected at: zIndex.modal! Original value: 1040, New value: 1050
+Collision detected at: zIndex.tooltip! Original value: 1060, New value: 1070
+Collision detected at: zIndex.overlay! Original value: 1035, New value: 1040
+Collision detected at: layout.container.xs! Original value: 100%, New value: 320px
+Collision detected at: layout.container.sm! Original value: 640px, New value: 384px
+Collision detected at: layout.container.md! Original value: 768px, New value: 448px
+Collision detected at: layout.container.lg! Original value: 1024px, New value: 512px
+Collision detected at: layout.container.xl! Original value: 1280px, New value: 576px
+Collision detected at: layout.container.2xl! Original value: 1536px, New value: 672px
+Collision detected at: layout.grid.gap.xs! Original value: 4px, New value: {spacing.2}
+Collision detected at: layout.grid.gap.sm! Original value: 8px, New value: {spacing.4}
+Collision detected at: layout.grid.gap.md! Original value: 16px, New value: {spacing.6}
+Collision detected at: layout.grid.gap.lg! Original value: 24px, New value: {spacing.8}
+Collision detected at: layout.grid.gap.xl! Original value: 32px, New value: {spacing.12}
+
+
+
+uno
+✔︎ dist/uno/theme.ts
+
+css
+✔︎ dist/css/tokens-light.css
+
+css-keyframes
+✔︎ dist/css/keyframes.css
+
+js
+✔︎ dist/js/tokens.js
+🌙 Building dark theme...
+
+Token collisions detected (14):
+
+Collision detected at: zIndex.modal! Original value: 1040, New value: 1050
+Collision detected at: zIndex.tooltip! Original value: 1060, New value: 1070
+Collision detected at: zIndex.overlay! Original value: 1035, New value: 1040
+Collision detected at: layout.container.xs! Original value: 100%, New value: 320px
+Collision detected at: layout.container.sm! Original value: 640px, New value: 384px
+Collision detected at: layout.container.md! Original value: 768px, New value: 448px
+Collision detected at: layout.container.lg! Original value: 1024px, New value: 512px
+Collision detected at: layout.container.xl! Original value: 1280px, New value: 576px
+Collision detected at: layout.container.2xl! Original value: 1536px, New value: 672px
+Collision detected at: layout.grid.gap.xs! Original value: 4px, New value: {spacing.2}
+Collision detected at: layout.grid.gap.sm! Original value: 8px, New value: {spacing.4}
+Collision detected at: layout.grid.gap.md! Original value: 16px, New value: {spacing.6}
+Collision detected at: layout.grid.gap.lg! Original value: 24px, New value: {spacing.8}
+Collision detected at: layout.grid.gap.xl! Original value: 32px, New value: {spacing.12}
+
+
+
+css
+✔︎ dist/css/tokens-dark.css
+🔗 Creating optimized combined CSS...
+✅ Created optimized tokens.css
+🛠️ Creating theme utilities...
+✅ Created theme-utils.js
+✅ Created theme-utils.d.ts
+✅ Created dist/uno/index.ts
+🏭 Compiling P9E Enterprise Preset...
+⚠️ P9E preset source not found, skipping compilation
+✅ Created dist/uno/index.js
+📝 Generating TypeScript types...
+✅ Generated TypeScript types
+✅ Design tokens built successfully!
+
+📦 Generated files:
+├── dist/css/
+│   ├── tokens.css (🎯 MAIN FILE - combined themes + animations)
+│   ├── tokens-light.css (light theme only)  
+│   ├── tokens-dark.css (dark theme only)
+│   └── keyframes.css (CSS animations)
+├── dist/js/
+│   ├── tokens.js (JavaScript tokens)
+│   └── theme-utils.js (theme switching utilities)
+└── dist/uno/
+    ├── index.ts (🎯 MAIN FILE - UnoCSS config)
+    └── theme.ts (light UnoCSS theme + shortcuts)
+
+🎨 Ready for your MFEs! Use tokens.css and index.ts
+

@@ -1,0 +1,57 @@
+{
+  "accordion": {
+    "container": {
+      "base": {
+        "value": "border border-color-neutral-200 rounded-md divide-y divide-color-neutral-200 overflow-hidden"
+      }
+    },
+    "header": {
+      "base": {
+        "value": "w-full text-left flex items-center justify-between transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-color-brand-primary-500 focus:ring-inset font-medium"
+      },
+      "size": {
+        "sm": {
+          "value": "px-4 py-3 text-sm"
+        },
+        "md": {
+          "value": "px-5 py-4 text-base"
+        },
+        "lg": {
+          "value": "px-6 py-5 text-lg"
+        }
+      },
+      "state": {
+        "closed": {
+          "value": "bg-color-neutral-white text-color-neutral-900 hover:bg-color-neutral-50"
+        },
+        "open": {
+          "value": "bg-color-brand-primary-50 text-color-brand-primary-900 hover:bg-color-brand-primary-100"
+        },
+        "disabled": {
+          "value": "cursor-not-allowed opacity-50 bg-color-neutral-50 text-color-neutral-400"
+        }
+      }
+    },
+    "content": {
+      "base": {
+        "value": "transition-all duration-200 ease-in-out overflow-hidden text-color-neutral-600"
+      },
+      "size": {
+        "sm": {
+          "value": "px-4 pb-3"
+        },
+        "md": {
+          "value": "px-5 pb-4"
+        },
+        "lg": {
+          "value": "px-6 pb-5"
+        }
+      }
+    },
+    "chevron": {
+      "base": {
+        "value": "w-5 h-5 transition-transform duration-200 transform"
+      }
+    }
+  }
+}

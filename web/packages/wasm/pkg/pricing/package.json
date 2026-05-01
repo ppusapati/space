@@ -1,0 +1,20 @@
+{
+  "name": "samavaya-pricing",
+  "type": "module",
+  "collaborators": [
+    "Samavaya Team"
+  ],
+  "description": "Pricing calculations, discounts, and price list evaluation",
+  "version": "0.1.0",
+  "license": "MIT",
+  "files": [
+    "samavaya_pricing_bg.wasm",
+    "samavaya_pricing.js",
+    "samavaya_pricing.d.ts"
+  ],
+  "main": "samavaya_pricing.js",
+  "types": "samavaya_pricing.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

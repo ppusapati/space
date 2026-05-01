@@ -1,0 +1,129 @@
+{
+  "navbar": {
+    "container": {
+      "base": {
+        "value": "w-full bg-color-neutral-white border-b border-color-neutral-200"
+      },
+      "fixed": {
+        "value": "fixed top-0 left-0 right-0 z-header"
+      },
+      "sticky": {
+        "value": "sticky top-0 z-header"
+      }
+    },
+    "inner": {
+      "base": {
+        "value": "flex items-center justify-between mx-auto px-4"
+      },
+      "height": {
+        "sm": {
+          "value": "h-12"
+        },
+        "md": {
+          "value": "h-14"
+        },
+        "lg": {
+          "value": "h-16"
+        }
+      },
+      "maxWidth": {
+        "full": {
+          "value": "max-w-full"
+        },
+        "contained": {
+          "value": "max-w-7xl"
+        }
+      }
+    },
+    "brand": {
+      "base": {
+        "value": "flex items-center gap-3"
+      },
+      "logo": {
+        "value": "h-8 w-auto"
+      },
+      "text": {
+        "value": "font-bold text-lg text-color-neutral-900"
+      }
+    },
+    "nav": {
+      "base": {
+        "value": "hidden md:flex items-center gap-1"
+      }
+    },
+    "item": {
+      "base": {
+        "value": "flex items-center gap-2 px-3 py-2 rounded-md font-medium transition-colors duration-200 cursor-pointer"
+      },
+      "state": {
+        "default": {
+          "value": "text-color-neutral-600 hover:text-color-neutral-900 hover:bg-color-neutral-100"
+        },
+        "active": {
+          "value": "text-color-brand-primary-600 bg-color-brand-primary-50"
+        },
+        "disabled": {
+          "value": "text-color-neutral-400 cursor-not-allowed"
+        }
+      }
+    },
+    "icon": {
+      "size": {
+        "value": "w-5 h-5"
+      }
+    },
+    "actions": {
+      "base": {
+        "value": "flex items-center gap-2"
+      }
+    },
+    "search": {
+      "container": {
+        "value": "relative"
+      },
+      "input": {
+        "value": "w-48 lg:w-64 pl-10 pr-4 py-2 text-sm border border-color-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-color-brand-primary-500 focus:border-color-brand-primary-500"
+      },
+      "icon": {
+        "value": "absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-color-neutral-400"
+      }
+    },
+    "mobile": {
+      "toggle": {
+        "value": "md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-color-neutral-100 transition-colors"
+      },
+      "menu": {
+        "base": {
+          "value": "absolute top-full left-0 right-0 bg-color-neutral-white border-b border-color-neutral-200 shadow-lg md:hidden"
+        },
+        "inner": {
+          "value": "px-4 py-3 space-y-1"
+        }
+      }
+    },
+    "dropdown": {
+      "trigger": {
+        "value": "flex items-center gap-2"
+      },
+      "avatar": {
+        "value": "w-8 h-8 rounded-full object-cover"
+      },
+      "chevron": {
+        "value": "w-4 h-4 text-color-neutral-400"
+      }
+    },
+    "divider": {
+      "value": "h-6 w-px bg-color-neutral-200 mx-2"
+    },
+    "badge": {
+      "base": {
+        "value": "absolute -top-1 -right-1 flex items-center justify-center min-w-4 h-4 px-1 text-xs font-medium rounded-full"
+      },
+      "variant": {
+        "default": {
+          "value": "bg-color-semantic-error-500 text-color-neutral-white"
+        }
+      }
+    }
+  }
+}

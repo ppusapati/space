@@ -1,0 +1,123 @@
+{
+  "datepicker": {
+    "container": {
+      "base": {
+        "value": "relative"
+      },
+      "fullWidth": {
+        "value": "w-full"
+      }
+    },
+    "input": {
+      "base": {
+        "value": "block w-full border rounded-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-color-neutral-50 cursor-pointer"
+      },
+      "size": {
+        "sm": {
+          "value": "px-3 py-1.5 text-sm"
+        },
+        "md": {
+          "value": "px-3 py-2 text-base"
+        },
+        "lg": {
+          "value": "px-4 py-3 text-lg"
+        }
+      },
+      "state": {
+        "default": {
+          "value": "border-color-neutral-300 focus:ring-color-brand-primary-500 focus:border-color-brand-primary-500"
+        },
+        "error": {
+          "value": "border-color-semantic-error-500 focus:ring-color-semantic-error-500 focus:border-color-semantic-error-500"
+        },
+        "success": {
+          "value": "border-color-semantic-success-500 focus:ring-color-semantic-success-500 focus:border-color-semantic-success-500"
+        }
+      }
+    },
+    "label": {
+      "base": {
+        "value": "block text-sm font-medium text-color-neutral-700 mb-1"
+      }
+    },
+    "required": {
+      "value": "text-color-semantic-error-500 ml-1"
+    },
+    "icon": {
+      "container": {
+        "value": "absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none"
+      },
+      "base": {
+        "value": "w-5 h-5 text-color-neutral-400"
+      }
+    },
+    "calendar": {
+      "container": {
+        "value": "absolute z-50 mt-1 bg-white border border-color-neutral-200 rounded-lg shadow-lg p-4 min-w-[280px]"
+      },
+      "header": {
+        "container": {
+          "value": "flex items-center justify-between mb-4"
+        },
+        "title": {
+          "value": "text-lg font-semibold text-color-neutral-900"
+        },
+        "navButton": {
+          "value": "p-1 rounded hover:bg-color-neutral-100 focus:outline-none focus:ring-2 focus:ring-color-brand-primary-500"
+        },
+        "navIcon": {
+          "value": "w-5 h-5"
+        }
+      },
+      "weekdays": {
+        "container": {
+          "value": "grid grid-cols-7 gap-1 mb-2"
+        },
+        "item": {
+          "value": "text-center text-sm font-medium text-color-neutral-500 py-2"
+        }
+      },
+      "grid": {
+        "container": {
+          "value": "grid grid-cols-7 gap-1"
+        }
+      },
+      "day": {
+        "base": {
+          "value": "p-2 text-sm rounded hover:bg-color-neutral-100 focus:outline-none focus:ring-2 focus:ring-color-brand-primary-500"
+        },
+        "currentMonth": {
+          "value": "text-color-neutral-900"
+        },
+        "otherMonth": {
+          "value": "text-color-neutral-400"
+        },
+        "selected": {
+          "value": "bg-color-brand-primary-500 text-color-neutral-white hover:bg-color-brand-primary-600"
+        },
+        "today": {
+          "value": "bg-color-neutral-100 font-semibold"
+        },
+        "disabled": {
+          "value": "opacity-50 cursor-not-allowed hover:bg-transparent"
+        }
+      }
+    },
+    "helper": {
+      "base": {
+        "value": "mt-1 text-sm"
+      },
+      "state": {
+        "default": {
+          "value": "text-color-neutral-500"
+        },
+        "error": {
+          "value": "text-color-semantic-error-500"
+        },
+        "success": {
+          "value": "text-color-semantic-success-500"
+        }
+      }
+    }
+  }
+}

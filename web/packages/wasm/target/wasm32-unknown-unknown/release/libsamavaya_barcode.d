@@ -1,0 +1,1 @@
+E:\Brahma\accounts\web\packages\wasm\target\wasm32-unknown-unknown\release\libsamavaya_barcode.rlib: E:\Brahma\accounts\web\packages\wasm\crates\barcode\src\code128.rs E:\Brahma\accounts\web\packages\wasm\crates\barcode\src\ean.rs E:\Brahma\accounts\web\packages\wasm\crates\barcode\src\lib.rs E:\Brahma\accounts\web\packages\wasm\crates\barcode\src\qr.rs

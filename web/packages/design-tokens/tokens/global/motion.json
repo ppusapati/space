@@ -1,0 +1,45 @@
+{
+  "motion": {
+    "easing": {
+      "linear": { "value": "cubic-bezier(0, 0, 1, 1)", "type": "cubicBezier" },
+      "ease": { "value": "cubic-bezier(0.25, 0.1, 0.25, 1)", "type": "cubicBezier" },
+      "ease-in": { "value": "cubic-bezier(0.42, 0, 1, 1)", "type": "cubicBezier" },
+      "ease-out": { "value": "cubic-bezier(0, 0, 0.58, 1)", "type": "cubicBezier" },
+      "ease-in-out": { "value": "cubic-bezier(0.42, 0, 0.58, 1)", "type": "cubicBezier" },
+      "bounce": { "value": "cubic-bezier(0.68, -0.55, 0.265, 1.55)", "type": "cubicBezier" },
+      "elastic": { "value": "cubic-bezier(0.175, 0.885, 0.32, 1.275)", "type": "cubicBezier" },
+      "spring": { "value": "cubic-bezier(0.16, 1, 0.3, 1)", "type": "cubicBezier" },
+      "smooth": { "value": "cubic-bezier(0.4, 0, 0.2, 1)", "type": "cubicBezier" },
+      "sharp": { "value": "cubic-bezier(0.4, 0, 0.6, 1)", "type": "cubicBezier" },
+      "emphasized": { "value": "cubic-bezier(0.2, 0, 0, 1)", "type": "cubicBezier" },
+      "decelerated": { "value": "cubic-bezier(0, 0, 0.2, 1)", "type": "cubicBezier" },
+      "accelerated": { "value": "cubic-bezier(0.4, 0, 1, 1)", "type": "cubicBezier" },
+      "standard": { "value": "cubic-bezier(0.2, 0, 0, 1)", "type": "cubicBezier" }
+    },
+    "duration": {
+      "instant": { "value": "0ms", "type": "duration" },
+      "micro": { "value": "75ms", "type": "duration" },
+      "fast": { "value": "100ms", "type": "duration" },
+      "short": { "value": "150ms", "type": "duration" },
+      "medium": { "value": "200ms", "type": "duration" },
+      "long": { "value": "300ms", "type": "duration" },
+      "slow": { "value": "500ms", "type": "duration" },
+      "slower": { "value": "750ms", "type": "duration" },
+      "slowest": { "value": "1000ms", "type": "duration" }
+    },
+    "delay": {
+      "none": { "value": "0ms", "type": "duration" },
+      "micro": { "value": "25ms", "type": "duration" },
+      "short": { "value": "50ms", "type": "duration" },
+      "medium": { "value": "100ms", "type": "duration" },
+      "long": { "value": "150ms", "type": "duration" },
+      "extra-long": { "value": "200ms", "type": "duration" }
+    },
+    "stagger": {
+      "micro": { "value": "25ms", "type": "duration" },
+      "short": { "value": "50ms", "type": "duration" },
+      "medium": { "value": "75ms", "type": "duration" },
+      "long": { "value": "100ms", "type": "duration" }
+    }
+  }
+}

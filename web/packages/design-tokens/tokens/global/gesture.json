@@ -1,0 +1,91 @@
+{
+  "gesture": {
+    "touch": {
+      "target": {
+        "min": { "value": "44px", "type": "sizing" },
+        "comfortable": { "value": "48px", "type": "sizing" },
+        "large": { "value": "56px", "type": "sizing" },
+        "extra-large": { "value": "64px", "type": "sizing" }
+      },
+      "padding": {
+        "min": { "value": "8px", "type": "spacing" },
+        "comfortable": { "value": "12px", "type": "spacing" },
+        "large": { "value": "16px", "type": "spacing" }
+      }
+    },
+    "swipe": {
+      "threshold": {
+        "distance": {
+          "min": { "value": "20px", "type": "sizing" },
+          "default": { "value": "50px", "type": "sizing" },
+          "large": { "value": "100px", "type": "sizing" }
+        },
+        "velocity": {
+          "min": { "value": "0.3", "type": "other" },
+          "default": { "value": "0.5", "type": "other" },
+          "fast": { "value": "1.0", "type": "other" }
+        }
+      },
+      "resistance": {
+        "light": { "value": "0.1", "type": "other" },
+        "medium": { "value": "0.2", "type": "other" },
+        "strong": { "value": "0.4", "type": "other" }
+      }
+    },
+    "drag": {
+      "threshold": {
+        "start": { "value": "5px", "type": "sizing" },
+        "cancel": { "value": "10px", "type": "sizing" }
+      },
+      "snap": {
+        "distance": { "value": "20px", "type": "sizing" },
+        "force": { "value": "0.8", "type": "other" }
+      }
+    },
+    "tap": {
+      "delay": {
+        "single": { "value": "0ms", "type": "duration" },
+        "double": { "value": "300ms", "type": "duration" }
+      },
+      "tolerance": {
+        "movement": { "value": "10px", "type": "sizing" },
+        "time": { "value": "500ms", "type": "duration" }
+      }
+    },
+    "press": {
+      "duration": {
+        "short": { "value": "500ms", "type": "duration" },
+        "long": { "value": "800ms", "type": "duration" },
+        "extra-long": { "value": "1200ms", "type": "duration" }
+      },
+      "feedback": {
+        "haptic": {
+          "light": { "value": "0.1", "type": "other" },
+          "medium": { "value": "0.5", "type": "other" },
+          "strong": { "value": "1.0", "type": "other" }
+        }
+      }
+    },
+    "scroll": {
+      "momentum": {
+        "decay": { "value": "0.95", "type": "other" },
+        "threshold": { "value": "0.1", "type": "other" }
+      },
+      "bounce": {
+        "resistance": { "value": "0.3", "type": "other" },
+        "tension": { "value": "0.4", "type": "other" }
+      }
+    },
+    "pinch": {
+      "scale": {
+        "min": { "value": "0.5", "type": "other" },
+        "max": { "value": "3.0", "type": "other" },
+        "step": { "value": "0.1", "type": "other" }
+      },
+      "threshold": {
+        "start": { "value": "1.05", "type": "other" },
+        "sensitivity": { "value": "0.02", "type": "other" }
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "name": "@samavāya/testing",
+  "version": "1.0.0",
+  "description": "Testing utilities, fixtures, mocks, and helpers for Samavāya ERP packages and apps",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./fixtures": {
+      "types": "./dist/fixtures/index.d.ts",
+      "import": "./dist/fixtures/index.js"
+    },
+    "./mocks": {
+      "types": "./dist/mocks/index.d.ts",
+      "import": "./dist/mocks/index.js"
+    },
+    "./setup": {
+      "types": "./dist/setup/index.d.ts",
+      "import": "./dist/setup/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@samavāya/core": "workspace:*",
+    "@samavāya/types": "workspace:*"
+  },
+  "peerDependencies": {
+    "vitest": ">=1.0.0",
+    "@testing-library/svelte": ">=4.0.0",
+    "svelte": ">=4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@testing-library/svelte": { "optional": true },
+    "svelte": { "optional": true }
+  },
+  "devDependencies": {
+    "@testing-library/svelte": "^5.2.0",
+    "svelte": "^5.0.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  },
+  "keywords": ["testing", "vitest", "fixtures", "mocks", "samavāya"]
+}

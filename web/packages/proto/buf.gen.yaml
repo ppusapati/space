@@ -1,0 +1,21 @@
+version: v2
+plugins:
+  # protoc-gen-es v2 generates BOTH message types AND service descriptors
+  # No separate protoc-gen-connect-es needed in Connect-ES v2
+  - local: protoc-gen-es
+    out: src/gen
+    opt:
+      - target=ts
+      - import_extension=.js
+inputs:
+  # Point buf at the backend root so buf.yaml (module "brahma/samavaya") is discovered
+  # and cross-proto imports like "packages/proto/query.proto" resolve correctly.
+  #
+  # extension/land/** was previously excluded "pending dependency cleanup"
+  # — the extension protos failed to generate because they referenced
+  # packages.api.v1.pagination.PaginationRequest, which wasn't declared
+  # in pagination.proto (was a hand-written Go shim). That was fixed in
+  # Phase C.3/C.2 (2026-04-20) by adding PaginationRequest/Response to
+  # the proto definition. Extensions now regenerate cleanly; the
+  # exclusion has been removed.
+  - directory: ../../../backend

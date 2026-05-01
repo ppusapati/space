@@ -1,0 +1,16 @@
+{
+  "name": "samavaya-offline",
+  "type": "module",
+  "description": "Offline synchronization - conflict resolution, change tracking, merge strategies",
+  "version": "0.1.0",
+  "files": [
+    "samavaya_offline_bg.wasm",
+    "samavaya_offline.js",
+    "samavaya_offline.d.ts"
+  ],
+  "main": "samavaya_offline.js",
+  "types": "samavaya_offline.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

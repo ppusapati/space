@@ -1,0 +1,50 @@
+{
+  "common": {
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "हटाएं",
+    "edit": "संपादित करें",
+    "create": "बनाएं",
+    "update": "अपडेट करें",
+    "close": "बंद करें",
+    "back": "वापस",
+    "next": "अगला",
+    "submit": "जमा करें",
+    "reset": "रीसेट",
+    "search": "खोजें",
+    "filter": "फ़िल्टर",
+    "sort": "क्रमबद्ध",
+    "export": "निर्यात",
+    "import": "आयात",
+    "print": "प्रिंट",
+    "loading": "लोड हो रहा है...",
+    "error": "त्रुटि",
+    "success": "सफल",
+    "warning": "चेतावनी",
+    "required": "आवश्यक",
+    "optional": "वैकल्पिक",
+    "actions": "क्रियाएं",
+    "status": "स्थिति",
+    "name": "नाम",
+    "description": "विवरण",
+    "date": "तारीख",
+    "amount": "राशि",
+    "total": "कुल",
+    "notes": "टिप्पणियां"
+  },
+  "auth": {
+    "login": "लॉगिन",
+    "logout": "लॉगआउट",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "signIn": "साइन इन",
+    "welcome": "स्वागत है, {{name}}"
+  },
+  "errors": {
+    "notFound": "नहीं मिला",
+    "unauthorized": "अनधिकृत",
+    "serverError": "सर्वर त्रुटि। कृपया पुनः प्रयास करें।",
+    "networkError": "नेटवर्क त्रुटि। अपना कनेक्शन जांचें।",
+    "sessionExpired": "सत्र समाप्त। कृपया फिर से लॉगिन करें।"
+  }
+}

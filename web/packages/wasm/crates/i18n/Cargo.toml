@@ -1,0 +1,23 @@
+[package]
+name = "samavaya-i18n"
+version.workspace = true
+edition.workspace = true
+description = "Internationalization utilities - locale formatting, number/date/currency formatting"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+rust_decimal.workspace = true
+rust_decimal_macros.workspace = true
+chrono.workspace = true
+log.workspace = true
+console_log.workspace = true
+console_error_panic_hook.workspace = true
+serde-wasm-bindgen.workspace = true

@@ -1,0 +1,647 @@
+
+> @samavāya/ui@1.0.0 build E:\Brahma\accounts\web\packages\ui
+> vite build
+
+[36mvite v7.3.0 [32mbuilding client environment for production...[36m[39m
+transforming...
+2:47:57 pm [vite-plugin-svelte] src/layout/Spacer.svelte:28:0 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+26: </script>
+27: 
+28: <div class={cn(spacerClass, className)} aria-hidden="true" />
+                                                                 ^
+29: 
+2:47:57 pm [vite-plugin-svelte] src/layout/Divider.svelte:27:6 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+25:     {#if labelPosition === 'start'}
+26:       <span class={dividerClasses.label}>{label}</span>
+27:       <div class={cn(dividerClasses.line, colorClass)} />
+                                                             ^
+28:     {:else if labelPosition === 'end'}
+29:       <div class={cn(dividerClasses.line, colorClass)} />
+2:47:57 pm [vite-plugin-svelte] src/layout/Divider.svelte:29:6 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+27:       <div class={cn(dividerClasses.line, colorClass)} />
+28:     {:else if labelPosition === 'end'}
+29:       <div class={cn(dividerClasses.line, colorClass)} />
+                                                             ^
+30:       <span class={dividerClasses.label}>{label}</span>
+31:     {:else}
+2:47:57 pm [vite-plugin-svelte] src/layout/Divider.svelte:32:6 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+30:       <span class={dividerClasses.label}>{label}</span>
+31:     {:else}
+32:       <div class={cn(dividerClasses.line, colorClass)} />
+                                                             ^
+33:       <span class={dividerClasses.label}>{label}</span>
+34:       <div class={cn(dividerClasses.line, colorClass)} />
+2:47:57 pm [vite-plugin-svelte] src/layout/Divider.svelte:34:6 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+32:       <div class={cn(dividerClasses.line, colorClass)} />
+33:       <span class={dividerClasses.label}>{label}</span>
+34:       <div class={cn(dividerClasses.line, colorClass)} />
+                                                             ^
+35:     {/if}
+36:   </div>
+2:47:57 pm [vite-plugin-svelte] src/layout/Divider.svelte:45:4 Redundant role 'separator'
+https://svelte.dev/e/a11y_no_redundant_roles
+43:       className
+44:     )}
+45:     role="separator"
+                        ^
+46:     aria-orientation={orientation}
+47:   />
+2:47:57 pm [vite-plugin-svelte] src/layout/Divider.svelte:9:13 Component has unused export property 'variant'. If it is for external reference only, please consider using `export const variant`
+https://svelte.dev/e/export_let_unused
+ 7: 
+ 8:   export let orientation: $$Props['orientation'] = 'horizontal';
+ 9:   export let variant: $$Props['variant'] = 'solid';
+                                            ^
+10:   export let color: $$Props['color'] = 'medium';
+11:   export let label: $$Props['label'] = undefined;
+2:47:57 pm [vite-plugin-svelte] src/feedback/Dialog.svelte:97:2 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+ 95: 
+ 96: {#if open}
+ 97:   <div class={modalClasses.overlay} transition:fade={{ duration: 150 }} aria-hidden="true" />
+                                                                                                  ^
+ 98: 
+ 99:   <div
+2:47:57 pm [vite-plugin-svelte] src/feedback/Dialog.svelte:99:2 Elements with the 'alertdialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus
+ 97:   <div class={modalClasses.overlay} transition:fade={{ duration: 150 }} aria-hidden="true" />
+ 98: 
+ 99:   <div
+            ^
+100:     class={modalClasses.container}
+101:     role="alertdialog"
+2:47:57 pm [vite-plugin-svelte] src/feedback/Dialog.svelte:99:2 Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events
+ 97:   <div class={modalClasses.overlay} transition:fade={{ duration: 150 }} aria-hidden="true" />
+ 98: 
+ 99:   <div
+            ^
+100:     class={modalClasses.container}
+101:     role="alertdialog"
+2:47:57 pm [vite-plugin-svelte] src/feedback/Drawer.svelte:93:4 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+91: {#if open}
+92:   {#if overlay}
+93:     <div
+          ^
+94:       class={drawerClasses.overlay}
+95:       transition:fade={{ duration: 150 }}
+2:47:57 pm [vite-plugin-svelte] src/feedback/Drawer.svelte:120:10 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+118:           <h2 id="drawer-title" class={drawerClasses.title}>{title}</h2>
+119:         {:else}
+120:           <div />
+                      ^
+121:         {/if}
+122:         {#if showClose}
+2:47:57 pm [vite-plugin-svelte] src/feedback/Modal.svelte:93:2 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+91: 
+92: {#if open}
+93:   <div class={modalClasses.overlay} transition:fade={{ duration: 150 }} aria-hidden="true" />
+                                                                                                 ^
+94: 
+95:   <div
+2:47:57 pm [vite-plugin-svelte] src/feedback/Modal.svelte:95:2 Elements with the 'dialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus
+93:   <div class={modalClasses.overlay} transition:fade={{ duration: 150 }} aria-hidden="true" />
+94: 
+95:   <div
+           ^
+96:     class={modalClasses.container}
+97:     role="dialog"
+2:47:57 pm [vite-plugin-svelte] src/feedback/Modal.svelte:95:2 Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events
+93:   <div class={modalClasses.overlay} transition:fade={{ duration: 150 }} aria-hidden="true" />
+94: 
+95:   <div
+           ^
+96:     class={modalClasses.container}
+97:     role="dialog"
+2:47:57 pm [vite-plugin-svelte] src/feedback/Modal.svelte:113:14 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+111:               <h2 id="modal-title" class={modalClasses.title}>{title}</h2>
+112:             {:else}
+113:               <div />
+                          ^
+114:             {/if}
+115:             {#if showClose}
+2:47:57 pm [vite-plugin-svelte] src/feedback/Notification.svelte:46:2 noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex
+44: 
+45: {#if visible}
+46:   <div
+           ^
+47:     class={cn(
+48:       'flex items-start gap-3 p-4 rounded-lg border border-neutral-200 bg-neutral-white transition-colors cursor-pointer',
+2:47:57 pm [vite-plugin-svelte] src/feedback/Notification.svelte:46:2 Non-interactive element `<div>` should not be assigned mouse or keyboard event listeners
+https://svelte.dev/e/a11y_no_noninteractive_element_interactions
+44: 
+45: {#if visible}
+46:   <div
+           ^
+47:     class={cn(
+48:       'flex items-start gap-3 p-4 rounded-lg border border-neutral-200 bg-neutral-white transition-colors cursor-pointer',
+2:47:57 pm [vite-plugin-svelte] src/feedback/Notification.svelte:76:10 Self-closing HTML tags for non-void elements are ambiguous — use `<span ...></span>` rather than `<span ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+74:         <p class="text-sm font-semibold text-neutral-900 truncate">{title}</p>
+75:         {#if !read}
+76:           <span class={cn('w-2 h-2 rounded-full shrink-0 mt-1.5', colors.dot)} aria-label="Unread" />
+                                                                                                         ^
+77:         {/if}
+78:       </div>
+2:47:57 pm [vite-plugin-svelte] src/feedback/Skeleton.svelte:28:6 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+26:   <div class={cn('flex flex-col gap-2', className)} role="status" aria-busy="true">
+27:     {#each Array(lines) as _, i}
+28:       <div
+            ^
+29:         class={cn(skeletonClasses.base, variantClass, animationClass)}
+30:         style={i === (lines || 1) - 1 ? `width: ${width || '75%'}` : `width: ${width || '100%'}`}
+2:47:57 pm [vite-plugin-svelte] src/business/StatusBadge.svelte:89:4 Self-closing HTML tags for non-void elements are ambiguous — use `<span ...></span>` rather than `<span ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+87: >
+88:   {#if showDot}
+89:     <span
+          ^
+90:       class={cn(
+91:         'rounded-full',
+2:47:57 pm [vite-plugin-svelte] src/business/ThemeBuilder.svelte:234:8 A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+232:       <!-- Theme Name -->
+233:       <div>
+234:         <label class="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                     ^
+235:           Theme Name
+236:         </label>
+2:47:57 pm [vite-plugin-svelte] src/business/ThemeBuilder.svelte:256:8 A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+254:       <!-- Presets -->
+255:       <div>
+256:         <label class="block text-sm font-medium text-[var(--color-text-primary)] mb-3">
+                     ^
+257:           Quick Presets
+258:         </label>
+2:47:57 pm [vite-plugin-svelte] src/business/ThemeBuilder.svelte:267:16 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+265:             >
+266:               <div class="flex gap-1 mb-2">
+267:                 <div
+                       ^
+268:                   class="w-4 h-4 rounded-full"
+269:                   style="background-color: {preset.colors.primary}"
+2:47:57 pm [vite-plugin-svelte] src/business/ThemeBuilder.svelte:271:16 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+269:                   style="background-color: {preset.colors.primary}"
+270:                 />
+271:                 <div
+                       ^
+272:                   class="w-4 h-4 rounded-full"
+273:                   style="background-color: {preset.colors.secondary}"
+2:47:57 pm [vite-plugin-svelte] src/business/ThemeBuilder.svelte:327:16 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+325:             <div class="flex gap-0.5">
+326:               {#each generateColorScale(value) as shade, i}
+327:                 <div
+                       ^
+328:                   class="h-4 flex-1 first:rounded-l last:rounded-r"
+329:                   style="background-color: {shade}"
+2:47:57 pm [vite-plugin-svelte] src/business/ThemeBuilder.svelte:339:12 A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+337:         <div class="space-y-6">
+338:           <div>
+339:             <label class="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                         ^
+340:               Base Font Size: {config.fontSize}px
+341:             </label>
+2:47:57 pm [vite-plugin-svelte] src/business/ThemeBuilder.svelte:354:12 A form label must be associated with a control
+https://svelte.dev/e/a11y_label_has_associated_control
+352:         <div class="space-y-6">
+353:           <div>
+354:             <label class="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                         ^
+355:               Border Radius: {config.borderRadius}px
+356:             </label>
+2:47:57 pm [vite-plugin-svelte] src/business/StatCard.svelte:72:8 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+70:       <!-- Value -->
+71:       {#if loading}
+72:         <div class="mt-2 h-8 w-24 bg-[var(--color-surface-tertiary)] rounded animate-pulse" />
+                                                                                                  ^
+73:       {:else}
+74:         <p class="mt-2 text-2xl font-bold text-[var(--color-text-primary)] tabular-nums">
+2:47:57 pm [vite-plugin-svelte] src/business/Avatar.svelte:95:4 Self-closing HTML tags for non-void elements are ambiguous — use `<span ...></span>` rather than `<span ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+93:   <!-- Status Indicator -->
+94:   {#if status !== 'none'}
+95:     <span
+          ^
+96:       class={cn(
+97:         'absolute bottom-0 right-0 rounded-full ring-2 ring-[var(--color-surface-primary)]',
+2:47:57 pm [vite-plugin-svelte] src/display/Tree.svelte:114:34 Elements with the ARIA role "treeitem" must have the following attributes defined: "aria-selected"
+https://svelte.dev/e/a11y_role_has_required_aria_props
+112: <div class={cn(treeClasses.container, className)} role="tree">
+113:   {#each nodes as node (node.id)}
+114:     <div class={treeClasses.node} role="treeitem" aria-expanded={node.children?.length ? internalExpandedKeys.has(node.id) : undefined}>
+                                                      ^
+115:       <div
+116:         class={cn(
+2:47:57 pm [vite-plugin-svelte] src/display/Tree.svelte:115:6 noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex
+113:   {#each nodes as node (node.id)}
+114:     <div class={treeClasses.node} role="treeitem" aria-expanded={node.children?.length ? internalExpandedKeys.has(node.id) : undefined}>
+115:       <div
+                ^
+116:         class={cn(
+117:           treeClasses.nodeContent,
+2:47:57 pm [vite-plugin-svelte] src/display/Tree.svelte:115:6 `<div>` with a click or keydown handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions
+113:   {#each nodes as node (node.id)}
+114:     <div class={treeClasses.node} role="treeitem" aria-expanded={node.children?.length ? internalExpandedKeys.has(node.id) : undefined}>
+115:       <div
+                ^
+116:         class={cn(
+117:           treeClasses.nodeContent,
+2:47:57 pm [vite-plugin-svelte] src/display/Tree.svelte:141:10 Self-closing HTML tags for non-void elements are ambiguous — use `<span ...></span>` rather than `<span ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+139:           </button>
+140:         {:else}
+141:           <span class="w-4 h-4 shrink-0" />
+                                                ^
+142:         {/if}
+143: 
+2:47:57 pm [vite-plugin-svelte] src/display/ListItem.svelte:36:0 noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex
+34: </script>
+35: 
+36: <li
+        ^
+37:   class={cn(
+38:     listItemClasses.base,
+2:47:57 pm [vite-plugin-svelte] src/display/Card.svelte:35:0 noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex
+33: </script>
+34: 
+35: <div
+         ^
+36:   class={cn(
+37:     cardClasses.base,
+2:47:57 pm [vite-plugin-svelte] src/display/Avatar.svelte:63:4 Self-closing HTML tags for non-void elements are ambiguous — use `<span ...></span>` rather than `<span ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+61: 
+62:   {#if status}
+63:     <span
+          ^
+64:       class={cn(avatarClasses.status, sizeStyles.status, statusClass)}
+65:       aria-label={`Status: ${status}`}
+2:47:57 pm [vite-plugin-svelte] src/display/Tooltip.svelte:102:0 Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events
+100: </script>
+101: 
+102: <div
+          ^
+103:   bind:this={triggerElement}
+104:   class={cn(tooltipClasses.trigger, 'relative', className)}
+2:47:57 pm [vite-plugin-svelte] src/display/Tooltip.svelte:102:0 `<div>` with a mouseenter, mouseleave or click handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions
+100: </script>
+101: 
+102: <div
+          ^
+103:   bind:this={triggerElement}
+104:   class={cn(tooltipClasses.trigger, 'relative', className)}
+2:47:57 pm [vite-plugin-svelte] src/display/Tooltip.svelte:121:6 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+119:     >
+120:       {content}
+121:       <div class={cn(tooltipClasses.arrow, arrowClass)} />
+                                                               ^
+122:     </div>
+123:   {/if}
+2:47:57 pm [vite-plugin-svelte] src/display/Tag.svelte:49:0 noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex
+47: </script>
+48: 
+49: <span
+          ^
+50:   class={cn(
+51:     tagClasses.base,
+2:47:57 pm [vite-plugin-svelte] src/navigation/Menu.svelte:14:13 Component has unused export property 'size'. If it is for external reference only, please consider using `export const size`
+https://svelte.dev/e/export_let_unused
+12:   export let trigger: HTMLElement | undefined = undefined;
+13:   export let position: 'bottom-start' | 'bottom-end' | 'top-start' | 'top-end' = 'bottom-start';
+14:   export let size: Size = 'md';
+                           ^
+15:   export let id: string = uid('menu');
+16:   export let testId: string = '';
+2:47:57 pm [vite-plugin-svelte] src/navigation/NavBar.svelte:30:2 Redundant role 'banner'
+https://svelte.dev/e/a11y_no_redundant_roles
+28:   class={containerClasses}
+29:   data-testid={testId || undefined}
+30:   role="banner"
+                   ^
+31: >
+32:   <div class={navbarClasses.inner} style="height: {height};">
+2:47:57 pm [vite-plugin-svelte] src/navigation/Stepper.svelte:12:13 Component has unused export property 'size'. If it is for external reference only, please consider using `export const size`
+https://svelte.dev/e/export_let_unused
+10:   export let currentStep: number = 0;
+11:   export let orientation: 'horizontal' | 'vertical' = 'horizontal';
+12:   export let size: Size = 'md';
+                           ^
+13:   export let clickable: boolean = false;
+14:   export let id: string = uid('stepper');
+2:47:58 pm [vite-plugin-svelte] src/tables/DataGrid.svelte:564:14 Redundant role 'row'
+https://svelte.dev/e/a11y_no_redundant_roles
+562:                 isSelected && tableClasses.trSelected
+563:               )}
+564:               role="row"
+                             ^
+565:               aria-selected={selectable ? isSelected : undefined}
+566:               on:click={() => handleRowClick(row, index)}
+2:47:58 pm [vite-plugin-svelte] src/tables/Table.svelte:236:12 Redundant role 'row'
+https://svelte.dev/e/a11y_no_redundant_roles
+234:               isSelected && tableClasses.trSelected
+235:             )}
+236:             role="row"
+                           ^
+237:             aria-selected={selectable ? isSelected : undefined}
+238:             on:click={() => handleRowClick(row, index)}
+2:47:58 pm [vite-plugin-svelte] src/forms/Select.svelte:263:6 The attribute 'aria-invalid' is not supported by the role 'button'. This role is implicit on the element `<button>`
+https://svelte.dev/e/a11y_role_supports_aria_props_implicit
+261:       aria-labelledby={label ? `${id}-label` : undefined}
+262:       aria-describedby={displayedHelperText ? `${id}-helper` : undefined}
+263:       aria-invalid={state === 'invalid' || !!errorText}
+                                                            ^
+264:       {disabled}
+265:       on:click={toggleDropdown}
+2:47:58 pm [vite-plugin-svelte] src/forms/Select.svelte:274:10 `<button>` cannot be a descendant of `<button>`. When rendering this component on the server, the resulting HTML will be modified by the browser (by moving, removing, or inserting elements), likely resulting in a `hydration_mismatch` warning
+https://svelte.dev/e/node_invalid_placement_ssr
+272:       <span class={chevronClasses}>
+273:         {#if clearable && hasValue && !disabled}
+274:           <button
+                       ^
+275:             type="button"
+276:             class="mr-2 hover:text-neutral-600 pointer-events-auto"
+2:47:58 pm [vite-plugin-svelte] src/forms/Select.svelte:317:16 Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events
+315:               {#each filterOptions(group.options, searchQuery) as option, i}
+316:                 {@const globalIndex = allOptions.indexOf(option)}
+317:                 <li
+                         ^
+318:                   role="option"
+319:                   aria-selected={isSelected(option.value)}
+2:47:58 pm [vite-plugin-svelte] src/forms/Select.svelte:344:14 Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events
+342:           {:else}
+343:             {#each filteredOptions as option, i}
+344:               <li
+                       ^
+345:                 role="option"
+346:                 aria-selected={isSelected(option.value)}
+2:47:58 pm [vite-plugin-svelte] src/forms/DatePicker.svelte:267:4 The attribute 'aria-invalid' is not supported by the role 'button'. This role is implicit on the element `<button>`
+https://svelte.dev/e/a11y_role_supports_aria_props_implicit
+265:     aria-haspopup="dialog"
+266:     aria-expanded={isOpen}
+267:     aria-invalid={state === 'invalid' || !!errorText}
+                                                          ^
+268:     {disabled}
+269:     on:click={toggleCalendar}
+2:47:58 pm [vite-plugin-svelte] src/forms/DatePicker.svelte:278:10 `<button>` cannot be a descendant of `<button>`. When rendering this component on the server, the resulting HTML will be modified by the browser (by moving, removing, or inserting elements), likely resulting in a `hydration_mismatch` warning
+https://svelte.dev/e/node_invalid_placement_ssr
+276:       <span class="flex items-center gap-2">
+277:         {#if clearable && hasValue && !disabled}
+278:           <button
+                       ^
+279:             type="button"
+280:             class="hover:text-neutral-600 text-neutral-400"
+2:47:58 pm [vite-plugin-svelte] src/forms/DatePicker.svelte:380:14 The attribute 'aria-selected' is not supported by the role 'button'. This role is implicit on the element `<button>`
+https://svelte.dev/e/a11y_role_supports_aria_props_implicit
+378:               on:click={() => selectDate(day)}
+379:               aria-label={day.date.toDateString()}
+380:               aria-selected={day.isSelected}
+                                                 ^
+381:             >
+382:               {day.day}
+2:47:58 pm [vite-plugin-svelte] src/forms/DatePicker.svelte:35:13 Component has unused export property 'showWeekNumbers'. If it is for external reference only, please consider using `export const showWeekNumbers`
+https://svelte.dev/e/export_let_unused
+33:   export let disabledDates: Date[] = [];
+34:   export let firstDayOfWeek: 0 | 1 = 0;
+35:   export let showWeekNumbers: boolean = false;
+                                         ^
+36:   export let clearable: boolean = false;
+37:   export let disabled: boolean = false;
+2:47:58 pm [vite-plugin-svelte] src/forms/FormSection.svelte:54:4 noninteractive element cannot have nonnegative tabIndex value
+https://svelte.dev/e/a11y_no_noninteractive_tabindex
+52: >
+53:   {#if title || description || $$slots.header}
+54:     <div
+             ^
+55:       class={cn(
+56:         formSectionClasses.header,
+2:47:58 pm [vite-plugin-svelte] src/forms/Switch.svelte:109:4 Self-closing HTML tags for non-void elements are ambiguous — use `<span ...></span>` rather than `<span ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+107:     on:keydown={handleKeydown}
+108:   >
+109:     <span aria-hidden="true" class={thumbClasses} />
+                                                         ^
+110:   </button>
+111: 
+2:47:58 pm [vite-plugin-svelte] src/forms/Slider.svelte:76:4 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+74:   <div class="relative">
+75:     <!-- Track background -->
+76:     <div
+          ^
+77:       class={cn(
+78:         'absolute w-full rounded-full bg-[var(--color-neutral-200)]',
+2:47:58 pm [vite-plugin-svelte] src/forms/Slider.svelte:85:4 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+83: 
+84:     <!-- Filled track -->
+85:     <div
+          ^
+86:       class={cn(
+87:         'absolute rounded-full bg-[var(--color-interactive-primary)]',
+2:47:58 pm [vite-plugin-svelte] src/forms/Slider.svelte:137:10 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+135:       <div class="relative mt-1">
+136:         {#each ticks as tick, i}
+137:           <div
+                 ^
+138:             class="absolute w-1 h-1 rounded-full bg-[var(--color-neutral-400)] -translate-x-1/2"
+139:             style="left: {((tick - min) / (max - min)) * 100}%"
+2:47:58 pm [vite-plugin-svelte] src/forms/TextArea.svelte:122:2 Self-closing HTML tags for non-void elements are ambiguous — use `<textarea ...></textarea>` rather than `<textarea ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+120:   {/if}
+121: 
+122:   <textarea
+         ^
+123:     bind:this={textareaRef}
+124:     {id}
+2:47:58 pm [vite-plugin-svelte] src/forms/ColorPicker.svelte:150:10 Self-closing HTML tags for non-void elements are ambiguous — use `<button ...></button>` rather than `<button ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+148:       <div class="flex flex-wrap gap-2">
+149:         {#each presets as color}
+150:           <button
+                 ^
+151:             type="button"
+152:             class={cn(
+2:47:58 pm [vite-plugin-svelte] src/forms/TimePicker.svelte:134:6 Buttons and links should either contain text or have an `aria-label`, `aria-labelledby` or `title` attribute
+https://svelte.dev/e/a11y_consider_explicit_label
+132:         on:click={() => isOpen = true}
+133:       />
+134:       <button
+                   ^
+135:         type="button"
+136:         class="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--color-text-tertiary)]"
+2:47:58 pm [vite-plugin-svelte] src/forms/Rating.svelte:119:6 Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events
+117:     {#each Array(max) as _, i}
+118:       {@const fill = getIconFill(i)}
+119:       <div
+                ^
+120:         class="relative"
+121:         on:click={() => handleClick(i)}
+2:47:58 pm [vite-plugin-svelte] src/forms/Rating.svelte:119:6 `<div>` with a click or mouseenter handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions
+117:     {#each Array(max) as _, i}
+118:       {@const fill = getIconFill(i)}
+119:       <div
+                ^
+120:         class="relative"
+121:         on:click={() => handleClick(i)}
+2:47:58 pm [vite-plugin-svelte] src/forms/Rating.svelte:126:10 Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events
+124:         {#if allowHalf}
+125:           <!-- Left half (for half rating) -->
+126:           <div
+                 ^
+127:             class="absolute inset-y-0 left-0 w-1/2 z-10"
+128:             on:click|stopPropagation={() => handleClick(i, true)}
+2:47:58 pm [vite-plugin-svelte] src/forms/Rating.svelte:126:10 `<div>` with a click or mouseenter handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions
+124:         {#if allowHalf}
+125:           <!-- Left half (for half rating) -->
+126:           <div
+                 ^
+127:             class="absolute inset-y-0 left-0 w-1/2 z-10"
+128:             on:click|stopPropagation={() => handleClick(i, true)}
+2:47:58 pm [vite-plugin-svelte] src/forms/Rating.svelte:126:10 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+124:         {#if allowHalf}
+125:           <!-- Left half (for half rating) -->
+126:           <div
+                 ^
+127:             class="absolute inset-y-0 left-0 w-1/2 z-10"
+128:             on:click|stopPropagation={() => handleClick(i, true)}
+2:47:58 pm [vite-plugin-svelte] src/data/Calendar.svelte:287:20 `<button>` cannot be a descendant of `<button>`. When rendering this component on the server, the resulting HTML will be modified by the browser (by moving, removing, or inserting elements), likely resulting in a `hydration_mismatch` warning
+https://svelte.dev/e/node_invalid_placement_ssr
+285:                 <div class="mt-1 space-y-0.5">
+286:                   {#each dayEvents.slice(0, 3) as event}
+287:                     <button
+                                 ^
+288:                       type="button"
+289:                       class="w-full text-left text-xs px-1 py-0.5 rounded truncate"
+2:47:58 pm [vite-plugin-svelte] src/data/Timeline.svelte:152:10 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+150: 
+151:         {#if showConnector && !isLast}
+152:           <div
+                 ^
+153:             class={cn(
+154:               'timeline-connector',
+2:47:59 pm [vite-plugin-svelte] src/feedback/Tooltip.svelte:103:0 `<div>` with a mouseenter or mouseleave handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions
+101: </script>
+102: 
+103: <div
+          ^
+104:   bind:this={triggerRef}
+105:   class="inline-block"
+2:47:59 pm [vite-plugin-svelte] src/feedback/Tooltip.svelte:130:4 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+128:     {content}
+129:     <!-- Arrow -->
+130:     <div
+           ^
+131:       class={cn(
+132:         'absolute w-2 h-2 bg-[var(--color-neutral-900)] rotate-45',
+2:47:59 pm [vite-plugin-svelte] src/feedback/ProgressBar.svelte:66:4 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+64:     aria-label={label || 'Progress'}
+65:   >
+66:     <div
+          ^
+67:       class={cn(
+68:         'h-full rounded-full transition-all duration-300',
+2:47:59 pm [vite-plugin-svelte] src/feedback/Popover.svelte:186:0 Visible, non-interactive elements with a click event must be accompanied by a keyboard event handler. Consider whether an interactive element such as `<button type="button">` or `<a>` might be more appropriate
+https://svelte.dev/e/a11y_click_events_have_key_events
+184: </script>
+185: 
+186: <div
+          ^
+187:   bind:this={triggerRef}
+188:   class="inline-block"
+2:47:59 pm [vite-plugin-svelte] src/feedback/Popover.svelte:186:0 `<div>` with a click, mouseenter or mouseleave handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions
+184: </script>
+185: 
+186: <div
+          ^
+187:   bind:this={triggerRef}
+188:   class="inline-block"
+2:47:59 pm [vite-plugin-svelte] src/feedback/Popover.svelte:197:2 Elements with the 'dialog' interactive role must have a tabindex value
+https://svelte.dev/e/a11y_interactive_supports_focus
+195: 
+196: {#if open}
+197:   <div
+            ^
+198:     bind:this={contentRef}
+199:     class={cn(
+2:47:59 pm [vite-plugin-svelte] src/feedback/Popover.svelte:213:6 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+211:   >
+212:     {#if showArrow}
+213:       <div
+             ^
+214:         bind:this={arrowRef}
+215:         class="absolute w-3 h-3 bg-[var(--color-surface-primary)] border-l border-t border-[var(--color-border-primary)] -z-10"
+2:47:59 pm [vite-plugin-svelte] src/charts/EChart.svelte:125:0 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+123: </script>
+124: 
+125: <div
+       ^
+126:   bind:this={chartContainer}
+127:   class={cn('echart-container', className)}
+2:47:59 pm [vite-plugin-svelte] src/data/Kanban.svelte:192:6 `<div>` with a dragover, dragleave or drop handler must have an ARIA role
+https://svelte.dev/e/a11y_no_static_element_interactions
+190: 
+191:       <!-- Cards Container -->
+192:       <div
+                ^
+193:         class="flex-1 p-2 space-y-2 overflow-y-auto max-h-[calc(100vh-200px)]"
+194:         on:dragover={(e) => handleDragOver(e, column.id, column.cards.length)}
+2:47:59 pm [vite-plugin-svelte] src/data/Kanban.svelte:292:10 Self-closing HTML tags for non-void elements are ambiguous — use `<div ...></div>` rather than `<div ... />`
+https://svelte.dev/e/element_invalid_self_closing_tag
+290:         <!-- Drop zone indicator -->
+291:         {#if dropTargetColumn === column.id && dropTargetIndex === column.cards.length}
+292:           <div class="h-16 border-2 border-dashed border-[var(--color-interactive-primary)] rounded-lg bg-[var(--color-interactive-primary)]/10" />
+                                                                                                                                                        ^
+293:         {/if}
+294:       </div>
+[33mConflicting namespaces: "src/index.ts" re-exports "Tooltip" from one of the modules "src/feedback/index.ts" and "src/display/index.ts" (will be ignored).[39m
+[33mConflicting namespaces: "src/index.ts" re-exports "Avatar" from one of the modules "src/display/index.ts" and "src/business/index.ts" (will be ignored).[39m
+[33mConflicting namespaces: "src/index.ts" re-exports "AvatarGroup" from one of the modules "src/display/index.ts" and "src/business/index.ts" (will be ignored).[39m
+[33m"getContext" is imported from external module "svelte" but never used in "src/display/ListItem.svelte".[39m
+[32m✓[39m 783 modules transformed.
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[35mindex.css  [39m[1m[2m    1.30 kB[22m[1m[22m[2m │ gzip:   0.48 kB[22m
+[2mdist/[22m[36mindex.js   [39m[1m[33m2,064.66 kB[39m[22m[2m │ gzip: 538.60 kB[22m
+[32m✓ built in 14.03s[39m

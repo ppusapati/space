@@ -1,0 +1,162 @@
+{
+  "drawer": {
+    "overlay": {
+      "base": {
+        "value": "fixed inset-0 z-40 transition-opacity duration-300 ease-in-out"
+      },
+      "background": {
+        "value": "bg-black bg-opacity-50"
+      },
+      "open": {
+        "value": "opacity-100"
+      },
+      "closed": {
+        "value": "opacity-0 pointer-events-none"
+      }
+    },
+    "container": {
+      "base": {
+        "value": "fixed z-50 bg-white shadow-xl transition-transform duration-300 ease-in-out flex flex-col"
+      },
+      "position": {
+        "left": {
+          "value": "left-0 top-0 h-full border-r border-color-neutral-200"
+        },
+        "right": {
+          "value": "right-0 top-0 h-full border-l border-color-neutral-200"
+        },
+        "top": {
+          "value": "top-0 left-0 w-full border-b border-color-neutral-200"
+        },
+        "bottom": {
+          "value": "bottom-0 left-0 w-full border-t border-color-neutral-200"
+        }
+      },
+      "size": {
+        "left": {
+          "sm": {
+            "value": "w-64"
+          },
+          "md": {
+            "value": "w-80"
+          },
+          "lg": {
+            "value": "w-96"
+          },
+          "xl": {
+            "value": "w-[28rem]"
+          },
+          "full": {
+            "value": "w-full"
+          }
+        },
+        "right": {
+          "sm": {
+            "value": "w-64"
+          },
+          "md": {
+            "value": "w-80"
+          },
+          "lg": {
+            "value": "w-96"
+          },
+          "xl": {
+            "value": "w-[28rem]"
+          },
+          "full": {
+            "value": "w-full"
+          }
+        },
+        "top": {
+          "sm": {
+            "value": "h-48"
+          },
+          "md": {
+            "value": "h-64"
+          },
+          "lg": {
+            "value": "h-80"
+          },
+          "xl": {
+            "value": "h-96"
+          },
+          "full": {
+            "value": "h-full"
+          }
+        },
+        "bottom": {
+          "sm": {
+            "value": "h-48"
+          },
+          "md": {
+            "value": "h-64"
+          },
+          "lg": {
+            "value": "h-80"
+          },
+          "xl": {
+            "value": "h-96"
+          },
+          "full": {
+            "value": "h-full"
+          }
+        }
+      },
+      "transform": {
+        "left": {
+          "open": {
+            "value": "translate-x-0"
+          },
+          "closed": {
+            "value": "-translate-x-full"
+          }
+        },
+        "right": {
+          "open": {
+            "value": "translate-x-0"
+          },
+          "closed": {
+            "value": "translate-x-full"
+          }
+        },
+        "top": {
+          "open": {
+            "value": "translate-y-0"
+          },
+          "closed": {
+            "value": "-translate-y-full"
+          }
+        },
+        "bottom": {
+          "open": {
+            "value": "translate-y-0"
+          },
+          "closed": {
+            "value": "translate-y-full"
+          }
+        }
+      }
+    },
+    "header": {
+      "base": {
+        "value": "flex items-center justify-between px-6 py-4 border-b border-color-neutral-200 flex-shrink-0"
+      },
+      "title": {
+        "value": "text-lg font-semibold text-color-neutral-900"
+      }
+    },
+    "content": {
+      "base": {
+        "value": "flex-1 overflow-y-auto px-6 py-4"
+      }
+    },
+    "closeButton": {
+      "base": {
+        "value": "inline-flex items-center justify-center w-8 h-8 text-color-neutral-400 hover:text-color-neutral-600 hover:bg-color-neutral-100 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-color-brand-primary-500 focus:ring-offset-2"
+      },
+      "icon": {
+        "value": "w-5 h-5"
+      }
+    }
+  }
+}

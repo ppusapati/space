@@ -1,0 +1,38 @@
+{
+  "name": "@samavaya/shell",
+  "version": "0.0.1",
+  "private": true,
+  "description": "samavāya ERP Shell Application",
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "eslint .",
+    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+  },
+  "dependencies": {
+    "@p9e.in/samavaya": "workspace:*",
+    "@samavāya/core": "workspace:*",
+    "@samavāya/stores": "workspace:*",
+    "@samavāya/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^3.3.0",
+    "@sveltejs/adapter-node": "^5.5.4",
+    "@sveltejs/kit": "^2.10.0",
+    "@sveltejs/vite-plugin-svelte": "^4.0.0",
+    "@types/node": "^22.10.0",
+    "@unocss/svelte-scoped": "^66.5.11",
+    "autoprefixer": "^10.4.23",
+    "postcss": "^8.5.6",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.1.0",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.7.0",
+    "unocss": "^66.3.3",
+    "vite": "^6.0.0"
+  }
+}

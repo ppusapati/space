@@ -1,0 +1,27 @@
+[package]
+name = "samavaya-payroll"
+version.workspace = true
+edition.workspace = true
+description = "Payroll calculations - Income tax, PF, ESI, CTC breakdown"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+serde-wasm-bindgen.workspace = true
+rust_decimal.workspace = true
+rust_decimal_macros.workspace = true
+chrono.workspace = true
+log.workspace = true
+console_log.workspace = true
+console_error_panic_hook.workspace = true
+samavaya-core = { path = "../core" }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"

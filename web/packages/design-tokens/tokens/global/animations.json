@@ -1,0 +1,432 @@
+{
+  "animation": {
+    "duration": {
+      "instant": {
+        "value": "0ms",
+        "type": "duration",
+        "description": "Immediate state changes with no animation"
+      },
+      "immediate": {
+        "value": "50ms",
+        "type": "duration",
+        "description": "Ultra-fast micro-interactions"
+      },
+      "fast": {
+        "value": "150ms",
+        "type": "duration",
+        "description": "Quick hover states and simple transitions"
+      },
+      "moderate": {
+        "value": "250ms",
+        "type": "duration",
+        "description": "Standard UI element transitions"
+      },
+      "normal": {
+        "value": "300ms",
+        "type": "duration",
+        "description": "Default animation duration for most interactions"
+      },
+      "deliberate": {
+        "value": "400ms",
+        "type": "duration",
+        "description": "Noticeable state changes and focus shifts"
+      },
+      "slow": {
+        "value": "500ms",
+        "type": "duration",
+        "description": "Emphasized transitions and important state changes"
+      },
+      "slower": {
+        "value": "700ms",
+        "type": "duration",
+        "description": "Complex animations and multi-step transitions"
+      },
+      "slowest": {
+        "value": "1000ms",
+        "type": "duration",
+        "description": "Loading states and progress indicators"
+      }
+    },
+    "easing": {
+      "linear": {
+        "value": "linear",
+        "type": "cubicBezier",
+        "description": "Constant speed throughout animation"
+      },
+      "ease": {
+        "value": "ease",
+        "type": "cubicBezier",
+        "description": "Default CSS ease function"
+      },
+      "easeIn": {
+        "value": "cubic-bezier(0.4, 0, 1, 1)",
+        "type": "cubicBezier",
+        "description": "Slow start, fast finish - good for exits"
+      },
+      "easeOut": {
+        "value": "cubic-bezier(0, 0, 0.2, 1)",
+        "type": "cubicBezier",
+        "description": "Fast start, slow finish - good for entrances"
+      },
+      "easeInOut": {
+        "value": "cubic-bezier(0.4, 0, 0.2, 1)",
+        "type": "cubicBezier",
+        "description": "Slow start and finish - good for emphasis"
+      },
+      "sharp": {
+        "value": "cubic-bezier(0.4, 0, 0.6, 1)",
+        "type": "cubicBezier",
+        "description": "Quick decisive movements"
+      },
+      "bouncing": {
+        "value": "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+        "type": "cubicBezier",
+        "description": "Playful bounce effect - use sparingly"
+      },
+      "elastic": {
+        "value": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        "type": "cubicBezier",
+        "description": "Subtle elastic effect"
+      },
+      "anticipate": {
+        "value": "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        "type": "cubicBezier",
+        "description": "Slight pull-back before moving forward"
+      },
+      "overshoot": {
+        "value": "cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        "type": "cubicBezier",
+        "description": "Goes slightly beyond target then settles"
+      }
+    },
+    "delay": {
+      "none": {
+        "value": "0ms",
+        "type": "duration",
+        "description": "No delay - immediate start"
+      },
+      "micro": {
+        "value": "25ms",
+        "type": "duration",
+        "description": "Barely perceptible delay for sequencing"
+      },
+      "short": {
+        "value": "50ms",
+        "type": "duration",
+        "description": "Brief delay for staggered animations"
+      },
+      "medium": {
+        "value": "100ms",
+        "type": "duration",
+        "description": "Noticeable delay for emphasis"
+      },
+      "long": {
+        "value": "200ms",
+        "type": "duration",
+        "description": "Deliberate pause before animation"
+      },
+      "extended": {
+        "value": "300ms",
+        "type": "duration",
+        "description": "Long delay for dramatic effect"
+      }
+    },
+    "keyframes": {
+      "fadeIn": {
+        "value": [
+          { "offset": 0, "opacity": 0 },
+          { "offset": 1, "opacity": 1 }
+        ],
+        "type": "keyframes",
+        "description": "Simple fade in from transparent to opaque"
+      },
+      "fadeOut": {
+        "value": [
+          { "offset": 0, "opacity": 1 },
+          { "offset": 1, "opacity": 0 }
+        ],
+        "type": "keyframes",
+        "description": "Simple fade out from opaque to transparent"
+      },
+      "slideInUp": {
+        "value": [
+          { "offset": 0, "transform": "translateY(100%)", "opacity": 0 },
+          { "offset": 1, "transform": "translateY(0)", "opacity": 1 }
+        ],
+        "type": "keyframes",
+        "description": "Slide in from bottom with fade"
+      },
+      "slideInDown": {
+        "value": [
+          { "offset": 0, "transform": "translateY(-100%)", "opacity": 0 },
+          { "offset": 1, "transform": "translateY(0)", "opacity": 1 }
+        ],
+        "type": "keyframes",
+        "description": "Slide in from top with fade"
+      },
+      "slideInLeft": {
+        "value": [
+          { "offset": 0, "transform": "translateX(-100%)", "opacity": 0 },
+          { "offset": 1, "transform": "translateX(0)", "opacity": 1 }
+        ],
+        "type": "keyframes",
+        "description": "Slide in from left with fade"
+      },
+      "slideInRight": {
+        "value": [
+          { "offset": 0, "transform": "translateX(100%)", "opacity": 0 },
+          { "offset": 1, "transform": "translateX(0)", "opacity": 1 }
+        ],
+        "type": "keyframes",
+        "description": "Slide in from right with fade"
+      },
+      "scaleIn": {
+        "value": [
+          { "offset": 0, "transform": "scale(0)", "opacity": 0 },
+          { "offset": 1, "transform": "scale(1)", "opacity": 1 }
+        ],
+        "type": "keyframes",
+        "description": "Scale up from zero with fade in"
+      },
+      "scaleOut": {
+        "value": [
+          { "offset": 0, "transform": "scale(1)", "opacity": 1 },
+          { "offset": 1, "transform": "scale(0)", "opacity": 0 }
+        ],
+        "type": "keyframes",
+        "description": "Scale down to zero with fade out"
+      },
+      "pulse": {
+        "value": [
+          { "offset": 0, "transform": "scale(1)" },
+          { "offset": 0.5, "transform": "scale(1.05)" },
+          { "offset": 1, "transform": "scale(1)" }
+        ],
+        "type": "keyframes",
+        "description": "Gentle pulsing effect"
+      },
+      "bounce": {
+        "value": [
+          { "offset": 0, "transform": "translateY(0)" },
+          { "offset": 0.25, "transform": "translateY(-10px)" },
+          { "offset": 0.5, "transform": "translateY(0)" },
+          { "offset": 0.75, "transform": "translateY(-5px)" },
+          { "offset": 1, "transform": "translateY(0)" }
+        ],
+        "type": "keyframes",
+        "description": "Bouncing motion with decreasing height"
+      },
+      "shake": {
+        "value": [
+          { "offset": 0, "transform": "translateX(0)" },
+          { "offset": 0.1, "transform": "translateX(-10px)" },
+          { "offset": 0.2, "transform": "translateX(10px)" },
+          { "offset": 0.3, "transform": "translateX(-10px)" },
+          { "offset": 0.4, "transform": "translateX(10px)" },
+          { "offset": 0.5, "transform": "translateX(-10px)" },
+          { "offset": 0.6, "transform": "translateX(10px)" },
+          { "offset": 0.7, "transform": "translateX(-10px)" },
+          { "offset": 0.8, "transform": "translateX(10px)" },
+          { "offset": 0.9, "transform": "translateX(-10px)" },
+          { "offset": 1, "transform": "translateX(0)" }
+        ],
+        "type": "keyframes",
+        "description": "Horizontal shaking motion - good for errors"
+      },
+      "spin": {
+        "value": [
+          { "offset": 0, "transform": "rotate(0deg)" },
+          { "offset": 1, "transform": "rotate(360deg)" }
+        ],
+        "type": "keyframes",
+        "description": "Full 360 degree rotation"
+      },
+      "wobble": {
+        "value": [
+          { "offset": 0, "transform": "rotate(0deg)" },
+          { "offset": 0.25, "transform": "rotate(-5deg)" },
+          { "offset": 0.5, "transform": "rotate(3deg)" },
+          { "offset": 0.75, "transform": "rotate(-3deg)" },
+          { "offset": 1, "transform": "rotate(0deg)" }
+        ],
+        "type": "keyframes",
+        "description": "Gentle wobbling rotation"
+      },
+      "heartbeat": {
+        "value": [
+          { "offset": 0, "transform": "scale(1)" },
+          { "offset": 0.14, "transform": "scale(1.3)" },
+          { "offset": 0.28, "transform": "scale(1)" },
+          { "offset": 0.42, "transform": "scale(1.3)" },
+          { "offset": 0.7, "transform": "scale(1)" }
+        ],
+        "type": "keyframes",
+        "description": "Double-beat pulsing like a heartbeat"
+      },
+      "shimmer": {
+        "value": [
+          { "offset": 0, "background-position": "-200px 0" },
+          { "offset": 1, "background-position": "calc(200px + 100%) 0" }
+        ],
+        "type": "keyframes",
+        "description": "Shimmer effect for loading skeletons"
+      }
+    },
+    "presets": {
+      "hoverLift": {
+        "duration": "{animation.duration.fast}",
+        "easing": "{animation.easing.easeOut}",
+        "keyframes": [
+          { "offset": 0, "transform": "translateY(0) scale(1)" },
+          { "offset": 1, "transform": "translateY(-2px) scale(1.02)" }
+        ],
+        "type": "animation",
+        "description": "Subtle lift effect for hover states"
+      },
+      "buttonPress": {
+        "duration": "{animation.duration.immediate}",
+        "easing": "{animation.easing.easeIn}",
+        "keyframes": [
+          { "offset": 0, "transform": "scale(1)" },
+          { "offset": 1, "transform": "scale(0.98)" }
+        ],
+        "type": "animation",
+        "description": "Button press down effect"
+      },
+      "modalEnter": {
+        "duration": "{animation.duration.normal}",
+        "easing": "{animation.easing.easeOut}",
+        "keyframes": "{animation.keyframes.scaleIn}",
+        "type": "animation",
+        "description": "Modal entrance animation"
+      },
+      "modalExit": {
+        "duration": "{animation.duration.fast}",
+        "easing": "{animation.easing.easeIn}",
+        "keyframes": "{animation.keyframes.scaleOut}",
+        "type": "animation",
+        "description": "Modal exit animation"
+      },
+      "toastSlideIn": {
+        "duration": "{animation.duration.normal}",
+        "easing": "{animation.easing.bounce}",
+        "keyframes": "{animation.keyframes.slideInRight}",
+        "delay": "{animation.delay.short}",
+        "type": "animation",
+        "description": "Toast notification entrance"
+      },
+      "errorShake": {
+        "duration": "{animation.duration.slower}",
+        "easing": "{animation.easing.linear}",
+        "keyframes": "{animation.keyframes.shake}",
+        "type": "animation",
+        "description": "Error state indication"
+      },
+      "loadingSpinner": {
+        "duration": "{animation.duration.slowest}",
+        "easing": "{animation.easing.linear}",
+        "keyframes": "{animation.keyframes.spin}",
+        "iterationCount": "infinite",
+        "type": "animation",
+        "description": "Continuous loading spinner"
+      },
+      "pageTransition": {
+        "duration": "{animation.duration.deliberate}",
+        "easing": "{animation.easing.easeInOut}",
+        "keyframes": [
+          { "offset": 0, "opacity": 1, "transform": "translateX(0)" },
+          { "offset": 0.5, "opacity": 0, "transform": "translateX(-20px)" },
+          { "offset": 1, "opacity": 1, "transform": "translateX(0)" }
+        ],
+        "type": "animation",
+        "description": "Page-to-page transition effect"
+      },
+      "accordionExpand": {
+        "duration": "{animation.duration.normal}",
+        "easing": "{animation.easing.easeOut}",
+        "keyframes": [
+          { "offset": 0, "height": "0", "opacity": 0 },
+          { "offset": 1, "height": "auto", "opacity": 1 }
+        ],
+        "type": "animation",
+        "description": "Accordion panel expansion"
+      },
+      "progressBar": {
+        "duration": "{animation.duration.slow}",
+        "easing": "{animation.easing.easeOut}",
+        "keyframes": [
+          { "offset": 0, "width": "0%" },
+          { "offset": 1, "width": "100%" }
+        ],
+        "type": "animation",
+        "description": "Progress bar fill animation"
+      },
+      "skeletonShimmer": {
+        "duration": "1500ms",
+        "easing": "{animation.easing.linear}",
+        "keyframes": "{animation.keyframes.shimmer}",
+        "iterationCount": "infinite",
+        "type": "animation",
+        "description": "Continuous shimmer effect for loading skeletons"
+      },
+      "skeletonPulse": {
+        "duration": "2000ms",
+        "easing": "{animation.easing.easeInOut}",
+        "keyframes": [
+          { "offset": 0, "opacity": 1 },
+          { "offset": 0.5, "opacity": 0.4 },
+          { "offset": 1, "opacity": 1 }
+        ],
+        "iterationCount": "infinite",
+        "type": "animation",
+        "description": "Pulsing opacity effect for loading skeletons"
+      }
+    },
+    "stagger": {
+      "listItems": {
+        "delay": "{animation.delay.micro}",
+        "increment": "25ms",
+        "type": "duration",
+        "description": "Staggered delay for list item animations"
+      },
+      "cards": {
+        "delay": "{animation.delay.short}",
+        "increment": "50ms",
+        "type": "duration",
+        "description": "Staggered delay for card grid animations"
+      },
+      "navigation": {
+        "delay": "{animation.delay.short}",
+        "increment": "75ms",
+        "type": "duration",
+        "description": "Staggered delay for navigation menu items"
+      }
+    },
+    "reduced": {
+      "duration": {
+        "fast": {
+          "value": "0ms",
+          "type": "duration",
+          "description": "Respect prefers-reduced-motion - no animation"
+        },
+        "normal": {
+          "value": "0ms",
+          "type": "duration",
+          "description": "Respect prefers-reduced-motion - no animation"
+        },
+        "slow": {
+          "value": "0ms",
+          "type": "duration",
+          "description": "Respect prefers-reduced-motion - no animation"
+        }
+      },
+      "easing": {
+        "all": {
+          "value": "linear",
+          "type": "cubicBezier",
+          "description": "Linear easing for reduced motion preference"
+        }
+      }
+    }
+  }
+}

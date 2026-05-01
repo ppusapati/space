@@ -1,0 +1,61 @@
+{
+  "name": "@samavāya/wasm",
+  "version": "0.1.0",
+  "private": true,
+  "description": "WebAssembly modules for Samavaya ERP - High-performance Rust-powered computations",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./tax": {
+      "types": "./src/tax.ts",
+      "import": "./src/tax.ts"
+    },
+    "./validation": {
+      "types": "./src/validation.ts",
+      "import": "./src/validation.ts"
+    },
+    "./barcode": {
+      "types": "./src/barcode.ts",
+      "import": "./src/barcode.ts"
+    },
+    "./ledger": {
+      "types": "./src/ledger.ts",
+      "import": "./src/ledger.ts"
+    },
+    "./pricing": {
+      "types": "./src/pricing.ts",
+      "import": "./src/pricing.ts"
+    },
+    "./core": {
+      "types": "./src/core.ts",
+      "import": "./src/core.ts"
+    }
+  },
+  "scripts": {
+    "wasm:build": "node scripts/build.js",
+    "wasm:build:dev": "node scripts/build.js --dev",
+    "wasm:clean": "rimraf pkg target",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.0",
+    "typescript": "^5.7.0"
+  },
+  "files": [
+    "src",
+    "pkg"
+  ],
+  "keywords": [
+    "wasm",
+    "webassembly",
+    "rust",
+    "erp",
+    "gst",
+    "indian-accounting"
+  ]
+}

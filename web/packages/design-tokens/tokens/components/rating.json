@@ -1,0 +1,139 @@
+{
+  "rating": {
+    "container": {
+      "base": {
+        "value": "inline-flex items-center"
+      },
+      "disabled": {
+        "value": "opacity-50 cursor-not-allowed"
+      },
+      "readonly": {
+        "value": "pointer-events-none"
+      }
+    },
+    "icon": {
+      "base": {
+        "value": "transition-all duration-150 cursor-pointer"
+      },
+      "size": {
+        "sm": {
+          "value": "w-4 h-4"
+        },
+        "md": {
+          "value": "w-6 h-6"
+        },
+        "lg": {
+          "value": "w-8 h-8"
+        },
+        "xl": {
+          "value": "w-10 h-10"
+        }
+      },
+      "gap": {
+        "sm": {
+          "value": "gap-0.5"
+        },
+        "md": {
+          "value": "gap-1"
+        },
+        "lg": {
+          "value": "gap-1.5"
+        },
+        "xl": {
+          "value": "gap-2"
+        }
+      },
+      "state": {
+        "empty": {
+          "value": "text-color-neutral-300"
+        },
+        "filled": {
+          "value": "text-color-semantic-warning-400"
+        },
+        "hover": {
+          "value": "text-color-semantic-warning-500 scale-110"
+        },
+        "active": {
+          "value": "scale-95"
+        }
+      },
+      "variant": {
+        "star": {
+          "empty": {
+            "value": "text-color-neutral-300"
+          },
+          "filled": {
+            "value": "text-color-semantic-warning-400"
+          }
+        },
+        "heart": {
+          "empty": {
+            "value": "text-color-neutral-300"
+          },
+          "filled": {
+            "value": "text-color-semantic-error-500"
+          }
+        },
+        "thumb": {
+          "empty": {
+            "value": "text-color-neutral-300"
+          },
+          "filled": {
+            "value": "text-color-brand-primary-500"
+          }
+        }
+      }
+    },
+    "half": {
+      "container": {
+        "value": "relative"
+      },
+      "clip": {
+        "value": "absolute inset-0 overflow-hidden"
+      }
+    },
+    "label": {
+      "base": {
+        "value": "ml-2 text-color-neutral-700"
+      },
+      "size": {
+        "sm": {
+          "value": "text-sm"
+        },
+        "md": {
+          "value": "text-base"
+        },
+        "lg": {
+          "value": "text-lg"
+        },
+        "xl": {
+          "value": "text-xl"
+        }
+      }
+    },
+    "count": {
+      "base": {
+        "value": "ml-1 text-color-neutral-500"
+      },
+      "size": {
+        "sm": {
+          "value": "text-xs"
+        },
+        "md": {
+          "value": "text-sm"
+        },
+        "lg": {
+          "value": "text-base"
+        },
+        "xl": {
+          "value": "text-lg"
+        }
+      }
+    },
+    "feedback": {
+      "text": {
+        "value": "ml-2 text-sm text-color-neutral-600"
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+[package]
+name = "samavaya-compliance"
+version.workspace = true
+edition.workspace = true
+description = "GST compliance - e-Invoice generation, GSTR validation, IRN generation"
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+wasm-bindgen.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+rust_decimal.workspace = true
+rust_decimal_macros.workspace = true
+chrono.workspace = true
+log.workspace = true
+console_error_panic_hook.workspace = true
+serde-wasm-bindgen.workspace = true
+sha2 = "0.10"
+base64 = "0.21"
+samavaya-core = { path = "../core" }
+samavaya-validation = { path = "../validation" }

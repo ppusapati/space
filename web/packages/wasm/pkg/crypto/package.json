@@ -1,0 +1,16 @@
+{
+  "name": "samavaya-crypto",
+  "type": "module",
+  "description": "Cryptographic utilities - hashing, encryption, digital signatures",
+  "version": "0.1.0",
+  "files": [
+    "samavaya_crypto_bg.wasm",
+    "samavaya_crypto.js",
+    "samavaya_crypto.d.ts"
+  ],
+  "main": "samavaya_crypto.js",
+  "types": "samavaya_crypto.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

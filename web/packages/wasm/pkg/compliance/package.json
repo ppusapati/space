@@ -1,0 +1,16 @@
+{
+  "name": "samavaya-compliance",
+  "type": "module",
+  "description": "GST compliance - e-Invoice generation, GSTR validation, IRN generation",
+  "version": "0.1.0",
+  "files": [
+    "samavaya_compliance_bg.wasm",
+    "samavaya_compliance.js",
+    "samavaya_compliance.d.ts"
+  ],
+  "main": "samavaya_compliance.js",
+  "types": "samavaya_compliance.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

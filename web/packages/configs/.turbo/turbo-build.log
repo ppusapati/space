@@ -1,0 +1,15 @@
+
+> @p9e.in/configs@0.0.0 build E:\Brahma\accounts\web\packages\configs
+> tsc && xcopy /s /i /y src\eslint dist\eslint && xcopy /s /i /y src\typescript dist\typescript && xcopy /y src\uno\preset-p9e.js dist\uno\
+
+src\eslint\base.js
+src\eslint\index.js
+src\eslint\next.js
+src\eslint\react-internal.js
+4 File(s) copied
+src\typescript\base.json
+src\typescript\index.ts
+src\typescript\nextjs.json
+3 File(s) copied
+src\uno\preset-p9e.js
+1 File(s) copied

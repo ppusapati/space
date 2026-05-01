@@ -1,0 +1,110 @@
+{
+  "color": {
+    "surface": {
+      "primary": {
+        "value": "{color.neutral.white}",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "{color.neutral.50}",
+        "type": "color"
+      },
+      "tertiary": {
+        "value": "{color.neutral.100}",
+        "type": "color"
+      },
+      "inverse": {
+        "value": "{color.neutral.900}",
+        "type": "color"
+      },
+      "overlay": {
+        "value": "rgba(0, 0, 0, 0.5)",
+        "type": "color"
+      }
+    },
+    "text": {
+      "primary": {
+        "value": "{color.neutral.900}",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "{color.neutral.700}",
+        "type": "color"
+      },
+      "tertiary": {
+        "value": "{color.neutral.500}",
+        "type": "color"
+      },
+      "inverse": {
+        "value": "{color.neutral.white}",
+        "type": "color"
+      },
+      "placeholder": {
+        "value": "{color.neutral.400}",
+        "type": "color"
+      },
+      "disabled": {
+        "value": "{color.neutral.300}",
+        "type": "color"
+      }
+    },
+    "border": {
+      "primary": {
+        "value": "{color.neutral.200}",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "{color.neutral.300}",
+        "type": "color"
+      },
+      "focus": {
+        "value": "{color.brand.primary.500}",
+        "type": "color"
+      },
+      "inverse": {
+        "value": "{color.neutral.700}",
+        "type": "color"
+      }
+    },
+    "interactive": {
+      "primary": {
+        "value": "{color.brand.primary.500}",
+        "type": "color"
+      },
+      "primaryHover": {
+        "value": "{color.brand.primary.600}",
+        "type": "color"
+      },
+      "primaryActive": {
+        "value": "{color.brand.primary.700}",
+        "type": "color"
+      },
+      "secondary": {
+        "value": "{color.neutral.100}",
+        "type": "color"
+      },
+      "secondaryHover": {
+        "value": "{color.neutral.200}",
+        "type": "color"
+      },
+      "secondaryActive": {
+        "value": "{color.neutral.300}",
+        "type": "color"
+      }
+    }
+  },
+  "shadow": {
+    "card": {
+      "value": "{shadow.sm}",
+      "type": "shadow"
+    },
+    "modal": {
+      "value": "{shadow.xl}",
+      "type": "shadow"
+    },
+    "dropdown": {
+      "value": "{shadow.lg}",
+      "type": "shadow"
+    }
+  }
+}

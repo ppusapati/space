@@ -1,0 +1,125 @@
+{
+  "name": "@samavāya/ui",
+  "version": "1.0.0",
+  "description": "Svelte component library for samavāya ERP",
+  "type": "module",
+  "svelte": "./src/index.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "svelte": "./src/index.ts",
+      "import": "./src/index.ts"
+    },
+    "./forms": {
+      "types": "./src/forms/index.ts",
+      "svelte": "./src/forms/index.ts",
+      "import": "./src/forms/index.ts"
+    },
+    "./tables": {
+      "types": "./src/tables/index.ts",
+      "svelte": "./src/tables/index.ts",
+      "import": "./src/tables/index.ts"
+    },
+    "./navigation": {
+      "types": "./src/navigation/index.ts",
+      "svelte": "./src/navigation/index.ts",
+      "import": "./src/navigation/index.ts"
+    },
+    "./feedback": {
+      "types": "./src/feedback/index.ts",
+      "svelte": "./src/feedback/index.ts",
+      "import": "./src/feedback/index.ts"
+    },
+    "./display": {
+      "types": "./src/display/index.ts",
+      "svelte": "./src/display/index.ts",
+      "import": "./src/display/index.ts"
+    },
+    "./layout": {
+      "types": "./src/layout/index.ts",
+      "svelte": "./src/layout/index.ts",
+      "import": "./src/layout/index.ts"
+    },
+    "./actions": {
+      "types": "./src/actions/index.ts",
+      "import": "./src/actions/index.ts"
+    },
+    "./charts": {
+      "types": "./src/charts/index.ts",
+      "svelte": "./src/charts/index.ts",
+      "import": "./src/charts/index.ts"
+    },
+    "./data": {
+      "types": "./src/data/index.ts",
+      "svelte": "./src/data/index.ts",
+      "import": "./src/data/index.ts"
+    },
+    "./business": {
+      "types": "./src/business/index.ts",
+      "svelte": "./src/business/index.ts",
+      "import": "./src/business/index.ts"
+    },
+    "./icons": {
+      "types": "./src/icons/index.ts",
+      "svelte": "./src/icons/index.ts",
+      "import": "./src/icons/index.ts"
+    },
+    "./icons.svg": "./static/icons.svg",
+    "./static/*": "./static/*"
+  },
+  "files": [
+    "dist",
+    "static",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "package": "svelte-package",
+    "typecheck": "svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "clean": "rimraf dist"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  },
+  "dependencies": {
+    "@p9e.in/samavaya": "workspace:*",
+    "@p9e.in/utils": "workspace:*",
+    "@samavāya/core": "workspace:*",
+    "@samavāya/stores": "workspace:*",
+    "echarts": "^5.5.0"
+  },
+  "devDependencies": {
+    "@p9e.in/configs": "workspace:*",
+    "@sveltejs/package": "^2.5.7",
+    "@sveltejs/vite-plugin-svelte": "^4.0.0",
+    "@testing-library/svelte": "^5.2.0",
+    "@types/node": "^24.1.0",
+    "jsdom": "^26.1.0",
+    "rimraf": "^6.0.1",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.1.0",
+    "typescript": "^5.8.3",
+    "unocss": "^66.3.3",
+    "vite": "^7.0.6",
+    "vitest": "^3.2.4",
+    "xlsx": "^0.18.5",
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2"
+  },
+  "keywords": [
+    "svelte",
+    "components",
+    "ui",
+    "erp",
+    "samavāya",
+    "design-system",
+    "unocss"
+  ],
+  "license": "MIT"
+}

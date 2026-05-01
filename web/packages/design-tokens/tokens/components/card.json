@@ -1,0 +1,57 @@
+{
+  "card": {
+    "container": {
+      "background": {
+        "light": { "value": "{color.neutral.white}", "type": "color" },
+        "dark": { "value": "{color.neutral.900}", "type": "color" }
+      },
+      "border": {
+        "radius": { "value": "{layout.radius.lg}", "type": "borderRadius" },
+        "width": { "value": "{borderWidth.default}", "type": "borderWidth" },
+        "color": {
+          "light": { "value": "{color.neutral.200}", "type": "color" },
+          "dark": { "value": "{color.neutral.700}", "type": "color" }
+        }
+      },
+      "shadow": {
+        "sm": { "value": "{shadow.sm}", "type": "boxShadow" },
+        "md": { "value": "{shadow.md}", "type": "boxShadow" },
+        "lg": { "value": "{shadow.lg}", "type": "boxShadow" }
+      },
+      "padding": {
+        "sm": { "value": "{spacing.3}", "type": "spacing" },
+        "md": { "value": "{spacing.4}", "type": "spacing" },
+        "lg": { "value": "{spacing.6}", "type": "spacing" }
+      }
+    },
+    "header": {
+      "padding": {
+        "bottom": { "value": "{spacing.3}", "type": "spacing" }
+      },
+      "border": {
+        "width": { "value": "{borderWidth.default}", "type": "borderWidth" },
+        "color": {
+          "light": { "value": "{color.neutral.200}", "type": "color" },
+          "dark": { "value": "{color.neutral.700}", "type": "color" }
+        }
+      }
+    },
+    "body": {
+      "padding": {
+        "y": { "value": "{spacing.3}", "type": "spacing" }
+      }
+    },
+    "footer": {
+      "padding": {
+        "top": { "value": "{spacing.3}", "type": "spacing" }
+      },
+      "border": {
+        "width": { "value": "{borderWidth.default}", "type": "borderWidth" },
+        "color": {
+          "light": { "value": "{color.neutral.200}", "type": "color" },
+          "dark": { "value": "{color.neutral.700}", "type": "color" }
+        }
+      }
+    }
+  }
+}

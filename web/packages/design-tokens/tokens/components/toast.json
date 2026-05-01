@@ -1,0 +1,122 @@
+{
+  "toast": {
+    "container": {
+      "base": {
+        "value": "relative max-w-sm w-full bg-white border rounded-lg shadow-lg p-4 transition-all duration-300 ease-in-out transform"
+      },
+      "animation": {
+        "visible": {
+          "value": "translate-x-0 opacity-100 scale-100"
+        },
+        "hidden": {
+          "value": "translate-x-full opacity-0 scale-95"
+        }
+      },
+      "type": {
+        "info": {
+          "value": "border-color-brand-primary-200"
+        },
+        "success": {
+          "value": "border-color-semantic-success-200"
+        },
+        "warning": {
+          "value": "border-color-semantic-warning-200"
+        },
+        "error": {
+          "value": "border-color-semantic-error-200"
+        }
+      }
+    },
+    "content": {
+      "wrapper": {
+        "value": "flex items-start"
+      },
+      "iconWrapper": {
+        "value": "flex-shrink-0 mr-3"
+      },
+      "textWrapper": {
+        "value": "flex-1 min-w-0"
+      },
+      "title": {
+        "value": "text-sm font-medium text-color-neutral-900 mb-1"
+      },
+      "message": {
+        "value": "text-sm text-color-neutral-600"
+      },
+      "actionWrapper": {
+        "value": "mt-2"
+      }
+    },
+    "icon": {
+      "base": {
+        "value": "flex-shrink-0 w-6 h-6"
+      },
+      "type": {
+        "info": {
+          "value": "text-color-brand-primary-500"
+        },
+        "success": {
+          "value": "text-color-semantic-success-500"
+        },
+        "warning": {
+          "value": "text-color-semantic-warning-500"
+        },
+        "error": {
+          "value": "text-color-semantic-error-500"
+        }
+      }
+    },
+    "closeButton": {
+      "base": {
+        "value": "inline-flex items-center justify-center w-6 h-6 text-color-neutral-400 hover:text-color-neutral-600 hover:bg-color-neutral-100 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-color-brand-primary-500 focus:ring-offset-2 ml-auto flex-shrink-0"
+      },
+      "icon": {
+        "value": "w-4 h-4"
+      }
+    },
+    "actionButton": {
+      "base": {
+        "value": "text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-md px-2 py-1"
+      },
+      "type": {
+        "info": {
+          "value": "text-color-brand-primary-600 hover:text-color-brand-primary-700 focus:ring-color-brand-primary-500"
+        },
+        "success": {
+          "value": "text-color-semantic-success-600 hover:text-color-semantic-success-700 focus:ring-color-semantic-success-500"
+        },
+        "warning": {
+          "value": "text-color-semantic-warning-600 hover:text-color-semantic-warning-700 focus:ring-color-semantic-warning-500"
+        },
+        "error": {
+          "value": "text-color-semantic-error-600 hover:text-color-semantic-error-700 focus:ring-color-semantic-error-500"
+        }
+      }
+    },
+    "containerPosition": {
+      "base": {
+        "value": "fixed z-50 flex flex-col space-y-4 pointer-events-none"
+      },
+      "position": {
+        "topLeft": {
+          "value": "top-4 left-4"
+        },
+        "topCenter": {
+          "value": "top-4 left-1/2 transform -translate-x-1/2"
+        },
+        "topRight": {
+          "value": "top-4 right-4"
+        },
+        "bottomLeft": {
+          "value": "bottom-4 left-4"
+        },
+        "bottomCenter": {
+          "value": "bottom-4 left-1/2 transform -translate-x-1/2"
+        },
+        "bottomRight": {
+          "value": "bottom-4 right-4"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,106 @@
+{
+  "currencyinput": {
+    "container": {
+      "base": {
+        "value": "w-full"
+      }
+    },
+    "label": {
+      "base": {
+        "value": "block mb-2 font-medium text-color-neutral-900"
+      }
+    },
+    "wrapper": {
+      "base": {
+        "value": "flex"
+      }
+    },
+    "input": {
+      "base": {
+        "value": "flex-1 rounded-r-lg border border-color-neutral-300 bg-color-neutral-white text-color-neutral-900 text-right font-mono tabular-nums px-3"
+      },
+      "focus": {
+        "value": "focus:outline-none focus:ring-2 focus:ring-color-brand-primary-500"
+      },
+      "disabled": {
+        "value": "opacity-50 cursor-not-allowed"
+      },
+      "size": {
+        "sm": {
+          "value": "h-8 text-sm"
+        },
+        "md": {
+          "value": "h-10 text-base"
+        },
+        "lg": {
+          "value": "h-12 text-lg"
+        }
+      }
+    },
+    "symbol": {
+      "base": {
+        "value": "flex items-center justify-center rounded-l-lg border border-r-0 border-color-neutral-300 bg-color-neutral-100 text-color-neutral-600 px-3"
+      }
+    },
+    "selector": {
+      "trigger": {
+        "base": {
+          "value": "flex items-center justify-between gap-1 rounded-l-lg border border-r-0 border-color-neutral-300 bg-color-neutral-100 text-color-neutral-900"
+        },
+        "hover": {
+          "value": "hover:bg-color-neutral-200"
+        },
+        "focus": {
+          "value": "focus:outline-none focus:ring-2 focus:ring-inset focus:ring-color-brand-primary-500"
+        },
+        "disabled": {
+          "value": "opacity-50 cursor-not-allowed"
+        },
+        "size": {
+          "sm": {
+            "value": "h-8 text-sm px-2"
+          },
+          "md": {
+            "value": "h-10 text-base px-3"
+          },
+          "lg": {
+            "value": "h-12 text-lg px-4"
+          }
+        }
+      },
+      "dropdown": {
+        "base": {
+          "value": "absolute z-dropdown mt-1 w-48 max-h-60 overflow-auto bg-color-neutral-white border border-color-neutral-200 rounded-lg shadow-lg"
+        }
+      },
+      "option": {
+        "base": {
+          "value": "w-full px-3 py-2 text-left text-sm"
+        },
+        "hover": {
+          "value": "hover:bg-color-neutral-100"
+        },
+        "focus": {
+          "value": "focus:outline-none focus:bg-color-neutral-100"
+        },
+        "selected": {
+          "value": "bg-color-brand-primary-500 text-color-neutral-white"
+        }
+      },
+      "currencyCode": {
+        "value": "font-medium"
+      },
+      "currencySymbol": {
+        "value": "text-color-neutral-500 ml-2"
+      },
+      "currencyName": {
+        "value": "block text-xs text-color-neutral-500"
+      }
+    },
+    "chevron": {
+      "size": {
+        "value": "h-4 w-4"
+      }
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "typography": {
+    "fontFamily": {
+      "primary": { "value": "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif", "type": "fontFamily" },
+      "secondary": { "value": "Georgia, 'Times New Roman', serif", "type": "fontFamily" },
+      "mono": { "value": "'Fira Code', 'SF Mono', Consolas, monospace", "type": "fontFamily" },
+      "display": { "value": "'Playfair Display', Georgia, serif", "type": "fontFamily" }
+    },
+    "fontSize": {
+      "xs": { "value": "12px", "type": "dimension" },
+      "sm": { "value": "14px", "type": "dimension" },
+      "base": { "value": "16px", "type": "dimension" },
+      "lg": { "value": "18px", "type": "dimension" },
+      "xl": { "value": "20px", "type": "dimension" },
+      "2xl": { "value": "24px", "type": "dimension" },
+      "3xl": { "value": "30px", "type": "dimension" },
+      "4xl": { "value": "36px", "type": "dimension" },
+      "5xl": { "value": "48px", "type": "dimension" },
+      "6xl": { "value": "64px", "type": "dimension" },
+      "7xl": { "value": "72px", "type": "dimension" },
+      "8xl": { "value": "96px", "type": "dimension" },
+      "9xl": { "value": "128px", "type": "dimension" }
+    },
+    "fontWeight": {
+      "thin": { "value": "100", "type": "fontWeight" },
+      "extralight": { "value": "200", "type": "fontWeight" },
+      "light": { "value": "300", "type": "fontWeight" },
+      "normal": { "value": "400", "type": "fontWeight" },
+      "medium": { "value": "500", "type": "fontWeight" },
+      "semibold": { "value": "600", "type": "fontWeight" },
+      "bold": { "value": "700", "type": "fontWeight" },
+      "extrabold": { "value": "800", "type": "fontWeight" },
+      "black": { "value": "900", "type": "fontWeight" }
+    },
+    "lineHeight": {
+      "none": { "value": "1", "type": "number" },
+      "tight": { "value": "1.25", "type": "number" },
+      "snug": { "value": "1.375", "type": "number" },
+      "normal": { "value": "1.5", "type": "number" },
+      "relaxed": { "value": "1.625", "type": "number" },
+      "loose": { "value": "2", "type": "number" }
+    },
+    "letterSpacing": {
+      "tighter": { "value": "-0.05em", "type": "dimension" },
+      "tight": { "value": "-0.025em", "type": "dimension" },
+      "normal": { "value": "0em", "type": "dimension" },
+      "wide": { "value": "0.025em", "type": "dimension" },
+      "wider": { "value": "0.05em", "type": "dimension" },
+      "widest": { "value": "0.1em", "type": "dimension" }
+    }
+  }
+}

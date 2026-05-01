@@ -1,0 +1,20 @@
+{
+  "name": "samavaya-validation",
+  "type": "module",
+  "collaborators": [
+    "Samavaya Team"
+  ],
+  "description": "Validation utilities for Indian tax identifiers (GSTIN, PAN, TAN, etc.)",
+  "version": "0.1.0",
+  "license": "MIT",
+  "files": [
+    "samavaya_validation_bg.wasm",
+    "samavaya_validation.js",
+    "samavaya_validation.d.ts"
+  ],
+  "main": "samavaya_validation.js",
+  "types": "samavaya_validation.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

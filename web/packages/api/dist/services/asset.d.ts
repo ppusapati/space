@@ -1,0 +1,68 @@
+/**
+ * Asset Service Factories
+ * Typed ConnectRPC clients for assets, depreciation, equipment, maintenance, vehicles
+ */
+import type { Client } from '@connectrpc/connect';
+import { AssetService } from '@samavāya/proto/gen/business/asset/asset/proto/asset_pb.js';
+import { DepreciationService } from '@samavāya/proto/gen/business/asset/depreciation/proto/depreciation_pb.js';
+import { EquipmentService } from '@samavāya/proto/gen/business/asset/equipment/proto/equipment_pb.js';
+import { MaintenanceService } from '@samavāya/proto/gen/business/asset/maintenance/proto/maintenance_pb.js';
+import { VehicleService } from '@samavāya/proto/gen/business/asset/vehicle/proto/vehicle_pb.js';
+import { AgricultureAssetService } from '@samavāya/proto/gen/business/asset/asset/proto/agriculture/asset_agriculture_pb.js';
+import { AgricultureDepreciationService } from '@samavāya/proto/gen/business/asset/depreciation/proto/agriculture/depreciation_agriculture_pb.js';
+import { AgricultureEquipmentService } from '@samavāya/proto/gen/business/asset/equipment/proto/agriculture/equipment_agriculture_pb.js';
+import { AgricultureMaintenanceService } from '@samavāya/proto/gen/business/asset/maintenance/proto/agriculture/maintenance_agriculture_pb.js';
+import { AgricultureVehicleService } from '@samavāya/proto/gen/business/asset/vehicle/proto/agriculture/vehicle_agriculture_pb.js';
+import { ConstructionAssetService } from '@samavāya/proto/gen/business/asset/asset/proto/construction/asset_construction_pb.js';
+import { ConstructionDepreciationService } from '@samavāya/proto/gen/business/asset/depreciation/proto/construction/depreciation_construction_pb.js';
+import { ConstructionEquipmentService } from '@samavāya/proto/gen/business/asset/equipment/proto/construction/equipment_construction_pb.js';
+import { ConstructionMaintenanceService } from '@samavāya/proto/gen/business/asset/maintenance/proto/construction/maintenance_construction_pb.js';
+import { ConstructionVehicleService } from '@samavāya/proto/gen/business/asset/vehicle/proto/construction/vehicle_construction_pb.js';
+import { MfgVerticalAssetService } from '@samavāya/proto/gen/business/asset/asset/proto/mfgvertical/asset_mfgvertical_pb.js';
+import { MfgVerticalDepreciationService } from '@samavāya/proto/gen/business/asset/depreciation/proto/mfgvertical/depreciation_mfgvertical_pb.js';
+import { MfgVerticalEquipmentService } from '@samavāya/proto/gen/business/asset/equipment/proto/mfgvertical/equipment_mfgvertical_pb.js';
+import { MfgVerticalMaintenanceService } from '@samavāya/proto/gen/business/asset/maintenance/proto/mfgvertical/maintenance_mfgvertical_pb.js';
+import { MfgVerticalVehicleService } from '@samavāya/proto/gen/business/asset/vehicle/proto/mfgvertical/vehicle_mfgvertical_pb.js';
+import { solarAssetService } from '@samavāya/proto/gen/business/asset/asset/proto/solar/asset_solar_pb.js';
+import { solarDepreciationService } from '@samavāya/proto/gen/business/asset/depreciation/proto/solar/depreciation_solar_pb.js';
+import { solarEquipmentService } from '@samavāya/proto/gen/business/asset/equipment/proto/solar/equipment_solar_pb.js';
+import { solarMaintenanceService } from '@samavāya/proto/gen/business/asset/maintenance/proto/solar/maintenance_solar_pb.js';
+import { solarVehicleService } from '@samavāya/proto/gen/business/asset/vehicle/proto/solar/vehicle_solar_pb.js';
+import { WaterAssetService } from '@samavāya/proto/gen/business/asset/asset/proto/water/asset_water_pb.js';
+import { WaterDepreciationService } from '@samavāya/proto/gen/business/asset/depreciation/proto/water/depreciation_water_pb.js';
+import { WaterEquipmentService } from '@samavāya/proto/gen/business/asset/equipment/proto/water/equipment_water_pb.js';
+import { WaterMaintenanceService } from '@samavāya/proto/gen/business/asset/maintenance/proto/water/maintenance_water_pb.js';
+import { WaterVehicleService } from '@samavāya/proto/gen/business/asset/vehicle/proto/water/vehicle_water_pb.js';
+export { AssetService, DepreciationService, EquipmentService, MaintenanceService, VehicleService };
+export declare function getAssetService(): Client<typeof AssetService>;
+export declare function getDepreciationService(): Client<typeof DepreciationService>;
+export declare function getEquipmentService(): Client<typeof EquipmentService>;
+export declare function getMaintenanceService(): Client<typeof MaintenanceService>;
+export declare function getVehicleService(): Client<typeof VehicleService>;
+export { AgricultureAssetService, ConstructionAssetService, MfgVerticalAssetService, solarAssetService, WaterAssetService, AgricultureDepreciationService, ConstructionDepreciationService, MfgVerticalDepreciationService, solarDepreciationService, WaterDepreciationService, AgricultureEquipmentService, ConstructionEquipmentService, MfgVerticalEquipmentService, solarEquipmentService, WaterEquipmentService, AgricultureMaintenanceService, ConstructionMaintenanceService, MfgVerticalMaintenanceService, solarMaintenanceService, WaterMaintenanceService, AgricultureVehicleService, ConstructionVehicleService, MfgVerticalVehicleService, solarVehicleService, WaterVehicleService, };
+export declare function getAgricultureAssetService(): Client<typeof AgricultureAssetService>;
+export declare function getAgricultureDepreciationService(): Client<typeof AgricultureDepreciationService>;
+export declare function getAgricultureEquipmentService(): Client<typeof AgricultureEquipmentService>;
+export declare function getAgricultureMaintenanceService(): Client<typeof AgricultureMaintenanceService>;
+export declare function getAgricultureVehicleService(): Client<typeof AgricultureVehicleService>;
+export declare function getConstructionAssetService(): Client<typeof ConstructionAssetService>;
+export declare function getConstructionDepreciationService(): Client<typeof ConstructionDepreciationService>;
+export declare function getConstructionEquipmentService(): Client<typeof ConstructionEquipmentService>;
+export declare function getConstructionMaintenanceService(): Client<typeof ConstructionMaintenanceService>;
+export declare function getConstructionVehicleService(): Client<typeof ConstructionVehicleService>;
+export declare function getMfgVerticalAssetService(): Client<typeof MfgVerticalAssetService>;
+export declare function getMfgVerticalDepreciationService(): Client<typeof MfgVerticalDepreciationService>;
+export declare function getMfgVerticalEquipmentService(): Client<typeof MfgVerticalEquipmentService>;
+export declare function getMfgVerticalMaintenanceService(): Client<typeof MfgVerticalMaintenanceService>;
+export declare function getMfgVerticalVehicleService(): Client<typeof MfgVerticalVehicleService>;
+export declare function getSolarAssetService(): Client<typeof solarAssetService>;
+export declare function getSolarDepreciationService(): Client<typeof solarDepreciationService>;
+export declare function getSolarEquipmentService(): Client<typeof solarEquipmentService>;
+export declare function getSolarMaintenanceService(): Client<typeof solarMaintenanceService>;
+export declare function getSolarVehicleService(): Client<typeof solarVehicleService>;
+export declare function getWaterAssetService(): Client<typeof WaterAssetService>;
+export declare function getWaterDepreciationService(): Client<typeof WaterDepreciationService>;
+export declare function getWaterEquipmentService(): Client<typeof WaterEquipmentService>;
+export declare function getWaterMaintenanceService(): Client<typeof WaterMaintenanceService>;
+export declare function getWaterVehicleService(): Client<typeof WaterVehicleService>;
+//# sourceMappingURL=asset.d.ts.map

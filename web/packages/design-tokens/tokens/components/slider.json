@@ -1,0 +1,116 @@
+{
+  "slider": {
+    "container": {
+      "base": {
+        "value": "relative w-full"
+      },
+      "disabled": {
+        "value": "opacity-50 cursor-not-allowed"
+      }
+    },
+    "track": {
+      "base": {
+        "value": "relative w-full rounded-full cursor-pointer"
+      },
+      "size": {
+        "sm": {
+          "value": "h-1"
+        },
+        "md": {
+          "value": "h-2"
+        },
+        "lg": {
+          "value": "h-3"
+        }
+      },
+      "background": {
+        "value": "bg-color-neutral-200"
+      }
+    },
+    "fill": {
+      "base": {
+        "value": "absolute h-full rounded-full"
+      },
+      "color": {
+        "default": {
+          "value": "bg-color-brand-primary-500"
+        },
+        "success": {
+          "value": "bg-color-semantic-success-500"
+        },
+        "warning": {
+          "value": "bg-color-semantic-warning-500"
+        },
+        "error": {
+          "value": "bg-color-semantic-error-500"
+        }
+      }
+    },
+    "thumb": {
+      "base": {
+        "value": "absolute top-1/2 -translate-y-1/2 rounded-full bg-color-neutral-white border-2 shadow-md cursor-grab active:cursor-grabbing transition-transform duration-100 focus:outline-none focus:ring-2 focus:ring-offset-2"
+      },
+      "size": {
+        "sm": {
+          "value": "w-3 h-3"
+        },
+        "md": {
+          "value": "w-4 h-4"
+        },
+        "lg": {
+          "value": "w-5 h-5"
+        }
+      },
+      "color": {
+        "default": {
+          "value": "border-color-brand-primary-500 focus:ring-color-brand-primary-500"
+        },
+        "success": {
+          "value": "border-color-semantic-success-500 focus:ring-color-semantic-success-500"
+        },
+        "warning": {
+          "value": "border-color-semantic-warning-500 focus:ring-color-semantic-warning-500"
+        },
+        "error": {
+          "value": "border-color-semantic-error-500 focus:ring-color-semantic-error-500"
+        }
+      },
+      "hover": {
+        "value": "hover:scale-110"
+      },
+      "active": {
+        "value": "active:scale-95"
+      }
+    },
+    "tick": {
+      "base": {
+        "value": "absolute w-1 h-1 rounded-full bg-color-neutral-400 -translate-x-1/2"
+      }
+    },
+    "tickLabel": {
+      "base": {
+        "value": "absolute text-xs text-color-neutral-500 -translate-x-1/2 mt-2"
+      }
+    },
+    "tooltip": {
+      "base": {
+        "value": "absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-color-neutral-white bg-color-neutral-800 rounded shadow-lg whitespace-nowrap"
+      }
+    },
+    "label": {
+      "base": {
+        "value": "block text-sm font-medium text-color-neutral-700 mb-2"
+      }
+    },
+    "value": {
+      "base": {
+        "value": "text-sm text-color-neutral-600"
+      }
+    },
+    "range": {
+      "minMax": {
+        "value": "flex justify-between text-xs text-color-neutral-500 mt-1"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "name": "samavaya-i18n",
+  "type": "module",
+  "description": "Internationalization utilities - locale formatting, number/date/currency formatting",
+  "version": "0.1.0",
+  "files": [
+    "samavaya_i18n_bg.wasm",
+    "samavaya_i18n.js",
+    "samavaya_i18n.d.ts"
+  ],
+  "main": "samavaya_i18n.js",
+  "types": "samavaya_i18n.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

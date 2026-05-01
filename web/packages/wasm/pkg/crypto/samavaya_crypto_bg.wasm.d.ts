@@ -1,0 +1,33 @@
+/* tslint:disable */
+/* eslint-disable */
+export const memory: WebAssembly.Memory;
+export const hash: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
+export const sha256: (a: number, b: number, c: number) => void;
+export const sha512: (a: number, b: number, c: number) => void;
+export const hmac_sha256: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
+export const verify_hmac_sha256: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => number;
+export const hash_password: (a: number, b: number, c: number, d: number, e: number) => number;
+export const verify_password: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => number;
+export const generate_random_bytes: (a: number, b: number) => void;
+export const generate_random_hex: (a: number, b: number) => void;
+export const generate_random_base64: (a: number, b: number) => void;
+export const encrypt_aes_gcm: (a: number, b: number, c: number, d: number) => number;
+export const decrypt_aes_gcm: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
+export const base64_encode: (a: number, b: number, c: number) => void;
+export const base64_decode: (a: number, b: number, c: number) => void;
+export const base64_decode_bytes: (a: number, b: number, c: number) => void;
+export const hex_encode: (a: number, b: number, c: number) => void;
+export const hex_decode: (a: number, b: number, c: number) => void;
+export const generate_api_key: (a: number, b: number, c: number) => void;
+export const generate_secure_token: (a: number, b: number) => void;
+export const secure_compare: (a: number, b: number, c: number, d: number) => number;
+export const derive_key: (a: number, b: number, c: number, d: number, e: number, f: number) => void;
+export const file_checksum: (a: number, b: number, c: number, d: number, e: number) => void;
+export const verify_checksum: (a: number, b: number, c: number, d: number, e: number, f: number) => number;
+export const base64_encode_bytes: (a: number, b: number, c: number) => void;
+export const hash_bytes: (a: number, b: number, c: number, d: number, e: number, f: number, g: number) => void;
+export const __wbindgen_export: (a: number) => void;
+export const __wbindgen_add_to_stack_pointer: (a: number) => number;
+export const __wbindgen_export2: (a: number, b: number) => number;
+export const __wbindgen_export3: (a: number, b: number, c: number, d: number) => number;
+export const __wbindgen_export4: (a: number, b: number, c: number) => void;

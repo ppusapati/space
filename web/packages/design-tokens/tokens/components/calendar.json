@@ -1,0 +1,125 @@
+{
+  "calendar": {
+    "container": {
+      "base": {
+        "value": "rounded-lg border border-color-neutral-200 bg-color-neutral-white"
+      }
+    },
+    "header": {
+      "base": {
+        "value": "flex items-center justify-between p-4 border-b border-color-neutral-200"
+      }
+    },
+    "navigation": {
+      "button": {
+        "value": "p-2 rounded hover:bg-color-neutral-100 text-color-neutral-500"
+      },
+      "icon": {
+        "value": "h-5 w-5"
+      }
+    },
+    "title": {
+      "base": {
+        "value": "text-lg font-semibold text-color-neutral-900 min-w-[180px] text-center"
+      }
+    },
+    "todayButton": {
+      "base": {
+        "value": "ml-2 px-3 py-1.5 text-sm rounded border border-color-neutral-200 hover:bg-color-neutral-100"
+      }
+    },
+    "viewToggle": {
+      "container": {
+        "value": "flex items-center gap-1 bg-color-neutral-100 rounded-lg p-1"
+      },
+      "button": {
+        "base": {
+          "value": "px-3 py-1.5 text-sm rounded capitalize"
+        },
+        "active": {
+          "value": "bg-color-brand-primary-500 text-color-neutral-white"
+        },
+        "inactive": {
+          "value": "text-color-neutral-500 hover:text-color-neutral-900"
+        }
+      }
+    },
+    "weekdays": {
+      "container": {
+        "value": "grid grid-cols-7 gap-1 mb-2"
+      },
+      "cell": {
+        "value": "text-xs font-medium text-color-neutral-500 text-center p-2"
+      }
+    },
+    "weekNumber": {
+      "header": {
+        "value": "text-xs font-medium text-color-neutral-500 text-center p-2"
+      },
+      "cell": {
+        "value": "text-xs text-color-neutral-500 text-center p-2"
+      }
+    },
+    "grid": {
+      "base": {
+        "value": "grid grid-cols-7 gap-1"
+      }
+    },
+    "day": {
+      "base": {
+        "value": "min-h-[80px] p-1 rounded text-left transition-colors hover:bg-color-neutral-100"
+      },
+      "focus": {
+        "value": "focus:outline-none focus:ring-2 focus:ring-inset focus:ring-color-brand-primary-500"
+      },
+      "state": {
+        "otherMonth": {
+          "value": "opacity-40"
+        },
+        "today": {
+          "value": "bg-color-brand-primary-50"
+        },
+        "selected": {
+          "value": "ring-2 ring-color-brand-primary-500"
+        },
+        "disabled": {
+          "value": "opacity-30 cursor-not-allowed"
+        }
+      }
+    },
+    "dayNumber": {
+      "base": {
+        "value": "inline-flex items-center justify-center w-7 h-7 text-sm rounded-full"
+      },
+      "today": {
+        "value": "bg-color-brand-primary-500 text-color-neutral-white font-semibold"
+      }
+    },
+    "events": {
+      "container": {
+        "value": "mt-1 space-y-0.5"
+      },
+      "item": {
+        "base": {
+          "value": "w-full text-left text-xs px-1 py-0.5 rounded truncate text-color-neutral-white"
+        },
+        "default": {
+          "value": "bg-color-brand-primary-500"
+        }
+      },
+      "more": {
+        "value": "text-xs text-color-neutral-500"
+      }
+    },
+    "week": {
+      "container": {
+        "value": "p-4 text-center text-color-neutral-500"
+      }
+    },
+    "dayView": {
+      "container": {
+        "value": "p-4 text-center text-color-neutral-500"
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "name": "@p9e.in/samavaya",
+  "version": "1.0.0",
+  "description": "Enterprise design tokens for MFE applications",
+  "type": "module",
+  "main": "dist/js/tokens.js",
+  "types": "./dist/types/tokens.d.ts",
+  "scripts": {
+    "build": "node scripts/build-themes.js",
+    "generate:fonts": "node scripts/generate-fonts.js",
+    "prebuild": "pnpm generate:fonts",
+    "issues": "node scripts/token-issues.js",
+    "fix": "node scripts/fix-token-issues.js",
+    "semantic": "node scripts/semantic-tokens.js",
+    "types": "node scripts/type-definition.js",
+    "build:watch": "nodemon --watch tokens --ext json --exec \"pnpm.cmd run build\"",
+    "dev": "pnpm build:watch",
+    "validate": "node scripts/validate.js",
+    "clean": "rimraf dist public/fonts"
+  },
+  "files": [
+    "dist/**/*",
+    "tokens/**/*"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/js/tokens.js",
+      "types": "./dist/types/tokens.d.ts"
+    },
+    "./uno": {
+      "import": "./dist/uno/index.js",
+      "types": "./dist/uno/index.d.ts"
+    },
+    "./uno/theme": {
+      "import": "./dist/uno/theme.js",
+      "types": "./dist/uno/theme.d.ts"
+    },
+    "./types": "./dist/types/tokens.d.ts",
+    "./css": "./dist/css/tokens.css",
+    "./css/light": "./dist/css/tokens-light.css",
+    "./css/dark": "./dist/css/tokens-dark.css",
+    "./css/keyframes": "./dist/css/keyframes.css",
+    "./js": "./dist/js/tokens.js",
+    "./js/theme-utils": {
+      "import": "./dist/js/theme-utils.js",
+      "types": "./dist/types/theme-utils.d.ts"
+    },
+    "./preset-p9e": {
+      "import": "./dist/preset-p9e.js",
+      "types": "./dist/preset-p9e.d.ts"
+    }
+  },
+  "devDependencies": {
+    "fontless": "^0.0.2",
+    "fs-extra": "^11.3.1",
+    "nodemon": "^3.0.1",
+    "rimraf": "^5.0.1",
+    "style-dictionary": "^5.0.1"
+  },
+  "keywords": [
+    "design-tokens",
+    "design-system",
+    "microfrontend",
+    "enterprise",
+    "unocss",
+    "tokens"
+  ],
+  "dependencies": {
+    "@unocss/preset-uno": "^66.3.3",
+    "unocss": "^66.3.3"
+  }
+}
