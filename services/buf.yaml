@@ -14,6 +14,8 @@ modules:
     name: buf.build/p9e/sat-fsw
   - path: sat-telemetry/proto
     name: buf.build/p9e/sat-telemetry
+  - path: sat-command/proto
+    name: buf.build/p9e/sat-command
 deps:
   - buf.build/bufbuild/protovalidate
 breaking:

@@ -1,0 +1,21 @@
+service:
+  name: sat-command
+  environment: development
+  log_level: info
+
+http:
+  addr: ":8080"
+
+metrics:
+  addr: ":9090"
+
+shutdown:
+  timeout: 30s
+
+database:
+  # DSN can be overridden by DATABASE_URL env var (see config.go).
+  dsn: ""
+
+cors:
+  allowed_origins:
+    - "*"

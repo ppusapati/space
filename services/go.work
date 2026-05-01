@@ -8,4 +8,5 @@ use (
 	./sat-mission
 	./sat-fsw
 	./sat-telemetry
+	./sat-command
 )
