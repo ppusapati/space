@@ -1,0 +1,90 @@
+{{- range $name, $svc := .Values.services -}}
+{{- if $svc.enabled -}}
+{{- $repo := default (printf "p9e/%s" $name) $svc.image.repository -}}
+{{- $tag := default $.Values.global.imageTag (default "" $svc.image.tag) -}}
+{{- $image := "" -}}
+{{- if $.Values.global.imageRegistry -}}
+{{- $image = printf "%s/%s:%s" $.Values.global.imageRegistry $repo $tag -}}
+{{- else -}}
+{{- $image = printf "%s:%s" $repo $tag -}}
+{{- end -}}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $.Release.Name }}-{{ $name }}
+  labels:
+    {{- include "space.labels" $ | nindent 4 }}
+    app.kubernetes.io/name: {{ $name }}
+spec:
+  replicas: {{ default 1 $svc.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ $name }}
+      app.kubernetes.io/instance: {{ $.Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- include "space.labels" $ | nindent 8 }}
+        app.kubernetes.io/name: {{ $name }}
+      annotations:
+        {{- with $.Values.global.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        # Force pod restart on ConfigMap change.
+        checksum/config: {{ printf "%s-%s" $name (default "info" $svc.logLevel) | sha256sum }}
+    spec:
+      serviceAccountName: {{ include "space.serviceAccountName" $ }}
+      {{- with $.Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ $name }}
+          image: {{ $image | quote }}
+          imagePullPolicy: {{ default "IfNotPresent" $.Values.global.imagePullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+            - name: metrics
+              containerPort: 9090
+              protocol: TCP
+          env:
+            - name: CONFIG_PATH
+              value: /etc/{{ $name }}/config/config.yaml
+            - name: DATABASE_URL
+              value: postgres://{{ $.Values.global.database.user }}:$(POSTGRES_PASSWORD)@{{ $.Values.global.database.host }}:{{ $.Values.global.database.port }}/{{ $svc.database }}?sslmode={{ $.Values.global.database.sslmode }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.global.database.passwordSecret.name }}
+                  key: {{ $.Values.global.database.passwordSecret.key }}
+            - name: ALLOWED_ORIGINS
+              value: {{ join "," (default $.Values.global.cors.allowedOrigins (default (list) $svc.allowedOrigins)) | quote }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/{{ $name }}/config
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http
+            initialDelaySeconds: 2
+            periodSeconds: 10
+            timeoutSeconds: 3
+          resources:
+            {{- toYaml (default $.Values.global.resources $svc.resources) | nindent 12 }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ $.Release.Name }}-{{ $name }}-config
+{{- end -}}
+{{- end -}}

@@ -9,32 +9,15 @@ RETURNING *;
 -- name: GetItem :one
 SELECT * FROM items WHERE id = $1;
 
--- name: SearchItems :many
+-- name: CountItemsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM items
+WHERE tenant_id = sqlc.arg('tenant_id')::uuid
+  AND (sqlc.narg('collection_id')::uuid IS NULL OR collection_id = sqlc.narg('collection_id')::uuid);
+
+-- name: ListItemsForTenant :many
 SELECT * FROM items
 WHERE tenant_id = sqlc.arg('tenant_id')::uuid
-  AND (
-        sqlc.narg('collection_id')::uuid IS NULL
-        OR collection_id = sqlc.narg('collection_id')::uuid
-      )
-  AND datetime BETWEEN sqlc.arg('datetime_start')::timestamptz
-                   AND sqlc.arg('datetime_end')::timestamptz
-  AND (
-        sqlc.narg('max_cloud_cover')::double precision IS NULL
-        OR cloud_cover <= sqlc.narg('max_cloud_cover')::double precision
-      )
-  AND (
-        sqlc.narg('bbox_lon_min')::double precision IS NULL
-        OR (
-              bbox_lon_max >= sqlc.narg('bbox_lon_min')::double precision
-          AND bbox_lon_min <= sqlc.narg('bbox_lon_max')::double precision
-          AND bbox_lat_max >= sqlc.narg('bbox_lat_min')::double precision
-          AND bbox_lat_min <= sqlc.narg('bbox_lat_max')::double precision
-        )
-      )
-  AND (
-        sqlc.narg('cursor_datetime')::timestamptz IS NULL
-        OR (datetime, id) < (sqlc.narg('cursor_datetime')::timestamptz,
-                             sqlc.arg('cursor_id')::uuid)
-      )
+  AND (sqlc.narg('collection_id')::uuid IS NULL OR collection_id = sqlc.narg('collection_id')::uuid)
 ORDER BY datetime DESC, id DESC
-LIMIT sqlc.arg('lim')::int;
+OFFSET sqlc.arg('page_offset')::int
+LIMIT  sqlc.arg('page_size')::int;

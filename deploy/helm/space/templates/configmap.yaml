@@ -1,0 +1,31 @@
+{{- range $name, $svc := .Values.services -}}
+{{- if $svc.enabled -}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Release.Name }}-{{ $name }}-config
+  labels:
+    {{- include "space.labels" $ | nindent 4 }}
+    app.kubernetes.io/name: {{ $name }}
+data:
+  config.yaml: |
+    service:
+      name: {{ $name }}
+      environment: {{ default "production" $svc.environment | quote }}
+      log_level: {{ default "info" $svc.logLevel | quote }}
+    http:
+      addr: ":8080"
+    metrics:
+      addr: ":9090"
+    shutdown:
+      timeout: 30s
+    database:
+      dsn: ""        # injected via DATABASE_URL env var
+    cors:
+      allowed_origins:
+{{- range (default $.Values.global.cors.allowedOrigins (default (list) $svc.allowedOrigins)) }}
+        - {{ . | quote }}
+{{- end }}
+{{- end -}}
+{{- end -}}

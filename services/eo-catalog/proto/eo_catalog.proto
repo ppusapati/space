@@ -1,0 +1,165 @@
+syntax = "proto3";
+
+package p9e.space.eocatalog.v1;
+
+option go_package = "github.com/ppusapati/space/services/eo-catalog/api;eocatalogv1";
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// STAC catalog — Collections, Items, Assets. Tenant-scoped.
+// All identifiers are ULID strings (Crockford Base32, 26 chars).
+// =====================================================================
+
+// Bounding box (lon_min, lat_min, lon_max, lat_max).
+message BoundingBox {
+  double lon_min = 1;
+  double lat_min = 2;
+  double lon_max = 3;
+  double lat_max = 4;
+}
+
+// A STAC Collection.
+message Collection {
+  string id = 1;                       // ULID
+  string tenant_id = 2;                // ULID
+  string slug = 3;                     // url-safe stable id
+  string title = 4;
+  string description = 5;
+  string license = 6;
+  BoundingBox spatial_extent = 7;
+  google.protobuf.Timestamp temporal_start = 8;
+  google.protobuf.Timestamp temporal_end = 9;
+  packages.api.v1.fields.Fields fields = 10;
+}
+
+// One asset inside an Item — a single COG band on object storage.
+message Asset {
+  string key = 1;           // band id, e.g. "B04"
+  string href = 2;          // s3:// or https:// URI
+  string media_type = 3;    // e.g. "image/tiff; application=geotiff; profile=cloud-optimized"
+  string title = 4;
+  repeated string roles = 5;
+}
+
+// A STAC Item — one scene.
+message Item {
+  string id = 1;
+  string tenant_id = 2;
+  string collection_id = 3;
+  string mission = 4;
+  string platform = 5;
+  string instrument = 6;
+  google.protobuf.Timestamp datetime = 7;
+  BoundingBox bbox = 8;
+  string geometry_geojson = 9;
+  double cloud_cover = 10;
+  string properties_json = 11;
+  repeated Asset assets = 12;
+  packages.api.v1.fields.Fields fields = 13;
+}
+
+// Quality assessment result emitted by the QA stage.
+message QualityResult {
+  string id = 1;
+  string item_id = 2;
+  double cloud_cover = 3;            // 0..1 fraction
+  double radiometric_rmse = 4;
+  double geometric_accuracy_m = 5;
+  string notes = 6;
+  google.protobuf.Timestamp computed_at = 7;
+}
+
+// =====================================================================
+// Service surface
+// =====================================================================
+
+message CreateCollectionRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string slug = 2 [(buf.validate.field).string = {pattern: "^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$"}];
+  string title = 3 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  string description = 4;
+  string license = 5;
+  BoundingBox spatial_extent = 6;
+  google.protobuf.Timestamp temporal_start = 7;
+  google.protobuf.Timestamp temporal_end = 8;
+}
+message CreateCollectionResponse { Collection collection = 1; }
+
+message GetCollectionRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetCollectionResponse { Collection collection = 1; }
+
+message ListCollectionsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  packages.api.v1.pagination.PaginationRequest page = 2;
+}
+message ListCollectionsResponse {
+  repeated Collection collections = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message DeleteCollectionRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message DeleteCollectionResponse {}
+
+message CreateItemRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string collection_id = 2 [(buf.validate.field).string = {len: 26}];
+  string mission = 3 [(buf.validate.field).string = {min_len: 1, max_len: 100}];
+  string platform = 4;
+  string instrument = 5;
+  google.protobuf.Timestamp datetime = 6;
+  BoundingBox bbox = 7;
+  string geometry_geojson = 8;
+  double cloud_cover = 9 [(buf.validate.field).double = {gte: 0, lte: 100}];
+  string properties_json = 10;
+}
+message CreateItemResponse { Item item = 1; }
+
+message GetItemRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetItemResponse { Item item = 1; }
+
+message ListItemsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string collection_id = 2;            // optional
+  packages.api.v1.pagination.PaginationRequest page = 3;
+}
+message ListItemsResponse {
+  repeated Item items = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message AddAssetRequest {
+  string item_id = 1 [(buf.validate.field).string = {len: 26}];
+  Asset asset = 2;
+}
+message AddAssetResponse { Item item = 1; }
+
+message RecordQualityResultRequest {
+  string item_id = 1 [(buf.validate.field).string = {len: 26}];
+  double cloud_cover = 2 [(buf.validate.field).double = {gte: 0, lte: 1}];
+  double radiometric_rmse = 3;
+  double geometric_accuracy_m = 4;
+  string notes = 5;
+}
+message RecordQualityResultResponse { QualityResult result = 1; }
+
+service CatalogService {
+  rpc CreateCollection(CreateCollectionRequest) returns (CreateCollectionResponse);
+  rpc GetCollection(GetCollectionRequest) returns (GetCollectionResponse);
+  rpc ListCollections(ListCollectionsRequest) returns (ListCollectionsResponse);
+  rpc DeleteCollection(DeleteCollectionRequest) returns (DeleteCollectionResponse);
+  rpc CreateItem(CreateItemRequest) returns (CreateItemResponse);
+  rpc GetItem(GetItemRequest) returns (GetItemResponse);
+  rpc ListItems(ListItemsRequest) returns (ListItemsResponse);
+  rpc AddAsset(AddAssetRequest) returns (AddAssetResponse);
+  rpc RecordQualityResult(RecordQualityResultRequest) returns (RecordQualityResultResponse);
+}

@@ -1,0 +1,22 @@
+go 1.26.1
+
+use (
+	./packages
+	./eo-catalog
+	./eo-pipeline
+	./eo-analytics
+	./sat-mission
+	./sat-fsw
+	./sat-telemetry
+	./sat-command
+	./sat-simulation
+	./gs-mc
+	./gs-rf
+	./gs-scheduler
+	./gs-ingest
+	./gi-fusion
+	./gi-analytics
+	./gi-tiles
+	./gi-reports
+	./gi-predict
+)

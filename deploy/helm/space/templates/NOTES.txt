@@ -1,0 +1,28 @@
+P9E Space platform installed.
+
+Release name: {{ .Release.Name }}
+Namespace:    {{ .Release.Namespace }}
+
+Enabled services:
+{{- range $name, $svc := .Values.services }}
+  {{- if $svc.enabled }}
+  - {{ $name }} (replicas: {{ default 1 $svc.replicas }}, db: {{ $svc.database }})
+  {{- end }}
+{{- end }}
+
+Database password is read from the secret
+"{{ .Values.global.database.passwordSecret.name }}" key "{{ .Values.global.database.passwordSecret.key }}".
+Create it with:
+
+  kubectl create secret generic {{ .Values.global.database.passwordSecret.name }} \
+    --from-literal={{ .Values.global.database.passwordSecret.key }}=<password> \
+    --namespace={{ .Release.Namespace }}
+
+Each service exposes:
+  - HTTP/Connect on  port 80  (target 8080)
+  - Prometheus      on port 9090
+  - /health and /ready endpoints
+
+Health-check a service:
+  kubectl port-forward svc/{{ .Release.Name }}-eo-catalog 8080:80
+  curl http://localhost:8080/health

@@ -1,0 +1,82 @@
+syntax = "proto3";
+
+package p9e.space.gitiles.v1;
+
+option go_package = "github.com/ppusapati/space/services/gi-tiles/api;gitilesv1";
+
+import "buf/validate/validate.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// GEOINT Tiles — raster/vector tile-set catalog. Tile rendering happens
+// in compute/ workers; this service stores tile-set metadata and
+// publishing state.
+// =====================================================================
+
+enum TileFormat {
+  TILE_FORMAT_UNSPECIFIED = 0;
+  TILE_FORMAT_PNG         = 1;
+  TILE_FORMAT_WEBP        = 2;
+  TILE_FORMAT_JPEG        = 3;
+  TILE_FORMAT_MVT         = 4;   // Mapbox Vector Tile
+  TILE_FORMAT_COG         = 5;   // Cloud-Optimized GeoTIFF
+  TILE_FORMAT_GEOJSON     = 6;
+}
+
+message TileSet {
+  string id = 1;
+  string tenant_id = 2;
+  string slug = 3;
+  string name = 4;
+  string description = 5;
+  TileFormat format = 6;
+  string projection = 7;          // EPSG code, e.g. "EPSG:3857"
+  int32 min_zoom = 8;
+  int32 max_zoom = 9;
+  string source_uri = 10;         // s3:// of tile pyramid root
+  string attribution = 11;
+  bool active = 12;
+  packages.api.v1.fields.Fields fields = 13;
+}
+
+message CreateTileSetRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string slug = 2 [(buf.validate.field).string = {pattern: "^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$"}];
+  string name = 3 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  string description = 4;
+  TileFormat format = 5 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string projection = 6 [(buf.validate.field).string = {pattern: "^EPSG:[0-9]+$"}];
+  int32 min_zoom = 7 [(buf.validate.field).int32 = {gte: 0, lte: 30}];
+  int32 max_zoom = 8 [(buf.validate.field).int32 = {gte: 0, lte: 30}];
+  string source_uri = 9 [(buf.validate.field).string = {min_len: 1, max_len: 1024}];
+  string attribution = 10;
+}
+message CreateTileSetResponse { TileSet tile_set = 1; }
+
+message GetTileSetRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetTileSetResponse { TileSet tile_set = 1; }
+
+message ListTileSetsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  optional TileFormat format = 2;
+  packages.api.v1.pagination.PaginationRequest page = 3;
+}
+message ListTileSetsResponse {
+  repeated TileSet tile_sets = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message DeprecateTileSetRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message DeprecateTileSetResponse { TileSet tile_set = 1; }
+
+service TilesService {
+  rpc CreateTileSet(CreateTileSetRequest) returns (CreateTileSetResponse);
+  rpc GetTileSet(GetTileSetRequest) returns (GetTileSetResponse);
+  rpc ListTileSets(ListTileSetsRequest) returns (ListTileSetsResponse);
+  rpc DeprecateTileSet(DeprecateTileSetRequest) returns (DeprecateTileSetResponse);
+}

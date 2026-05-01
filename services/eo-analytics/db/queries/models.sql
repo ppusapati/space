@@ -6,18 +6,21 @@ RETURNING *;
 -- name: GetModel :one
 SELECT * FROM models WHERE id = $1;
 
--- name: ListModels :many
+-- name: CountModelsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM models
+WHERE tenant_id = sqlc.arg('tenant_id')::uuid
+  AND (sqlc.narg('task')::int IS NULL OR task = sqlc.narg('task')::int);
+
+-- name: ListModelsForTenant :many
 SELECT * FROM models
 WHERE tenant_id = sqlc.arg('tenant_id')::uuid
   AND (sqlc.narg('task')::int IS NULL OR task = sqlc.narg('task')::int)
-  AND (
-        sqlc.narg('cursor_created_at')::timestamptz IS NULL
-        OR (created_at, id) < (sqlc.narg('cursor_created_at')::timestamptz,
-                               sqlc.arg('cursor_id')::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT sqlc.arg('lim')::int;
+OFFSET sqlc.arg('page_offset')::int
+LIMIT  sqlc.arg('page_size')::int;
 
 -- name: DeactivateModel :one
-UPDATE models SET active = false, updated_at = now(), updated_by = $2 WHERE id = $1
+UPDATE models
+SET active = false, updated_at = now(), updated_by = sqlc.arg('updated_by')::text
+WHERE id = sqlc.arg('id')::uuid
 RETURNING *;

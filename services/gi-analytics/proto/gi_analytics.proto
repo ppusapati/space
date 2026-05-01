@@ -1,0 +1,96 @@
+syntax = "proto3";
+
+package p9e.space.gianalytics.v1;
+
+option go_package = "github.com/ppusapati/space/services/gi-analytics/api;gianalyticsv1";
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// GEOINT Analytics — analysis jobs over EO + telemetry data.
+// All identifiers are ULIDs (26 chars).
+// =====================================================================
+
+enum AnalysisType {
+  ANALYSIS_TYPE_UNSPECIFIED       = 0;
+  ANALYSIS_TYPE_NDVI_TIME_SERIES  = 1;
+  ANALYSIS_TYPE_CHANGE_DETECTION  = 2;
+  ANALYSIS_TYPE_OBJECT_TRACKING   = 3;
+  ANALYSIS_TYPE_CLASSIFICATION    = 4;
+  ANALYSIS_TYPE_FLOOD_RISK        = 5;
+  ANALYSIS_TYPE_DROUGHT_INDEX     = 6;
+  ANALYSIS_TYPE_LANDCOVER         = 7;
+}
+
+enum AnalysisStatus {
+  ANALYSIS_STATUS_UNSPECIFIED = 0;
+  ANALYSIS_STATUS_QUEUED      = 1;
+  ANALYSIS_STATUS_RUNNING     = 2;
+  ANALYSIS_STATUS_COMPLETED   = 3;
+  ANALYSIS_STATUS_FAILED      = 4;
+  ANALYSIS_STATUS_CANCELED    = 5;
+}
+
+message AnalysisJob {
+  string id = 1;
+  string tenant_id = 2;
+  AnalysisType type = 3;
+  AnalysisStatus status = 4;
+  repeated string input_uris = 5;
+  string parameters_json = 6;
+  string output_uri = 7;
+  string results_summary_json = 8;
+  string error_message = 9;
+  google.protobuf.Timestamp started_at = 10;
+  google.protobuf.Timestamp finished_at = 11;
+  packages.api.v1.fields.Fields fields = 12;
+}
+
+message SubmitAnalysisJobRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  AnalysisType type = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  repeated string input_uris = 3;
+  string parameters_json = 4;
+}
+message SubmitAnalysisJobResponse { AnalysisJob job = 1; }
+
+message GetAnalysisJobRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetAnalysisJobResponse { AnalysisJob job = 1; }
+
+message ListAnalysisJobsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  optional AnalysisStatus status = 2;
+  optional AnalysisType type = 3;
+  packages.api.v1.pagination.PaginationRequest page = 4;
+}
+message ListAnalysisJobsResponse {
+  repeated AnalysisJob jobs = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message UpdateAnalysisJobStatusRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  AnalysisStatus status = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string output_uri = 3;
+  string results_summary_json = 4;
+  string error_message = 5;
+}
+message UpdateAnalysisJobStatusResponse { AnalysisJob job = 1; }
+
+message CancelAnalysisJobRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message CancelAnalysisJobResponse { AnalysisJob job = 1; }
+
+service AnalyticsService {
+  rpc SubmitAnalysisJob(SubmitAnalysisJobRequest) returns (SubmitAnalysisJobResponse);
+  rpc GetAnalysisJob(GetAnalysisJobRequest) returns (GetAnalysisJobResponse);
+  rpc ListAnalysisJobs(ListAnalysisJobsRequest) returns (ListAnalysisJobsResponse);
+  rpc UpdateAnalysisJobStatus(UpdateAnalysisJobStatusRequest) returns (UpdateAnalysisJobStatusResponse);
+  rpc CancelAnalysisJob(CancelAnalysisJobRequest) returns (CancelAnalysisJobResponse);
+}

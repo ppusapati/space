@@ -5,11 +5,6 @@ RETURNING *;
 
 -- name: ListQualityForItem :many
 SELECT * FROM quality_results
-WHERE item_id = sqlc.arg('item_id')::uuid
-  AND (
-        sqlc.narg('cursor_computed_at')::timestamptz IS NULL
-        OR (computed_at, id) < (sqlc.narg('cursor_computed_at')::timestamptz,
-                                sqlc.arg('cursor_id')::uuid)
-      )
+WHERE item_id = $1
 ORDER BY computed_at DESC, id DESC
-LIMIT sqlc.arg('lim')::int;
+LIMIT 100;

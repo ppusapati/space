@@ -1,41 +1,42 @@
-// Package models holds the eo-catalog domain types — pure Go structs
-// independent of protobuf and sqlc. Mappers convert between layers.
+// Package models holds eo-catalog domain types.
 package models
 
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"p9e.in/samavaya/packages/ulid"
 )
 
-// BoundingBox is `(lon_min, lat_min, lon_max, lat_max)` in WGS84
-// degrees. The zero value represents "no bbox".
+// BoundingBox is an axis-aligned geographic bounding box (degrees).
 type BoundingBox struct {
-	LonMin, LatMin, LonMax, LatMax float64
-	Valid                          bool
+	LonMin float64
+	LatMin float64
+	LonMax float64
+	LatMax float64
+	Valid  bool
 }
 
-// Collection groups a set of Items.
+// Collection is a STAC collection — a logical group of items.
 type Collection struct {
-	ID            uuid.UUID
-	TenantID      uuid.UUID
+	ID            ulid.ID
+	TenantID      ulid.ID
 	Slug          string
 	Title         string
 	Description   string
 	License       string
 	SpatialExtent BoundingBox
-	TemporalStart *time.Time
-	TemporalEnd   *time.Time
+	TemporalStart time.Time
+	TemporalEnd   time.Time
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	CreatedBy     string
 	UpdatedBy     string
 }
 
-// Asset is one file inside an Item — typically a per-band COG.
+// Asset is one file inside an Item.
 type Asset struct {
-	ID        uuid.UUID
-	ItemID    uuid.UUID
+	ID        ulid.ID
+	ItemID    ulid.ID
 	Key       string
 	Href      string
 	MediaType string
@@ -43,11 +44,11 @@ type Asset struct {
 	Roles     []string
 }
 
-// Item is one scene.
+// Item is a STAC item — a single scene.
 type Item struct {
-	ID              uuid.UUID
-	TenantID        uuid.UUID
-	CollectionID    uuid.UUID
+	ID              ulid.ID
+	TenantID        ulid.ID
+	CollectionID    ulid.ID
 	Mission         string
 	Platform        string
 	Instrument      string
@@ -63,13 +64,21 @@ type Item struct {
 	UpdatedBy       string
 }
 
-// QualityResult is a per-item QA record produced by the pipeline.
+// QualityResult is one QA assessment of an item.
 type QualityResult struct {
-	ID                 uuid.UUID
-	ItemID             uuid.UUID
+	ID                 ulid.ID
+	ItemID             ulid.ID
 	CloudCover         float64
 	RadiometricRMSE    float64
 	GeometricAccuracyM float64
 	Notes              string
 	ComputedAt         time.Time
+}
+
+// Page describes a server-side view of a paginated query.
+type Page struct {
+	TotalCount int32
+	PageOffset int32
+	PageSize   int32
+	HasNext    bool
 }

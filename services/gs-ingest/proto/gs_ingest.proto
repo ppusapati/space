@@ -1,0 +1,135 @@
+syntax = "proto3";
+
+package p9e.space.gsingest.v1;
+
+option go_package = "github.com/ppusapati/space/services/gs-ingest/api;gsingestv1";
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// Ground Station Ingest — downlink frame ingest sessions and the raw
+// frames captured during contact passes. All identifiers are ULIDs.
+// =====================================================================
+
+enum IngestStatus {
+  INGEST_STATUS_UNSPECIFIED = 0;
+  INGEST_STATUS_QUEUED      = 1;
+  INGEST_STATUS_ACTIVE      = 2;
+  INGEST_STATUS_COMPLETED   = 3;
+  INGEST_STATUS_FAILED      = 4;
+  INGEST_STATUS_CANCELED    = 5;
+}
+
+message IngestSession {
+  string id = 1;
+  string tenant_id = 2;
+  string booking_id = 3;
+  string pass_id = 4;
+  string station_id = 5;
+  string satellite_id = 6;
+  IngestStatus status = 7;
+  google.protobuf.Timestamp started_at = 8;
+  google.protobuf.Timestamp completed_at = 9;
+  uint64 frames_received = 10;
+  uint64 bytes_received = 11;
+  string error_message = 12;
+  packages.api.v1.fields.Fields fields = 13;
+}
+
+message DownlinkFrame {
+  string id = 1;
+  string tenant_id = 2;
+  string session_id = 3;
+  uint32 apid = 4;
+  uint32 virtual_channel = 5;
+  uint64 sequence_count = 6;
+  google.protobuf.Timestamp ground_time = 7;
+  uint64 payload_size_bytes = 8;
+  string payload_sha256 = 9;          // 64-char hex
+  string payload_uri = 10;            // s3:// URI of raw bytes
+  string frame_type = 11;             // "TM"|"AOS"|"VCID"|"FILE"|...
+  packages.api.v1.fields.Fields fields = 12;
+}
+
+// ----- IngestSession RPCs -------------------------------------------------
+
+message StartIngestSessionRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string booking_id = 2 [(buf.validate.field).string = {len: 26}];
+  string pass_id = 3 [(buf.validate.field).string = {len: 26}];
+  string station_id = 4 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 5 [(buf.validate.field).string = {len: 26}];
+}
+message StartIngestSessionResponse { IngestSession session = 1; }
+
+message GetIngestSessionRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetIngestSessionResponse { IngestSession session = 1; }
+
+message ListIngestSessionsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string station_id = 2;
+  string satellite_id = 3;
+  optional IngestStatus status = 4;
+  packages.api.v1.pagination.PaginationRequest page = 5;
+}
+message ListIngestSessionsResponse {
+  repeated IngestSession sessions = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message UpdateIngestStatusRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  IngestStatus status = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string error_message = 3;
+}
+message UpdateIngestStatusResponse { IngestSession session = 1; }
+
+// ----- DownlinkFrame RPCs -------------------------------------------------
+
+message RecordDownlinkFrameRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string session_id = 2 [(buf.validate.field).string = {len: 26}];
+  uint32 apid = 3;
+  uint32 virtual_channel = 4;
+  uint64 sequence_count = 5;
+  google.protobuf.Timestamp ground_time = 6;
+  uint64 payload_size_bytes = 7 [(buf.validate.field).uint64 = {gt: 0}];
+  string payload_sha256 = 8 [(buf.validate.field).string = {len: 64}];
+  string payload_uri = 9 [(buf.validate.field).string = {min_len: 1, max_len: 1024}];
+  string frame_type = 10 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+}
+message RecordDownlinkFrameResponse { DownlinkFrame frame = 1; }
+
+message GetDownlinkFrameRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetDownlinkFrameResponse { DownlinkFrame frame = 1; }
+
+message ListDownlinkFramesRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string session_id = 2;
+  string frame_type = 3;
+  google.protobuf.Timestamp time_start = 4;
+  google.protobuf.Timestamp time_end = 5;
+  packages.api.v1.pagination.PaginationRequest page = 6;
+}
+message ListDownlinkFramesResponse {
+  repeated DownlinkFrame frames = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+service IngestService {
+  rpc StartIngestSession(StartIngestSessionRequest) returns (StartIngestSessionResponse);
+  rpc GetIngestSession(GetIngestSessionRequest) returns (GetIngestSessionResponse);
+  rpc ListIngestSessions(ListIngestSessionsRequest) returns (ListIngestSessionsResponse);
+  rpc UpdateIngestStatus(UpdateIngestStatusRequest) returns (UpdateIngestStatusResponse);
+
+  rpc RecordDownlinkFrame(RecordDownlinkFrameRequest) returns (RecordDownlinkFrameResponse);
+  rpc GetDownlinkFrame(GetDownlinkFrameRequest) returns (GetDownlinkFrameResponse);
+  rpc ListDownlinkFrames(ListDownlinkFramesRequest) returns (ListDownlinkFramesResponse);
+}

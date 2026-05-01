@@ -9,13 +9,16 @@ RETURNING *;
 -- name: GetCollection :one
 SELECT * FROM collections WHERE id = $1;
 
+-- name: DeleteCollection :exec
+DELETE FROM collections WHERE id = $1;
+
+-- name: CountCollectionsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM collections
+WHERE tenant_id = sqlc.arg('tenant_id')::uuid;
+
 -- name: ListCollectionsForTenant :many
 SELECT * FROM collections
 WHERE tenant_id = sqlc.arg('tenant_id')::uuid
-  AND (
-        sqlc.narg('cursor_created_at')::timestamptz IS NULL
-        OR (created_at, id) < (sqlc.narg('cursor_created_at')::timestamptz,
-                               sqlc.arg('cursor_id')::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT sqlc.arg('lim')::int;
+OFFSET sqlc.arg('page_offset')::int
+LIMIT  sqlc.arg('page_size')::int;

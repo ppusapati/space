@@ -1,0 +1,148 @@
+syntax = "proto3";
+
+package p9e.space.satcommand.v1;
+
+option go_package = "github.com/ppusapati/space/services/sat-command/api;satcommandv1";
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// Satellite Command — command catalog (per-subsystem command definitions)
+// and time-tagged uplink queue (each request is one scheduled release of
+// a command on a satellite at a wall-clock time-tag).
+// All identifiers are ULID strings (Crockford Base32, 26 chars).
+// =====================================================================
+
+enum UplinkStatus {
+  UPLINK_STATUS_UNSPECIFIED = 0;
+  UPLINK_STATUS_QUEUED      = 1;
+  UPLINK_STATUS_RELEASED    = 2;
+  UPLINK_STATUS_ACKED       = 3;
+  UPLINK_STATUS_EXECUTED    = 4;
+  UPLINK_STATUS_FAILED      = 5;
+  UPLINK_STATUS_CANCELED    = 6;
+}
+
+message CommandDef {
+  string id = 1;                       // ULID
+  string tenant_id = 2;                // ULID
+  string satellite_id = 3;             // ULID; empty = tenant-wide
+  string subsystem = 4;                // e.g. "cdh", "eps", "adcs"
+  string name = 5;                     // human-readable command name
+  uint32 opcode = 6;                   // CCSDS function code
+  string parameters_schema = 7;        // JSON Schema string
+  string description = 8;
+  bool active = 9;
+  packages.api.v1.fields.Fields fields = 10;
+}
+
+message UplinkRequest {
+  string id = 1;                       // ULID
+  string tenant_id = 2;
+  string satellite_id = 3;
+  string command_def_id = 4;
+  string parameters_json = 5;
+  google.protobuf.Timestamp scheduled_release = 6;
+  UplinkStatus status = 7;
+  uint64 sequence_number = 8;          // assigned at enqueue, monotonic per satellite
+  string gateway_id = 9;               // ground-station handle (optional)
+  google.protobuf.Timestamp submitted_at = 10;
+  google.protobuf.Timestamp released_at = 11;
+  google.protobuf.Timestamp acked_at = 12;
+  google.protobuf.Timestamp completed_at = 13;
+  string error_message = 14;
+  packages.api.v1.fields.Fields fields = 15;
+}
+
+// ----- CommandDef RPCs ----------------------------------------------------
+
+message DefineCommandRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 2;            // empty or len:26
+  string subsystem = 3 [(buf.validate.field).string = {min_len: 1, max_len: 64}];
+  string name = 4 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  uint32 opcode = 5;
+  string parameters_schema = 6;
+  string description = 7;
+}
+message DefineCommandResponse { CommandDef command = 1; }
+
+message GetCommandRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetCommandResponse { CommandDef command = 1; }
+
+message ListCommandsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 2;
+  string subsystem = 3;
+  packages.api.v1.pagination.PaginationRequest page = 4;
+}
+message ListCommandsResponse {
+  repeated CommandDef commands = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message DeprecateCommandRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message DeprecateCommandResponse { CommandDef command = 1; }
+
+// ----- Uplink RPCs --------------------------------------------------------
+
+message EnqueueUplinkRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 2 [(buf.validate.field).string = {len: 26}];
+  string command_def_id = 3 [(buf.validate.field).string = {len: 26}];
+  string parameters_json = 4;
+  google.protobuf.Timestamp scheduled_release = 5;  // required
+  string gateway_id = 6;
+}
+message EnqueueUplinkResponse { UplinkRequest uplink = 1; }
+
+message GetUplinkRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetUplinkResponse { UplinkRequest uplink = 1; }
+
+message ListUplinksRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 2;
+  optional UplinkStatus status = 3;
+  google.protobuf.Timestamp scheduled_release_start = 4;
+  google.protobuf.Timestamp scheduled_release_end = 5;
+  packages.api.v1.pagination.PaginationRequest page = 6;
+}
+message ListUplinksResponse {
+  repeated UplinkRequest uplinks = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message CancelUplinkRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  string reason = 2;
+}
+message CancelUplinkResponse { UplinkRequest uplink = 1; }
+
+message UpdateUplinkStatusRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  UplinkStatus status = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string error_message = 3;
+}
+message UpdateUplinkStatusResponse { UplinkRequest uplink = 1; }
+
+service CommandService {
+  rpc DefineCommand(DefineCommandRequest) returns (DefineCommandResponse);
+  rpc GetCommand(GetCommandRequest) returns (GetCommandResponse);
+  rpc ListCommands(ListCommandsRequest) returns (ListCommandsResponse);
+  rpc DeprecateCommand(DeprecateCommandRequest) returns (DeprecateCommandResponse);
+
+  rpc EnqueueUplink(EnqueueUplinkRequest) returns (EnqueueUplinkResponse);
+  rpc GetUplink(GetUplinkRequest) returns (GetUplinkResponse);
+  rpc ListUplinks(ListUplinksRequest) returns (ListUplinksResponse);
+  rpc CancelUplink(CancelUplinkRequest) returns (CancelUplinkResponse);
+  rpc UpdateUplinkStatus(UpdateUplinkStatusRequest) returns (UpdateUplinkStatusResponse);
+}

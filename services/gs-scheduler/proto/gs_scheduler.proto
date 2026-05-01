@@ -1,0 +1,142 @@
+syntax = "proto3";
+
+package p9e.space.gsscheduler.v1;
+
+option go_package = "github.com/ppusapati/space/services/gs-scheduler/api;gsschedulerv1";
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// Ground Station Scheduler — predicted contact passes and tenant
+// bookings (reservations of a pass with priority and status flow).
+// All identifiers are ULIDs (26 chars).
+// =====================================================================
+
+enum BookingStatus {
+  BOOKING_STATUS_UNSPECIFIED = 0;
+  BOOKING_STATUS_REQUESTED   = 1;
+  BOOKING_STATUS_APPROVED    = 2;
+  BOOKING_STATUS_SCHEDULED   = 3;
+  BOOKING_STATUS_ACTIVE      = 4;
+  BOOKING_STATUS_COMPLETED   = 5;
+  BOOKING_STATUS_FAILED      = 6;
+  BOOKING_STATUS_CANCELED    = 7;
+}
+
+message ContactPass {
+  string id = 1;
+  string tenant_id = 2;
+  string station_id = 3;
+  string satellite_id = 4;
+  google.protobuf.Timestamp aos_time = 5;       // acquisition of signal
+  google.protobuf.Timestamp tca_time = 6;       // time of closest approach
+  google.protobuf.Timestamp los_time = 7;       // loss of signal
+  double max_elevation_deg = 8;
+  double aos_azimuth_deg = 9;
+  double los_azimuth_deg = 10;
+  string source = 11;                           // "predicted" | "measured"
+  packages.api.v1.fields.Fields fields = 12;
+}
+
+message Booking {
+  string id = 1;
+  string tenant_id = 2;
+  string pass_id = 3;
+  int32 priority = 4;                           // 0..100, higher wins
+  BookingStatus status = 5;
+  string purpose = 6;                           // free-form, e.g. "downlink", "uplink", "tracking"
+  string notes = 7;
+  google.protobuf.Timestamp scheduled_at = 8;
+  google.protobuf.Timestamp completed_at = 9;
+  string error_message = 10;
+  packages.api.v1.fields.Fields fields = 11;
+}
+
+// ----- ContactPass RPCs ---------------------------------------------------
+
+message InsertContactPassRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string station_id = 2 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 3 [(buf.validate.field).string = {len: 26}];
+  google.protobuf.Timestamp aos_time = 4;
+  google.protobuf.Timestamp tca_time = 5;
+  google.protobuf.Timestamp los_time = 6;
+  double max_elevation_deg = 7 [(buf.validate.field).double = {gte: 0, lte: 90}];
+  double aos_azimuth_deg = 8 [(buf.validate.field).double = {gte: 0, lt: 360}];
+  double los_azimuth_deg = 9 [(buf.validate.field).double = {gte: 0, lt: 360}];
+  string source = 10 [(buf.validate.field).string = {min_len: 1, max_len: 32}];
+}
+message InsertContactPassResponse { ContactPass pass = 1; }
+
+message GetContactPassRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetContactPassResponse { ContactPass pass = 1; }
+
+message ListContactPassesRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string station_id = 2;
+  string satellite_id = 3;
+  google.protobuf.Timestamp aos_start = 4;
+  google.protobuf.Timestamp aos_end = 5;
+  double min_elevation_deg = 6;
+  packages.api.v1.pagination.PaginationRequest page = 7;
+}
+message ListContactPassesResponse {
+  repeated ContactPass passes = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+// ----- Booking RPCs -------------------------------------------------------
+
+message RequestBookingRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string pass_id = 2 [(buf.validate.field).string = {len: 26}];
+  int32 priority = 3 [(buf.validate.field).int32 = {gte: 0, lte: 100}];
+  string purpose = 4 [(buf.validate.field).string = {min_len: 1, max_len: 64}];
+  string notes = 5;
+}
+message RequestBookingResponse { Booking booking = 1; }
+
+message GetBookingRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetBookingResponse { Booking booking = 1; }
+
+message ListBookingsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  optional BookingStatus status = 2;
+  packages.api.v1.pagination.PaginationRequest page = 3;
+}
+message ListBookingsResponse {
+  repeated Booking bookings = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message UpdateBookingStatusRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  BookingStatus status = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string error_message = 3;
+}
+message UpdateBookingStatusResponse { Booking booking = 1; }
+
+message CancelBookingRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  string reason = 2;
+}
+message CancelBookingResponse { Booking booking = 1; }
+
+service SchedulerService {
+  rpc InsertContactPass(InsertContactPassRequest) returns (InsertContactPassResponse);
+  rpc GetContactPass(GetContactPassRequest) returns (GetContactPassResponse);
+  rpc ListContactPasses(ListContactPassesRequest) returns (ListContactPassesResponse);
+
+  rpc RequestBooking(RequestBookingRequest) returns (RequestBookingResponse);
+  rpc GetBooking(GetBookingRequest) returns (GetBookingResponse);
+  rpc ListBookings(ListBookingsRequest) returns (ListBookingsResponse);
+  rpc UpdateBookingStatus(UpdateBookingStatusRequest) returns (UpdateBookingStatusResponse);
+  rpc CancelBooking(CancelBookingRequest) returns (CancelBookingResponse);
+}

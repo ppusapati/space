@@ -10,17 +10,21 @@ RETURNING *;
 -- name: GetFrame :one
 SELECT * FROM telemetry_frames WHERE id = $1;
 
--- name: ListFrames :many
+-- name: CountFramesForTenant :one
+SELECT COUNT(*)::bigint AS total FROM telemetry_frames
+WHERE tenant_id = sqlc.arg('tenant_id')::uuid
+  AND (sqlc.narg('satellite_id')::uuid IS NULL OR satellite_id = sqlc.narg('satellite_id')::uuid)
+  AND (sqlc.narg('frame_type')::text   IS NULL OR frame_type   = sqlc.narg('frame_type')::text)
+  AND (sqlc.narg('time_start')::timestamptz IS NULL OR ground_time >= sqlc.narg('time_start')::timestamptz)
+  AND (sqlc.narg('time_end')::timestamptz   IS NULL OR ground_time <= sqlc.narg('time_end')::timestamptz);
+
+-- name: ListFramesForTenant :many
 SELECT * FROM telemetry_frames
 WHERE tenant_id = sqlc.arg('tenant_id')::uuid
   AND (sqlc.narg('satellite_id')::uuid IS NULL OR satellite_id = sqlc.narg('satellite_id')::uuid)
   AND (sqlc.narg('frame_type')::text   IS NULL OR frame_type   = sqlc.narg('frame_type')::text)
   AND (sqlc.narg('time_start')::timestamptz IS NULL OR ground_time >= sqlc.narg('time_start')::timestamptz)
   AND (sqlc.narg('time_end')::timestamptz   IS NULL OR ground_time <= sqlc.narg('time_end')::timestamptz)
-  AND (
-        sqlc.narg('cursor_ground_time')::timestamptz IS NULL
-        OR (ground_time, id) < (sqlc.narg('cursor_ground_time')::timestamptz,
-                                sqlc.arg('cursor_id')::uuid)
-      )
 ORDER BY ground_time DESC, id DESC
-LIMIT sqlc.arg('lim')::int;
+OFFSET sqlc.arg('page_offset')::int
+LIMIT  sqlc.arg('page_size')::int;

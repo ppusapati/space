@@ -11,16 +11,19 @@ import (
 )
 
 type Querier interface {
+	CountCollectionsForTenant(ctx context.Context, tenantID pgtype.UUID) (int64, error)
+	CountItemsForTenant(ctx context.Context, arg CountItemsForTenantParams) (int64, error)
 	CreateAsset(ctx context.Context, arg CreateAssetParams) (Asset, error)
 	CreateCollection(ctx context.Context, arg CreateCollectionParams) (Collection, error)
 	CreateItem(ctx context.Context, arg CreateItemParams) (Item, error)
+	DeleteCollection(ctx context.Context, id pgtype.UUID) error
 	GetCollection(ctx context.Context, id pgtype.UUID) (Collection, error)
 	GetItem(ctx context.Context, id pgtype.UUID) (Item, error)
 	ListAssetsForItem(ctx context.Context, itemID pgtype.UUID) ([]Asset, error)
 	ListCollectionsForTenant(ctx context.Context, arg ListCollectionsForTenantParams) ([]Collection, error)
-	ListQualityForItem(ctx context.Context, arg ListQualityForItemParams) ([]QualityResult, error)
+	ListItemsForTenant(ctx context.Context, arg ListItemsForTenantParams) ([]Item, error)
+	ListQualityForItem(ctx context.Context, itemID pgtype.UUID) ([]QualityResult, error)
 	RecordQuality(ctx context.Context, arg RecordQualityParams) (QualityResult, error)
-	SearchItems(ctx context.Context, arg SearchItemsParams) ([]Item, error)
 }
 
 var _ Querier = (*Queries)(nil)

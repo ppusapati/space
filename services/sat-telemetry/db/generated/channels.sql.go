@@ -3,13 +3,33 @@
 //   sqlc v1.31.1
 // source: channels.sql
 
-package sattlmdb
+package sattelemetrydb
 
 import (
 	"context"
 
 	"github.com/jackc/pgx/v5/pgtype"
 )
+
+const countChannelsForTenant = `-- name: CountChannelsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM channels
+WHERE tenant_id = $1::uuid
+  AND ($2::uuid IS NULL OR satellite_id = $2::uuid)
+  AND ($3::text    IS NULL OR subsystem    = $3::text)
+`
+
+type CountChannelsForTenantParams struct {
+	TenantID    pgtype.UUID
+	SatelliteID pgtype.UUID
+	Subsystem   *string
+}
+
+func (q *Queries) CountChannelsForTenant(ctx context.Context, arg CountChannelsForTenantParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countChannelsForTenant, arg.TenantID, arg.SatelliteID, arg.Subsystem)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
 
 const defineChannel = `-- name: DefineChannel :one
 INSERT INTO channels (
@@ -136,37 +156,31 @@ func (q *Queries) GetChannel(ctx context.Context, id pgtype.UUID) (Channel, erro
 	return i, err
 }
 
-const listChannels = `-- name: ListChannels :many
+const listChannelsForTenant = `-- name: ListChannelsForTenant :many
 SELECT id, tenant_id, satellite_id, subsystem, name, units, value_type, min_value, max_value, sample_rate_hz, active, created_at, updated_at, created_by, updated_by FROM channels
 WHERE tenant_id = $1::uuid
   AND ($2::uuid IS NULL OR satellite_id = $2::uuid)
   AND ($3::text    IS NULL OR subsystem    = $3::text)
-  AND (
-        $4::timestamptz IS NULL
-        OR (created_at, id) < ($4::timestamptz,
-                               $5::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT $6::int
+OFFSET $4::int
+LIMIT  $5::int
 `
 
-type ListChannelsParams struct {
-	TenantID        pgtype.UUID
-	SatelliteID     pgtype.UUID
-	Subsystem       *string
-	CursorCreatedAt pgtype.Timestamptz
-	CursorID        pgtype.UUID
-	Lim             int32
+type ListChannelsForTenantParams struct {
+	TenantID    pgtype.UUID
+	SatelliteID pgtype.UUID
+	Subsystem   *string
+	PageOffset  int32
+	PageSize    int32
 }
 
-func (q *Queries) ListChannels(ctx context.Context, arg ListChannelsParams) ([]Channel, error) {
-	rows, err := q.db.Query(ctx, listChannels,
+func (q *Queries) ListChannelsForTenant(ctx context.Context, arg ListChannelsForTenantParams) ([]Channel, error) {
+	rows, err := q.db.Query(ctx, listChannelsForTenant,
 		arg.TenantID,
 		arg.SatelliteID,
 		arg.Subsystem,
-		arg.CursorCreatedAt,
-		arg.CursorID,
-		arg.Lim,
+		arg.PageOffset,
+		arg.PageSize,
 	)
 	if err != nil {
 		return nil, err

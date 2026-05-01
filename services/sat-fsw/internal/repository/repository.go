@@ -4,14 +4,15 @@ package repository
 import (
 	"context"
 	"errors"
-	"time"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"p9e.in/samavaya/packages/ulid"
+
 	satfswdb "github.com/ppusapati/space/services/sat-fsw/db/generated"
-	"github.com/ppusapati/space/services/sat-fsw/internal/mappers"
+	"github.com/ppusapati/space/services/sat-fsw/internal/mapper"
 	"github.com/ppusapati/space/services/sat-fsw/internal/models"
 )
 
@@ -29,12 +30,12 @@ func New(pool *pgxpool.Pool) *Repo {
 	return &Repo{q: satfswdb.New(pool), pool: pool}
 }
 
-// ----- FirmwareBuild -------------------------------------------------------
+// ----- FirmwareBuilds ------------------------------------------------------
 
-// RegisterFirmwareBuildParams is the input to RegisterFirmwareBuild.
+// RegisterFirmwareBuildParams holds the input for [Repo.RegisterFirmwareBuild].
 type RegisterFirmwareBuildParams struct {
-	ID                uuid.UUID
-	TenantID          uuid.UUID
+	ID                ulid.ID
+	TenantID          ulid.ID
 	TargetPlatform    string
 	Subsystem         string
 	Version           string
@@ -47,11 +48,11 @@ type RegisterFirmwareBuildParams struct {
 	CreatedBy         string
 }
 
-// RegisterFirmwareBuild inserts a new build row.
+// RegisterFirmwareBuild inserts a new firmware_build row.
 func (r *Repo) RegisterFirmwareBuild(ctx context.Context, p RegisterFirmwareBuildParams) (*models.FirmwareBuild, error) {
 	row, err := r.q.RegisterFirmwareBuild(ctx, satfswdb.RegisterFirmwareBuildParams{
-		ID:                mappers.PgUUID(p.ID),
-		TenantID:          mappers.PgUUID(p.TenantID),
+		ID:                mapper.PgUUID(p.ID),
+		TenantID:          mapper.PgUUID(p.TenantID),
 		TargetPlatform:    p.TargetPlatform,
 		Subsystem:         p.Subsystem,
 		Version:           p.Version,
@@ -66,62 +67,73 @@ func (r *Repo) RegisterFirmwareBuild(ctx context.Context, p RegisterFirmwareBuil
 	if err != nil {
 		return nil, err
 	}
-	return mappers.FirmwareBuildFromRow(row), nil
+	return mapper.FirmwareBuildFromRow(row), nil
 }
 
 // GetFirmwareBuild returns a build by id.
-func (r *Repo) GetFirmwareBuild(ctx context.Context, id uuid.UUID) (*models.FirmwareBuild, error) {
-	row, err := r.q.GetFirmwareBuild(ctx, mappers.PgUUID(id))
+func (r *Repo) GetFirmwareBuild(ctx context.Context, id ulid.ID) (*models.FirmwareBuild, error) {
+	row, err := r.q.GetFirmwareBuild(ctx, mapper.PgUUID(id))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrNotFound
 		}
 		return nil, err
 	}
-	return mappers.FirmwareBuildFromRow(row), nil
+	return mapper.FirmwareBuildFromRow(row), nil
 }
 
-// ListFirmwareBuildsParams is the input to ListFirmwareBuilds.
+// ListFirmwareBuildsParams holds the input for [Repo.ListFirmwareBuildsForTenant].
 type ListFirmwareBuildsParams struct {
-	TenantID      uuid.UUID
-	Subsystem     *string
-	Status        *models.FirmwareBuildStatus
-	CursorCreated *time.Time
-	CursorID      uuid.UUID
-	Limit         int32
+	TenantID   ulid.ID
+	Subsystem  string
+	Status     *models.FirmwareBuildStatus
+	PageOffset int32
+	PageSize   int32
 }
 
-// ListFirmwareBuilds returns one page of builds.
-func (r *Repo) ListFirmwareBuilds(ctx context.Context, p ListFirmwareBuildsParams) ([]*models.FirmwareBuild, error) {
+// ListFirmwareBuildsForTenant returns one page of builds.
+func (r *Repo) ListFirmwareBuildsForTenant(ctx context.Context, p ListFirmwareBuildsParams) ([]*models.FirmwareBuild, int32, error) {
 	var statusPtr *int32
 	if p.Status != nil {
 		v := int32(*p.Status)
 		statusPtr = &v
 	}
-	rows, err := r.q.ListFirmwareBuilds(ctx, satfswdb.ListFirmwareBuildsParams{
-		TenantID:        mappers.PgUUID(p.TenantID),
-		Subsystem:       p.Subsystem,
-		Status:          statusPtr,
-		CursorCreatedAt: mappers.PgTimestampPtr(p.CursorCreated),
-		CursorID:        mappers.PgUUID(p.CursorID),
-		Lim:             p.Limit,
+	var subsystemPtr *string
+	if p.Subsystem != "" {
+		v := p.Subsystem
+		subsystemPtr = &v
+	}
+	total, err := r.q.CountFirmwareBuildsForTenant(ctx, satfswdb.CountFirmwareBuildsForTenantParams{
+		TenantID:  mapper.PgUUID(p.TenantID),
+		Subsystem: subsystemPtr,
+		Status:    statusPtr,
 	})
 	if err != nil {
-		return nil, err
+		return nil, 0, err
+	}
+	rows, err := r.q.ListFirmwareBuildsForTenant(ctx, satfswdb.ListFirmwareBuildsForTenantParams{
+		TenantID:   mapper.PgUUID(p.TenantID),
+		Subsystem:  subsystemPtr,
+		Status:     statusPtr,
+		PageOffset: p.PageOffset,
+		PageSize:   p.PageSize,
+	})
+	if err != nil {
+		return nil, 0, err
 	}
 	out := make([]*models.FirmwareBuild, 0, len(rows))
 	for _, row := range rows {
-		out = append(out, mappers.FirmwareBuildFromRow(row))
+		out = append(out, mapper.FirmwareBuildFromRow(row))
 	}
-	return out, nil
+	return out, int32(total), nil
 }
 
-// UpdateFirmwareBuildStatus updates the status field.
+// UpdateFirmwareBuildStatus updates the status of a build.
 func (r *Repo) UpdateFirmwareBuildStatus(
-	ctx context.Context, id uuid.UUID, status models.FirmwareBuildStatus, notes, updatedBy string,
+	ctx context.Context, id ulid.ID, status models.FirmwareBuildStatus, notes, updatedBy string,
 ) (*models.FirmwareBuild, error) {
 	row, err := r.q.UpdateFirmwareBuildStatus(ctx, satfswdb.UpdateFirmwareBuildStatusParams{
-		ID:        mappers.PgUUID(id),
+		ID:        mapper.PgUUID(id),
 		Status:    int32(status),
 		Notes:     notes,
 		UpdatedBy: updatedBy,
@@ -132,16 +144,17 @@ func (r *Repo) UpdateFirmwareBuildStatus(
 		}
 		return nil, err
 	}
-	return mappers.FirmwareBuildFromRow(row), nil
+	return mapper.FirmwareBuildFromRow(row), nil
 }
 
-// ----- DeploymentManifest --------------------------------------------------
+// ----- DeploymentManifests -------------------------------------------------
 
-// CreateDeploymentManifestParams is the input to CreateDeploymentManifest.
+// CreateDeploymentManifestParams holds the input for
+// [Repo.CreateDeploymentManifest].
 type CreateDeploymentManifestParams struct {
-	ID              uuid.UUID
-	TenantID        uuid.UUID
-	SatelliteID     uuid.UUID
+	ID              ulid.ID
+	TenantID        ulid.ID
+	SatelliteID     ulid.ID
 	ManifestVersion string
 	Status          models.DeploymentStatus
 	Assignments     map[string]string
@@ -149,85 +162,88 @@ type CreateDeploymentManifestParams struct {
 	CreatedBy       string
 }
 
-// CreateDeploymentManifest inserts a new manifest row.
+// CreateDeploymentManifest inserts a new deployment_manifest row.
 func (r *Repo) CreateDeploymentManifest(ctx context.Context, p CreateDeploymentManifestParams) (*models.DeploymentManifest, error) {
-	js, err := mappers.AssignmentsToJSON(p.Assignments)
-	if err != nil {
-		return nil, err
-	}
 	row, err := r.q.CreateDeploymentManifest(ctx, satfswdb.CreateDeploymentManifestParams{
-		ID:              mappers.PgUUID(p.ID),
-		TenantID:        mappers.PgUUID(p.TenantID),
-		SatelliteID:     mappers.PgUUID(p.SatelliteID),
+		ID:              mapper.PgUUID(p.ID),
+		TenantID:        mapper.PgUUID(p.TenantID),
+		SatelliteID:     mapper.PgUUID(p.SatelliteID),
 		ManifestVersion: p.ManifestVersion,
 		Status:          int32(p.Status),
-		AssignmentsJson: js,
+		AssignmentsJson: mapper.AssignmentsToJSON(p.Assignments),
 		Notes:           p.Notes,
 		CreatedBy:       p.CreatedBy,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return mappers.DeploymentManifestFromRow(row)
+	return mapper.DeploymentManifestFromRow(row), nil
 }
 
 // GetDeploymentManifest returns a manifest by id.
-func (r *Repo) GetDeploymentManifest(ctx context.Context, id uuid.UUID) (*models.DeploymentManifest, error) {
-	row, err := r.q.GetDeploymentManifest(ctx, mappers.PgUUID(id))
+func (r *Repo) GetDeploymentManifest(ctx context.Context, id ulid.ID) (*models.DeploymentManifest, error) {
+	row, err := r.q.GetDeploymentManifest(ctx, mapper.PgUUID(id))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrNotFound
 		}
 		return nil, err
 	}
-	return mappers.DeploymentManifestFromRow(row)
+	return mapper.DeploymentManifestFromRow(row), nil
 }
 
-// ListDeploymentManifestsParams is the input to ListDeploymentManifests.
+// ListDeploymentManifestsParams holds the input for
+// [Repo.ListDeploymentManifestsForTenant].
 type ListDeploymentManifestsParams struct {
-	TenantID      uuid.UUID
-	SatelliteID   *uuid.UUID
-	Status        *models.DeploymentStatus
-	CursorCreated *time.Time
-	CursorID      uuid.UUID
-	Limit         int32
+	TenantID    ulid.ID
+	SatelliteID *ulid.ID
+	Status      *models.DeploymentStatus
+	PageOffset  int32
+	PageSize    int32
 }
 
-// ListDeploymentManifests returns one page of manifests.
-func (r *Repo) ListDeploymentManifests(ctx context.Context, p ListDeploymentManifestsParams) ([]*models.DeploymentManifest, error) {
+// ListDeploymentManifestsForTenant returns one page of manifests.
+func (r *Repo) ListDeploymentManifestsForTenant(ctx context.Context, p ListDeploymentManifestsParams) ([]*models.DeploymentManifest, int32, error) {
 	var statusPtr *int32
 	if p.Status != nil {
 		v := int32(*p.Status)
 		statusPtr = &v
 	}
-	rows, err := r.q.ListDeploymentManifests(ctx, satfswdb.ListDeploymentManifestsParams{
-		TenantID:        mappers.PgUUID(p.TenantID),
-		SatelliteID:     mappers.PgUUIDPtr(p.SatelliteID),
-		Status:          statusPtr,
-		CursorCreatedAt: mappers.PgTimestampPtr(p.CursorCreated),
-		CursorID:        mappers.PgUUID(p.CursorID),
-		Lim:             p.Limit,
+	var satellitePg pgtype.UUID
+	if p.SatelliteID != nil {
+		satellitePg = mapper.PgUUID(*p.SatelliteID)
+	}
+	total, err := r.q.CountDeploymentManifestsForTenant(ctx, satfswdb.CountDeploymentManifestsForTenantParams{
+		TenantID:    mapper.PgUUID(p.TenantID),
+		SatelliteID: satellitePg,
+		Status:      statusPtr,
 	})
 	if err != nil {
-		return nil, err
+		return nil, 0, err
+	}
+	rows, err := r.q.ListDeploymentManifestsForTenant(ctx, satfswdb.ListDeploymentManifestsForTenantParams{
+		TenantID:    mapper.PgUUID(p.TenantID),
+		SatelliteID: satellitePg,
+		Status:      statusPtr,
+		PageOffset:  p.PageOffset,
+		PageSize:    p.PageSize,
+	})
+	if err != nil {
+		return nil, 0, err
 	}
 	out := make([]*models.DeploymentManifest, 0, len(rows))
 	for _, row := range rows {
-		m, err := mappers.DeploymentManifestFromRow(row)
-		if err != nil {
-			return nil, err
-		}
-		out = append(out, m)
+		out = append(out, mapper.DeploymentManifestFromRow(row))
 	}
-	return out, nil
+	return out, int32(total), nil
 }
 
-// UpdateDeploymentManifestStatus updates the status field.
+// UpdateDeploymentManifestStatus updates the status of a manifest.
 func (r *Repo) UpdateDeploymentManifestStatus(
-	ctx context.Context, id uuid.UUID, status models.DeploymentStatus, notes, updatedBy string,
+	ctx context.Context, id ulid.ID, status models.DeploymentStatus, notes, updatedBy string,
 ) (*models.DeploymentManifest, error) {
 	row, err := r.q.UpdateDeploymentManifestStatus(ctx, satfswdb.UpdateDeploymentManifestStatusParams{
-		ID:        mappers.PgUUID(id),
+		ID:        mapper.PgUUID(id),
 		Status:    int32(status),
 		Notes:     notes,
 		UpdatedBy: updatedBy,
@@ -238,5 +254,5 @@ func (r *Repo) UpdateDeploymentManifestStatus(
 		}
 		return nil, err
 	}
-	return mappers.DeploymentManifestFromRow(row)
+	return mapper.DeploymentManifestFromRow(row), nil
 }

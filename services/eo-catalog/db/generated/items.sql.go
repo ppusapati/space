@@ -11,6 +11,24 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countItemsForTenant = `-- name: CountItemsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM items
+WHERE tenant_id = $1::uuid
+  AND ($2::uuid IS NULL OR collection_id = $2::uuid)
+`
+
+type CountItemsForTenantParams struct {
+	TenantID     pgtype.UUID
+	CollectionID pgtype.UUID
+}
+
+func (q *Queries) CountItemsForTenant(ctx context.Context, arg CountItemsForTenantParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countItemsForTenant, arg.TenantID, arg.CollectionID)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
 const createItem = `-- name: CreateItem :one
 INSERT INTO items (
     id, tenant_id, collection_id, mission, platform, instrument, datetime,
@@ -110,66 +128,28 @@ func (q *Queries) GetItem(ctx context.Context, id pgtype.UUID) (Item, error) {
 	return i, err
 }
 
-const searchItems = `-- name: SearchItems :many
+const listItemsForTenant = `-- name: ListItemsForTenant :many
 SELECT id, tenant_id, collection_id, mission, platform, instrument, datetime, bbox_lon_min, bbox_lat_min, bbox_lon_max, bbox_lat_max, geometry_geojson, cloud_cover, properties_json, created_at, updated_at, created_by, updated_by FROM items
 WHERE tenant_id = $1::uuid
-  AND (
-        $2::uuid IS NULL
-        OR collection_id = $2::uuid
-      )
-  AND datetime BETWEEN $3::timestamptz
-                   AND $4::timestamptz
-  AND (
-        $5::double precision IS NULL
-        OR cloud_cover <= $5::double precision
-      )
-  AND (
-        $6::double precision IS NULL
-        OR (
-              bbox_lon_max >= $6::double precision
-          AND bbox_lon_min <= $7::double precision
-          AND bbox_lat_max >= $8::double precision
-          AND bbox_lat_min <= $9::double precision
-        )
-      )
-  AND (
-        $10::timestamptz IS NULL
-        OR (datetime, id) < ($10::timestamptz,
-                             $11::uuid)
-      )
+  AND ($2::uuid IS NULL OR collection_id = $2::uuid)
 ORDER BY datetime DESC, id DESC
-LIMIT $12::int
+OFFSET $3::int
+LIMIT  $4::int
 `
 
-type SearchItemsParams struct {
-	TenantID       pgtype.UUID
-	CollectionID   pgtype.UUID
-	DatetimeStart  pgtype.Timestamptz
-	DatetimeEnd    pgtype.Timestamptz
-	MaxCloudCover  *float64
-	BboxLonMin     *float64
-	BboxLonMax     *float64
-	BboxLatMin     *float64
-	BboxLatMax     *float64
-	CursorDatetime pgtype.Timestamptz
-	CursorID       pgtype.UUID
-	Lim            int32
+type ListItemsForTenantParams struct {
+	TenantID     pgtype.UUID
+	CollectionID pgtype.UUID
+	PageOffset   int32
+	PageSize     int32
 }
 
-func (q *Queries) SearchItems(ctx context.Context, arg SearchItemsParams) ([]Item, error) {
-	rows, err := q.db.Query(ctx, searchItems,
+func (q *Queries) ListItemsForTenant(ctx context.Context, arg ListItemsForTenantParams) ([]Item, error) {
+	rows, err := q.db.Query(ctx, listItemsForTenant,
 		arg.TenantID,
 		arg.CollectionID,
-		arg.DatetimeStart,
-		arg.DatetimeEnd,
-		arg.MaxCloudCover,
-		arg.BboxLonMin,
-		arg.BboxLonMax,
-		arg.BboxLatMin,
-		arg.BboxLatMax,
-		arg.CursorDatetime,
-		arg.CursorID,
-		arg.Lim,
+		arg.PageOffset,
+		arg.PageSize,
 	)
 	if err != nil {
 		return nil, err

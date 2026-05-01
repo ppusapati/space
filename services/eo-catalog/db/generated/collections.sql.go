@@ -11,6 +11,18 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countCollectionsForTenant = `-- name: CountCollectionsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM collections
+WHERE tenant_id = $1::uuid
+`
+
+func (q *Queries) CountCollectionsForTenant(ctx context.Context, tenantID pgtype.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countCollectionsForTenant, tenantID)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
 const createCollection = `-- name: CreateCollection :one
 INSERT INTO collections (
     id, tenant_id, slug, title, description, license,
@@ -74,6 +86,15 @@ func (q *Queries) CreateCollection(ctx context.Context, arg CreateCollectionPara
 	return i, err
 }
 
+const deleteCollection = `-- name: DeleteCollection :exec
+DELETE FROM collections WHERE id = $1
+`
+
+func (q *Queries) DeleteCollection(ctx context.Context, id pgtype.UUID) error {
+	_, err := q.db.Exec(ctx, deleteCollection, id)
+	return err
+}
+
 const getCollection = `-- name: GetCollection :one
 SELECT id, tenant_id, slug, title, description, license, bbox_lon_min, bbox_lat_min, bbox_lon_max, bbox_lat_max, temporal_start, temporal_end, created_at, updated_at, created_by, updated_by FROM collections WHERE id = $1
 `
@@ -105,29 +126,19 @@ func (q *Queries) GetCollection(ctx context.Context, id pgtype.UUID) (Collection
 const listCollectionsForTenant = `-- name: ListCollectionsForTenant :many
 SELECT id, tenant_id, slug, title, description, license, bbox_lon_min, bbox_lat_min, bbox_lon_max, bbox_lat_max, temporal_start, temporal_end, created_at, updated_at, created_by, updated_by FROM collections
 WHERE tenant_id = $1::uuid
-  AND (
-        $2::timestamptz IS NULL
-        OR (created_at, id) < ($2::timestamptz,
-                               $3::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT $4::int
+OFFSET $2::int
+LIMIT  $3::int
 `
 
 type ListCollectionsForTenantParams struct {
-	TenantID        pgtype.UUID
-	CursorCreatedAt pgtype.Timestamptz
-	CursorID        pgtype.UUID
-	Lim             int32
+	TenantID   pgtype.UUID
+	PageOffset int32
+	PageSize   int32
 }
 
 func (q *Queries) ListCollectionsForTenant(ctx context.Context, arg ListCollectionsForTenantParams) ([]Collection, error) {
-	rows, err := q.db.Query(ctx, listCollectionsForTenant,
-		arg.TenantID,
-		arg.CursorCreatedAt,
-		arg.CursorID,
-		arg.Lim,
-	)
+	rows, err := q.db.Query(ctx, listCollectionsForTenant, arg.TenantID, arg.PageOffset, arg.PageSize)
 	if err != nil {
 		return nil, err
 	}

@@ -10,18 +10,20 @@ RETURNING *;
 -- name: GetDeploymentManifest :one
 SELECT * FROM deployment_manifests WHERE id = $1;
 
--- name: ListDeploymentManifests :many
+-- name: CountDeploymentManifestsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM deployment_manifests
+WHERE tenant_id = sqlc.arg('tenant_id')::uuid
+  AND (sqlc.narg('satellite_id')::uuid IS NULL OR satellite_id = sqlc.narg('satellite_id')::uuid)
+  AND (sqlc.narg('status')::int        IS NULL OR status       = sqlc.narg('status')::int);
+
+-- name: ListDeploymentManifestsForTenant :many
 SELECT * FROM deployment_manifests
 WHERE tenant_id = sqlc.arg('tenant_id')::uuid
   AND (sqlc.narg('satellite_id')::uuid IS NULL OR satellite_id = sqlc.narg('satellite_id')::uuid)
   AND (sqlc.narg('status')::int        IS NULL OR status       = sqlc.narg('status')::int)
-  AND (
-        sqlc.narg('cursor_created_at')::timestamptz IS NULL
-        OR (created_at, id) < (sqlc.narg('cursor_created_at')::timestamptz,
-                               sqlc.arg('cursor_id')::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT sqlc.arg('lim')::int;
+OFFSET sqlc.arg('page_offset')::int
+LIMIT  sqlc.arg('page_size')::int;
 
 -- name: UpdateDeploymentManifestStatus :one
 UPDATE deployment_manifests

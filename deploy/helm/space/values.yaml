@@ -1,0 +1,178 @@
+# P9E Space — umbrella chart values.
+#
+# Renders one Deployment + Service + ConfigMap per entry in `services:`.
+# Common values come from `global:` and per-service overrides come from
+# the service entry itself.
+
+global:
+  imageRegistry: ""              # e.g. "ghcr.io/ppusapati"; empty = local images
+  imageTag: "0.1.0"
+  imagePullPolicy: IfNotPresent
+  imagePullSecrets: []
+
+  serviceAccount:
+    create: true
+    name: ""
+
+  # PostgreSQL connection (one DB per service, see databases below).
+  database:
+    host: postgres
+    port: 5432
+    user: p9e
+    passwordSecret:
+      name: postgres-credentials
+      key: password
+    sslmode: disable
+
+  # CORS allowlist applied to all services unless overridden per-service.
+  cors:
+    allowedOrigins: ["*"]
+
+  # Connect interceptor stack defaults.
+  middleware:
+    enableAuth: false           # turn on once an iam service is deployed
+    enableRLS: false
+    enableLogging: true
+    enableRequestID: true
+    enableRecovery: true
+    slowRequestThreshold: 5s
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9090"
+    prometheus.io/path: "/metrics"
+
+# Service catalogue. The chart renders Deployment, Service, ConfigMap for
+# each entry. Override `image.repository` if you push to a registry that
+# differs from `<global.imageRegistry>/<key>`.
+services:
+  # ---------- Earth Observation ----------
+  eo-catalog:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/eo-catalog
+    database: eo_catalog
+
+  eo-pipeline:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/eo-pipeline
+    database: eo_pipeline
+
+  eo-analytics:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/eo-analytics
+    database: eo_analytics
+
+  # ---------- Small Satellite Subsystems ----------
+  sat-mission:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/sat-mission
+    database: sat_mission
+
+  sat-fsw:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/sat-fsw
+    database: sat_fsw
+
+  sat-telemetry:
+    enabled: true
+    replicas: 2                  # higher replicas for ingest fan-in
+    image:
+      repository: p9e/sat-telemetry
+    database: sat_telemetry
+
+  sat-command:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/sat-command
+    database: sat_command
+
+  sat-simulation:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/sat-simulation
+    database: sat_simulation
+
+  # ---------- Ground Station ----------
+  gs-mc:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/gs-mc
+    database: gs_mc
+
+  gs-rf:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/gs-rf
+    database: gs_rf
+
+  gs-scheduler:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/gs-scheduler
+    database: gs_scheduler
+
+  gs-ingest:
+    enabled: true
+    replicas: 2                  # ingest scales out
+    image:
+      repository: p9e/gs-ingest
+    database: gs_ingest
+
+  # ---------- GEOINT ----------
+  gi-fusion:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/gi-fusion
+    database: gi_fusion
+
+  gi-analytics:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/gi-analytics
+    database: gi_analytics
+
+  gi-tiles:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/gi-tiles
+    database: gi_tiles
+
+  gi-reports:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/gi-reports
+    database: gi_reports
+
+  gi-predict:
+    enabled: true
+    replicas: 1
+    image:
+      repository: p9e/gi-predict
+    database: gi_predict

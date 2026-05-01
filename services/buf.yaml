@@ -1,0 +1,48 @@
+version: v2
+modules:
+  - path: packages/proto
+    name: buf.build/p9e/packages
+  - path: eo-catalog/proto
+    name: buf.build/p9e/eo-catalog
+  - path: eo-pipeline/proto
+    name: buf.build/p9e/eo-pipeline
+  - path: eo-analytics/proto
+    name: buf.build/p9e/eo-analytics
+  - path: sat-mission/proto
+    name: buf.build/p9e/sat-mission
+  - path: sat-fsw/proto
+    name: buf.build/p9e/sat-fsw
+  - path: sat-telemetry/proto
+    name: buf.build/p9e/sat-telemetry
+  - path: sat-command/proto
+    name: buf.build/p9e/sat-command
+  - path: sat-simulation/proto
+    name: buf.build/p9e/sat-simulation
+  - path: gs-mc/proto
+    name: buf.build/p9e/gs-mc
+  - path: gs-rf/proto
+    name: buf.build/p9e/gs-rf
+  - path: gs-scheduler/proto
+    name: buf.build/p9e/gs-scheduler
+  - path: gs-ingest/proto
+    name: buf.build/p9e/gs-ingest
+  - path: gi-fusion/proto
+    name: buf.build/p9e/gi-fusion
+  - path: gi-analytics/proto
+    name: buf.build/p9e/gi-analytics
+  - path: gi-tiles/proto
+    name: buf.build/p9e/gi-tiles
+  - path: gi-reports/proto
+    name: buf.build/p9e/gi-reports
+  - path: gi-predict/proto
+    name: buf.build/p9e/gi-predict
+deps:
+  - buf.build/bufbuild/protovalidate
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - DEFAULT
+  except:
+    - PACKAGE_VERSION_SUFFIX

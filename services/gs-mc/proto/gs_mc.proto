@@ -1,0 +1,147 @@
+syntax = "proto3";
+
+package p9e.space.gsmc.v1;
+
+option go_package = "github.com/ppusapati/space/services/gs-mc/api;gsmcv1";
+
+import "buf/validate/validate.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// Ground Station Mission Control catalog — ground stations and antennas.
+// (Pass scheduling lives in gs-scheduler; RF link budgets in gs-rf.)
+// All identifiers are ULID strings (Crockford Base32, 26 chars).
+// =====================================================================
+
+enum FrequencyBand {
+  FREQUENCY_BAND_UNSPECIFIED = 0;
+  FREQUENCY_BAND_VHF         = 1;   // ~30-300 MHz
+  FREQUENCY_BAND_UHF         = 2;   // ~300-3000 MHz
+  FREQUENCY_BAND_L           = 3;   // ~1-2 GHz
+  FREQUENCY_BAND_S           = 4;   // ~2-4 GHz
+  FREQUENCY_BAND_C           = 5;   // ~4-8 GHz
+  FREQUENCY_BAND_X           = 6;   // ~8-12 GHz
+  FREQUENCY_BAND_KU          = 7;   // ~12-18 GHz
+  FREQUENCY_BAND_K           = 8;   // ~18-27 GHz
+  FREQUENCY_BAND_KA          = 9;   // ~27-40 GHz
+}
+
+enum Polarization {
+  POLARIZATION_UNSPECIFIED = 0;
+  POLARIZATION_RHCP        = 1;   // right-hand circular
+  POLARIZATION_LHCP        = 2;   // left-hand circular
+  POLARIZATION_LINEAR_H    = 3;
+  POLARIZATION_LINEAR_V    = 4;
+  POLARIZATION_DUAL        = 5;
+}
+
+message GroundStation {
+  string id = 1;
+  string tenant_id = 2;
+  string slug = 3;
+  string name = 4;
+  string country_code = 5;            // ISO-3166 alpha-2
+  double latitude_deg = 6;
+  double longitude_deg = 7;
+  double altitude_m = 8;
+  bool active = 9;
+  packages.api.v1.fields.Fields fields = 10;
+}
+
+message Antenna {
+  string id = 1;
+  string tenant_id = 2;
+  string station_id = 3;
+  string slug = 4;
+  string name = 5;
+  FrequencyBand band = 6;
+  uint64 min_freq_hz = 7;
+  uint64 max_freq_hz = 8;
+  Polarization polarization = 9;
+  double gain_dbi = 10;
+  double slew_rate_deg_per_s = 11;
+  bool active = 12;
+  packages.api.v1.fields.Fields fields = 13;
+}
+
+// ----- GroundStation RPCs -------------------------------------------------
+
+message CreateGroundStationRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string slug = 2 [(buf.validate.field).string = {pattern: "^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$"}];
+  string name = 3 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  string country_code = 4 [(buf.validate.field).string = {len: 2}];
+  double latitude_deg = 5 [(buf.validate.field).double = {gte: -90, lte: 90}];
+  double longitude_deg = 6 [(buf.validate.field).double = {gte: -180, lte: 180}];
+  double altitude_m = 7;
+}
+message CreateGroundStationResponse { GroundStation station = 1; }
+
+message GetGroundStationRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetGroundStationResponse { GroundStation station = 1; }
+
+message ListGroundStationsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  packages.api.v1.pagination.PaginationRequest page = 2;
+}
+message ListGroundStationsResponse {
+  repeated GroundStation stations = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message DeprecateGroundStationRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message DeprecateGroundStationResponse { GroundStation station = 1; }
+
+// ----- Antenna RPCs -------------------------------------------------------
+
+message CreateAntennaRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string station_id = 2 [(buf.validate.field).string = {len: 26}];
+  string slug = 3 [(buf.validate.field).string = {pattern: "^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$"}];
+  string name = 4 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  FrequencyBand band = 5 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  uint64 min_freq_hz = 6;
+  uint64 max_freq_hz = 7;
+  Polarization polarization = 8 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  double gain_dbi = 9;
+  double slew_rate_deg_per_s = 10;
+}
+message CreateAntennaResponse { Antenna antenna = 1; }
+
+message GetAntennaRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetAntennaResponse { Antenna antenna = 1; }
+
+message ListAntennasRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string station_id = 2;
+  optional FrequencyBand band = 3;
+  packages.api.v1.pagination.PaginationRequest page = 4;
+}
+message ListAntennasResponse {
+  repeated Antenna antennas = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message DeprecateAntennaRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message DeprecateAntennaResponse { Antenna antenna = 1; }
+
+service MissionControlService {
+  rpc CreateGroundStation(CreateGroundStationRequest) returns (CreateGroundStationResponse);
+  rpc GetGroundStation(GetGroundStationRequest) returns (GetGroundStationResponse);
+  rpc ListGroundStations(ListGroundStationsRequest) returns (ListGroundStationsResponse);
+  rpc DeprecateGroundStation(DeprecateGroundStationRequest) returns (DeprecateGroundStationResponse);
+
+  rpc CreateAntenna(CreateAntennaRequest) returns (CreateAntennaResponse);
+  rpc GetAntenna(GetAntennaRequest) returns (GetAntennaResponse);
+  rpc ListAntennas(ListAntennasRequest) returns (ListAntennasResponse);
+  rpc DeprecateAntenna(DeprecateAntennaRequest) returns (DeprecateAntennaResponse);
+}

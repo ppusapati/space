@@ -1,0 +1,153 @@
+syntax = "proto3";
+
+package p9e.space.satsimulation.v1;
+
+option go_package = "github.com/ppusapati/space/services/sat-simulation/api;satsimulationv1";
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// Satellite Simulation — Software-In-The-Loop (SITL) and
+// Hardware-In-The-Loop (HITL) test scenarios and run management.
+//
+// A Scenario describes a reusable test specification. A SimulationRun
+// executes a Scenario against a satellite (or its digital twin), records
+// pass/fail criteria, log/telemetry artefacts, and a score.
+// All identifiers are ULID strings (Crockford Base32, 26 chars).
+// =====================================================================
+
+enum SimulationMode {
+  SIMULATION_MODE_UNSPECIFIED = 0;
+  SIMULATION_MODE_SITL        = 1;  // Software-In-The-Loop
+  SIMULATION_MODE_HITL        = 2;  // Hardware-In-The-Loop
+}
+
+enum RunStatus {
+  RUN_STATUS_UNSPECIFIED = 0;
+  RUN_STATUS_QUEUED      = 1;
+  RUN_STATUS_RUNNING     = 2;
+  RUN_STATUS_COMPLETED   = 3;
+  RUN_STATUS_FAILED      = 4;
+  RUN_STATUS_CANCELED    = 5;
+}
+
+message Scenario {
+  string id = 1;                       // ULID
+  string tenant_id = 2;                // ULID
+  string slug = 3;                     // url-safe stable id
+  string title = 4;
+  string description = 5;
+  string spec_json = 6;                // scenario specification (JSON)
+  bool active = 7;
+  packages.api.v1.fields.Fields fields = 8;
+}
+
+message SimulationRun {
+  string id = 1;                       // ULID
+  string tenant_id = 2;
+  string satellite_id = 3;
+  string scenario_id = 4;
+  SimulationMode mode = 5;
+  RunStatus status = 6;
+  string parameters_json = 7;          // run-time overrides
+  string log_uri = 8;                  // s3:// of stdout/stderr archive
+  string telemetry_uri = 9;            // s3:// of telemetry dump
+  string results_json = 10;            // pass/fail criteria results
+  double score = 11;                   // 0..1, scenario-specific score
+  google.protobuf.Timestamp started_at = 12;
+  google.protobuf.Timestamp finished_at = 13;
+  string error_message = 14;
+  packages.api.v1.fields.Fields fields = 15;
+}
+
+// ----- Scenario RPCs ------------------------------------------------------
+
+message CreateScenarioRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string slug = 2 [(buf.validate.field).string = {pattern: "^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$"}];
+  string title = 3 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  string description = 4;
+  string spec_json = 5;
+}
+message CreateScenarioResponse { Scenario scenario = 1; }
+
+message GetScenarioRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetScenarioResponse { Scenario scenario = 1; }
+
+message ListScenariosRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  packages.api.v1.pagination.PaginationRequest page = 2;
+}
+message ListScenariosResponse {
+  repeated Scenario scenarios = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message DeprecateScenarioRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message DeprecateScenarioResponse { Scenario scenario = 1; }
+
+// ----- Run RPCs -----------------------------------------------------------
+
+message StartRunRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 2 [(buf.validate.field).string = {len: 26}];
+  string scenario_id = 3 [(buf.validate.field).string = {len: 26}];
+  SimulationMode mode = 4 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string parameters_json = 5;
+}
+message StartRunResponse { SimulationRun run = 1; }
+
+message GetRunRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetRunResponse { SimulationRun run = 1; }
+
+message ListRunsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 2;
+  string scenario_id = 3;
+  optional RunStatus status = 4;
+  optional SimulationMode mode = 5;
+  packages.api.v1.pagination.PaginationRequest page = 6;
+}
+message ListRunsResponse {
+  repeated SimulationRun runs = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message UpdateRunStatusRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  RunStatus status = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string log_uri = 3;
+  string telemetry_uri = 4;
+  string results_json = 5;
+  double score = 6;
+  string error_message = 7;
+}
+message UpdateRunStatusResponse { SimulationRun run = 1; }
+
+message CancelRunRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  string reason = 2;
+}
+message CancelRunResponse { SimulationRun run = 1; }
+
+service SimulationService {
+  rpc CreateScenario(CreateScenarioRequest) returns (CreateScenarioResponse);
+  rpc GetScenario(GetScenarioRequest) returns (GetScenarioResponse);
+  rpc ListScenarios(ListScenariosRequest) returns (ListScenariosResponse);
+  rpc DeprecateScenario(DeprecateScenarioRequest) returns (DeprecateScenarioResponse);
+
+  rpc StartRun(StartRunRequest) returns (StartRunResponse);
+  rpc GetRun(GetRunRequest) returns (GetRunResponse);
+  rpc ListRuns(ListRunsRequest) returns (ListRunsResponse);
+  rpc UpdateRunStatus(UpdateRunStatusRequest) returns (UpdateRunStatusResponse);
+  rpc CancelRun(CancelRunRequest) returns (CancelRunResponse);
+}

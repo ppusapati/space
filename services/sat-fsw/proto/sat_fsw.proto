@@ -1,0 +1,145 @@
+syntax = "proto3";
+
+package p9e.space.satfsw.v1;
+
+option go_package = "github.com/ppusapati/space/services/sat-fsw/api;satfswv1";
+
+import "buf/validate/validate.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// Flight Software Registry — tracks firmware builds (binary images for
+// flight subsystems) and deployment manifests (which build runs on which
+// satellite for which subsystem).
+// All identifiers are ULID strings (Crockford Base32, 26 chars).
+// =====================================================================
+
+enum FirmwareBuildStatus {
+  FIRMWARE_BUILD_STATUS_UNSPECIFIED = 0;
+  FIRMWARE_BUILD_STATUS_BUILDING    = 1;
+  FIRMWARE_BUILD_STATUS_READY       = 2;
+  FIRMWARE_BUILD_STATUS_REJECTED    = 3;
+  FIRMWARE_BUILD_STATUS_DEPRECATED  = 4;
+}
+
+enum DeploymentStatus {
+  DEPLOYMENT_STATUS_UNSPECIFIED = 0;
+  DEPLOYMENT_STATUS_DRAFT       = 1;
+  DEPLOYMENT_STATUS_APPROVED    = 2;
+  DEPLOYMENT_STATUS_DEPLOYED    = 3;
+  DEPLOYMENT_STATUS_ROLLED_BACK = 4;
+}
+
+message FirmwareBuild {
+  string id = 1;                        // ULID
+  string tenant_id = 2;                 // ULID
+  string target_platform = 3;           // e.g. "stm32-h7-cdh", "stm32-l4-eps"
+  string subsystem = 4;                 // e.g. "cdh", "eps", "adcs"
+  string version = 5;                   // semver-ish, e.g. "1.4.0-rc2"
+  string git_sha = 6;                   // 40-char hex
+  string artefact_uri = 7;              // s3://bucket/path/firmware.bin
+  uint64 artefact_size_bytes = 8;
+  string artefact_sha256 = 9;           // 64-char hex
+  FirmwareBuildStatus status = 10;
+  string notes = 11;
+  packages.api.v1.fields.Fields fields = 12;
+}
+
+message DeploymentManifest {
+  string id = 1;                        // ULID
+  string tenant_id = 2;                 // ULID
+  string satellite_id = 3;              // ULID
+  string manifest_version = 4;          // e.g. "v2024.05.01-rc1"
+  DeploymentStatus status = 5;
+  // Map subsystem name -> firmware_build_id (ULID) selected for this manifest.
+  map<string, string> assignments = 6;
+  string notes = 7;
+  packages.api.v1.fields.Fields fields = 8;
+}
+
+// ----- FirmwareBuild RPCs -------------------------------------------------
+
+message RegisterFirmwareBuildRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string target_platform = 2 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  string subsystem = 3 [(buf.validate.field).string = {min_len: 1, max_len: 64}];
+  string version = 4 [(buf.validate.field).string = {min_len: 1, max_len: 64}];
+  string git_sha = 5 [(buf.validate.field).string = {len: 40}];
+  string artefact_uri = 6 [(buf.validate.field).string = {min_len: 1, max_len: 1024}];
+  uint64 artefact_size_bytes = 7 [(buf.validate.field).uint64 = {gt: 0}];
+  string artefact_sha256 = 8 [(buf.validate.field).string = {len: 64}];
+  string notes = 9;
+}
+message RegisterFirmwareBuildResponse { FirmwareBuild build = 1; }
+
+message GetFirmwareBuildRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetFirmwareBuildResponse { FirmwareBuild build = 1; }
+
+message ListFirmwareBuildsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string subsystem = 2;
+  optional FirmwareBuildStatus status = 3;
+  packages.api.v1.pagination.PaginationRequest page = 4;
+}
+message ListFirmwareBuildsResponse {
+  repeated FirmwareBuild builds = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message UpdateFirmwareBuildStatusRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  FirmwareBuildStatus status = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string notes = 3;
+}
+message UpdateFirmwareBuildStatusResponse { FirmwareBuild build = 1; }
+
+// ----- DeploymentManifest RPCs --------------------------------------------
+
+message CreateDeploymentManifestRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 2 [(buf.validate.field).string = {len: 26}];
+  string manifest_version = 3 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  map<string, string> assignments = 4;
+  string notes = 5;
+}
+message CreateDeploymentManifestResponse { DeploymentManifest manifest = 1; }
+
+message GetDeploymentManifestRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetDeploymentManifestResponse { DeploymentManifest manifest = 1; }
+
+message ListDeploymentManifestsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 2;
+  optional DeploymentStatus status = 3;
+  packages.api.v1.pagination.PaginationRequest page = 4;
+}
+message ListDeploymentManifestsResponse {
+  repeated DeploymentManifest manifests = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message UpdateDeploymentManifestStatusRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  DeploymentStatus status = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string notes = 3;
+}
+message UpdateDeploymentManifestStatusResponse { DeploymentManifest manifest = 1; }
+
+// ----- Service ------------------------------------------------------------
+
+service FlightSoftwareService {
+  rpc RegisterFirmwareBuild(RegisterFirmwareBuildRequest) returns (RegisterFirmwareBuildResponse);
+  rpc GetFirmwareBuild(GetFirmwareBuildRequest) returns (GetFirmwareBuildResponse);
+  rpc ListFirmwareBuilds(ListFirmwareBuildsRequest) returns (ListFirmwareBuildsResponse);
+  rpc UpdateFirmwareBuildStatus(UpdateFirmwareBuildStatusRequest) returns (UpdateFirmwareBuildStatusResponse);
+
+  rpc CreateDeploymentManifest(CreateDeploymentManifestRequest) returns (CreateDeploymentManifestResponse);
+  rpc GetDeploymentManifest(GetDeploymentManifestRequest) returns (GetDeploymentManifestResponse);
+  rpc ListDeploymentManifests(ListDeploymentManifestsRequest) returns (ListDeploymentManifestsResponse);
+  rpc UpdateDeploymentManifestStatus(UpdateDeploymentManifestStatusRequest) returns (UpdateDeploymentManifestStatusResponse);
+}

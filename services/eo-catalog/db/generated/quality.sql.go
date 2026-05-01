@@ -13,30 +13,13 @@ import (
 
 const listQualityForItem = `-- name: ListQualityForItem :many
 SELECT id, item_id, cloud_cover, radiometric_rmse, geometric_accuracy_m, notes, computed_at FROM quality_results
-WHERE item_id = $1::uuid
-  AND (
-        $2::timestamptz IS NULL
-        OR (computed_at, id) < ($2::timestamptz,
-                                $3::uuid)
-      )
+WHERE item_id = $1
 ORDER BY computed_at DESC, id DESC
-LIMIT $4::int
+LIMIT 100
 `
 
-type ListQualityForItemParams struct {
-	ItemID           pgtype.UUID
-	CursorComputedAt pgtype.Timestamptz
-	CursorID         pgtype.UUID
-	Lim              int32
-}
-
-func (q *Queries) ListQualityForItem(ctx context.Context, arg ListQualityForItemParams) ([]QualityResult, error) {
-	rows, err := q.db.Query(ctx, listQualityForItem,
-		arg.ItemID,
-		arg.CursorComputedAt,
-		arg.CursorID,
-		arg.Lim,
-	)
+func (q *Queries) ListQualityForItem(ctx context.Context, itemID pgtype.UUID) ([]QualityResult, error) {
+	rows, err := q.db.Query(ctx, listQualityForItem, itemID)
 	if err != nil {
 		return nil, err
 	}
