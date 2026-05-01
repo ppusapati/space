@@ -5,4 +5,5 @@ use (
 	./pkg
 	./services/eo-catalog
 	./services/eo-pipeline
+	./services/eo-analytics
 )
