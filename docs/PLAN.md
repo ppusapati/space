@@ -81,11 +81,16 @@ space/
 │   ├── gi-reports/
 │   └── gi-predict/
 │
-├── compute/                         Rust workspace (compute engines)
+├── compute/                         Rust workspace — host-side data plane
 │   ├── Cargo.toml                   workspace
-│   ├── crates/                      see § 4 for full list
+│   ├── crates/                      EO + GS + GI + sim + orbit-prop (see § 4)
 │   └── bins/                        thin worker daemons (eo-worker, gs-worker, gi-worker)
 │
+├── flight/                          Rust workspace — embedded flight software
+│   ├── Cargo.toml                   workspace
+│   └── crates/                      ADCS + C&DH + EPS (see § 4.2 / 4.3 / 4.4)
+│
+
 ├── ml/                              Python ML packages (Poetry workspace)
 │   ├── packages/
 │   │   ├── eo_ml/                   YOLO/Faster-RCNN/U-Net/DeepLabV3+/ViT
@@ -177,9 +182,24 @@ services/<service>/
 | `gi-reports`   | Templates, generated reports, annotations, export jobs | PostgreSQL + S3 |
 | `gi-predict`   | Predictive model registry, inference jobs, scenario runs | PostgreSQL + PostGIS |
 
-## 4. Rust compute crates (Cargo workspace at `compute/`)
+## 4. Rust crates (split between two Cargo workspaces)
 
-### 4.1 Earth Observation compute
+The Rust code lives in **two** sibling Cargo workspaces:
+
+* **`compute/`** — host-side data / RF / imagery processing. Links `std`,
+  the full-featured `nalgebra` and `ndarray`, `printpdf`, `mvt`, `sgp4`,
+  etc. Runs in the worker daemons on x86-64 Linux.
+* **`flight/`** — embedded-target flight software. Currently host-built
+  for SITL but structured to admit a future `no_std` port (nalgebra
+  with `default-features = false` + `std` feature, BTreeMap usage
+  isolated, no FS I/O at the API surface). When a board-specific HAL
+  crate lands, each crate splits into a `core` (no_std) module and a
+  `host` test/sim wrapper.
+
+The split lets us cross-compile the flight side for ARM / RISC-V without
+pulling printpdf / mvt / serde_json through the resolver.
+
+### 4.1 Earth Observation compute (`compute/crates/`)
 | Crate            | Capability |
 |------------------|------------|
 | `eo-radiometric` | TOA / BOA reflectance |
@@ -190,24 +210,28 @@ services/<service>/
 | `eo-sar`         | Speckle filter, terrain correction, polarimetric decomposition |
 | `eo-indices`     | NDVI, EVI, SAVI, NDWI |
 
-### 4.2 Satellite flight software
+### 4.2 Satellite flight software (`flight/crates/`)
 | Crate            | Capability |
 |------------------|------------|
 | `adcs-ekf`       | Extended Kalman Filter (separate crate) |
 | `adcs-ukf`       | Unscented Kalman Filter (separate crate) |
 | `adcs-control`   | PID, LQR, sliding-mode, MPC controllers |
 | `adcs-actuators` | Reaction wheel, magnetorquer, thruster drivers |
-| `orbit-prop`     | SGP4 / SDP4, RK4, RK78 integrators |
 | `cdh-ccsds`      | Space Packet Protocol, TC/TM frames, COP-1 |
 | `cdh-fs`         | Log-structured on-board file system |
 | `cdh-scheduler`  | Time-tagged command execution |
 | `cdh-edac`       | Hamming + Reed-Solomon memory scrubbing |
 | `eps-power`      | Power budget, MPPT, eclipse predictor |
 | `eps-battery`    | State-of-charge / state-of-health estimators |
+
+### 4.2a Host-side simulation and orbit propagation (`compute/crates/`)
+| Crate            | Capability |
+|------------------|------------|
+| `orbit-prop`     | SGP4 / SDP4 (via `sgp4` crate), RK4 / RK45-DOPRI integrators |
 | `sim-physics`    | 6-DOF dynamics, gravity, magnetic, drag, SRP |
 | `sim-harness`    | SITL/HITL harness, Monte-Carlo runner |
 
-### 4.3 Ground-station DSP / drivers
+### 4.3 Ground-station DSP / drivers (`compute/crates/`)
 | Crate          | Capability |
 |----------------|------------|
 | `gs-tle`       | TLE parsing → ECI/ECEF (uses `orbit-prop`) |

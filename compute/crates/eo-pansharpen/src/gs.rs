@@ -10,7 +10,7 @@
 
 use ndarray::{Array2, Array3, ArrayView2, ArrayView3};
 
-use crate::{PansharpenError, hist_match::{histogram_match, mean_std}};
+use crate::{PansharpenError, hist_match::histogram_match};
 
 /// Per-band weights used to synthesise the low-resolution Pan in step 1.
 #[derive(Debug, Clone)]
@@ -117,9 +117,7 @@ pub fn gram_schmidt(
         }
     }
 
-    // Sanity: the per-band statistics should be of similar order to inputs.
     debug_assert!(out.iter().all(|v| v.is_finite()));
-    let _ = mean_std(out.index_axis(ndarray::Axis(0), 0));
     Ok(out)
 }
 

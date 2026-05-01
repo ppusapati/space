@@ -3,42 +3,6 @@
 version = 4
 
 [[package]]
-name = "adcs-actuators"
-version = "0.1.0"
-dependencies = [
- "approx",
- "nalgebra",
- "thiserror",
-]
-
-[[package]]
-name = "adcs-control"
-version = "0.1.0"
-dependencies = [
- "approx",
- "nalgebra",
- "thiserror",
-]
-
-[[package]]
-name = "adcs-ekf"
-version = "0.1.0"
-dependencies = [
- "approx",
- "nalgebra",
- "thiserror",
-]
-
-[[package]]
-name = "adcs-ukf"
-version = "0.1.0"
-dependencies = [
- "approx",
- "nalgebra",
- "thiserror",
-]
-
-[[package]]
 name = "adler2"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -143,35 +107,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1e748733b7cbc798e1434b6ac524f0c1ff2ab456fe201501e6497c8417a4fc33"
 
 [[package]]
-name = "cdh-ccsds"
-version = "0.1.0"
-dependencies = [
- "thiserror",
-]
-
-[[package]]
-name = "cdh-edac"
-version = "0.1.0"
-dependencies = [
- "thiserror",
-]
-
-[[package]]
-name = "cdh-fs"
-version = "0.1.0"
-dependencies = [
- "cdh-ccsds",
- "thiserror",
-]
-
-[[package]]
-name = "cdh-scheduler"
-version = "0.1.0"
-dependencies = [
- "thiserror",
-]
-
-[[package]]
 name = "cfg-if"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -264,6 +199,7 @@ name = "eo-mosaic"
 version = "0.1.0"
 dependencies = [
  "approx",
+ "eo-geometric",
  "ndarray",
  "thiserror",
 ]
@@ -295,23 +231,6 @@ dependencies = [
  "nalgebra",
  "ndarray",
  "num-complex",
- "thiserror",
-]
-
-[[package]]
-name = "eps-battery"
-version = "0.1.0"
-dependencies = [
- "approx",
- "thiserror",
-]
-
-[[package]]
-name = "eps-power"
-version = "0.1.0"
-dependencies = [
- "approx",
- "nalgebra",
  "thiserror",
 ]
 

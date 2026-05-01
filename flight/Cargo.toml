@@ -1,0 +1,55 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/adcs-ekf",
+    "crates/adcs-ukf",
+    "crates/adcs-control",
+    "crates/adcs-actuators",
+    "crates/cdh-ccsds",
+    "crates/cdh-edac",
+    "crates/cdh-fs",
+    "crates/cdh-scheduler",
+    "crates/eps-power",
+    "crates/eps-battery",
+]
+
+# Flight software is currently host-targeted (std + nalgebra + thiserror) so
+# the same toolchain as `compute/` builds it. Each crate is structured to
+# admit a future `no_std` port: nalgebra is pulled with `default-features =
+# false` + `std` feature, BTreeMap / BinaryHeap usage is confined to
+# specific modules, and cdh-* crates avoid filesystem I/O at the API level.
+#
+# When a board-specific HAL crate is added, this workspace will split each
+# crate into a `core` (no_std) crate and a `host` (std-only test/sim) crate.
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "Proprietary"
+publish = false
+authors = ["P9E Microsystems Pvt Ltd"]
+rust-version = "1.94"
+
+[workspace.dependencies]
+nalgebra = { version = "0.33", default-features = false, features = ["std"] }
+thiserror = "2.0"
+tracing = { version = "0.1", default-features = false, features = ["std", "attributes"] }
+serde = { version = "1", default-features = false, features = ["std", "derive"] }
+approx = "0.5"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = 3
+overflow-checks = false
+panic = "abort"
+strip = "symbols"
+
+[profile.release-dbg]
+inherits = "release"
+debug = true
+strip = "none"
+
+[profile.bench]
+inherits = "release"
+debug = true

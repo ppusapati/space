@@ -1,5 +1,9 @@
 [workspace]
 resolver = "2"
+# Host-side compute crates only. Flight-software crates (ADCS, C&DH, EPS)
+# live in the sibling `../flight/` workspace so they can be cross-compiled
+# for embedded targets without dragging printpdf, mvt, sgp4, etc. through
+# the resolver.
 members = [
     "crates/eo-indices",
     "crates/eo-radiometric",
@@ -8,17 +12,7 @@ members = [
     "crates/eo-mosaic",
     "crates/eo-sar",
     "crates/eo-atmos-corr",
-    "crates/adcs-ekf",
-    "crates/adcs-ukf",
-    "crates/adcs-control",
-    "crates/adcs-actuators",
     "crates/orbit-prop",
-    "crates/cdh-ccsds",
-    "crates/cdh-edac",
-    "crates/cdh-fs",
-    "crates/cdh-scheduler",
-    "crates/eps-power",
-    "crates/eps-battery",
     "crates/sim-physics",
     "crates/sim-harness",
     "crates/gs-tle",

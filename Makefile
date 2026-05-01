@@ -1,10 +1,22 @@
 SHELL := /usr/bin/env bash
 GOBIN := $(shell go env GOPATH)/bin
+CARGO := cargo
 export PATH := $(GOBIN):$(PATH)
 
-SERVICES := earthobs satsubsys groundstation geoint
+# Each service folder under services/. Populated incrementally as Go
+# services are implemented.
+SERVICES :=
 
-.PHONY: tools proto sqlc generate build test vet tidy clean
+# Rust workspaces. `compute` hosts the host-side data/RF/imagery crates;
+# `flight` hosts the embedded-target ADCS / C&DH / EPS crates that will
+# eventually be cross-compiled for satellite hardware.
+RUST_WORKSPACES := compute flight
+
+# Python ML packages and worker daemons.
+PY_PKGS := ml/packages/ml_serving ml/packages/eo_ml ml/packages/gi_ml \
+           ml/workers/eo-ml-worker ml/workers/gi-ml-worker
+
+.PHONY: tools proto sqlc generate build test vet tidy clean rust-test rust-clippy py-test
 
 tools:
 	go install github.com/bufbuild/buf/cmd/buf@v1.69.0
@@ -40,8 +52,27 @@ build:
 	done
 
 test:
-	cd pkg && go test ./...
+	@if [ -d pkg ]; then cd pkg && go test ./...; fi
 	@for s in $(SERVICES); do (cd services/$$s && go test ./...) || exit 1; done
+
+rust-test:
+	@for w in $(RUST_WORKSPACES); do \
+		echo ">> cargo test --workspace ($$w)"; \
+		(cd $$w && $(CARGO) test --workspace --all-targets) || exit 1; \
+	done
+
+rust-clippy:
+	@for w in $(RUST_WORKSPACES); do \
+		echo ">> cargo clippy --workspace ($$w)"; \
+		(cd $$w && $(CARGO) clippy --workspace --all-targets --all-features -- -D warnings) || exit 1; \
+	done
+
+py-test:
+	@for p in $(PY_PKGS); do \
+		echo ">> pytest $$p"; \
+		(cd $$p && python3 -m pytest tests/ -q) || exit 1; \
+	done
 
 clean:
 	rm -rf services/*/bin
+	@for w in $(RUST_WORKSPACES); do (cd $$w && $(CARGO) clean) || true; done

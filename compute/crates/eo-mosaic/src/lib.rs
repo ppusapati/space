@@ -19,22 +19,9 @@ pub mod mosaic;
 pub mod overlap;
 pub mod seamline;
 
+pub use eo_geometric::ortho::AffineGeo;
 use ndarray::Array2;
 use thiserror::Error;
-
-/// 6-parameter affine geo-transform identifying a tile's upper-left
-/// pixel-centre origin and pixel sizes.
-#[derive(Debug, Clone, Copy)]
-pub struct AffineGeo {
-    /// Map x of the upper-left pixel centre.
-    pub origin_x: f64,
-    /// Map y of the upper-left pixel centre.
-    pub origin_y: f64,
-    /// Map x increment per column.
-    pub pixel_x: f64,
-    /// Map y increment per row (typically negative).
-    pub pixel_y: f64,
-}
 
 /// A single mosaic tile: a 2-D raster plus its geo-reference.
 #[derive(Debug, Clone)]

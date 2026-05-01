@@ -26,6 +26,7 @@ many_single_char_names = "allow"
 needless_range_loop = "allow"
 
 [dependencies]
+eo-geometric = { path = "../eo-geometric" }
 ndarray = { workspace = true }
 thiserror = { workspace = true }
 

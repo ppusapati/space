@@ -56,7 +56,7 @@ pub fn solve_dare(
     }
     let mut p = q.clone();
     let mut last_p = p.clone();
-    for it in 0..max_iters {
+    for _ in 0..max_iters {
         let bt_p = b.transpose() * &p;
         let s = r + &bt_p * b;
         let s_inv = s
@@ -78,7 +78,6 @@ pub fn solve_dare(
             let k = s_inv * bt_p * a;
             return Ok((p, k));
         }
-        let _ = it;
     }
     Err(ControlError::DidNotConverge {
         iters: max_iters,

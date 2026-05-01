@@ -211,7 +211,9 @@ pub fn run_atmos_correction(job: &AtmosCorrJob) -> Result<AtmosCorrResult, Atmos
             }
             Ok(None) => {
                 if Instant::now() >= deadline {
-                    let _ = child.kill();
+                    if let Err(e) = child.kill() {
+                        tracing::warn!(?backend_name, error = %e, "kill on timeout failed");
+                    }
                     return Err(AtmosCorrError::Timeout {
                         backend: backend_name,
                         timeout_s: job.timeout.as_secs(),
