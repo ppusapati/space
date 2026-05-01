@@ -11,6 +11,26 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countDeploymentManifestsForTenant = `-- name: CountDeploymentManifestsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM deployment_manifests
+WHERE tenant_id = $1::uuid
+  AND ($2::uuid IS NULL OR satellite_id = $2::uuid)
+  AND ($3::int        IS NULL OR status       = $3::int)
+`
+
+type CountDeploymentManifestsForTenantParams struct {
+	TenantID    pgtype.UUID
+	SatelliteID pgtype.UUID
+	Status      *int32
+}
+
+func (q *Queries) CountDeploymentManifestsForTenant(ctx context.Context, arg CountDeploymentManifestsForTenantParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countDeploymentManifestsForTenant, arg.TenantID, arg.SatelliteID, arg.Status)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
 const createDeploymentManifest = `-- name: CreateDeploymentManifest :one
 INSERT INTO deployment_manifests (
     id, tenant_id, satellite_id, manifest_version, status,
@@ -83,37 +103,31 @@ func (q *Queries) GetDeploymentManifest(ctx context.Context, id pgtype.UUID) (De
 	return i, err
 }
 
-const listDeploymentManifests = `-- name: ListDeploymentManifests :many
+const listDeploymentManifestsForTenant = `-- name: ListDeploymentManifestsForTenant :many
 SELECT id, tenant_id, satellite_id, manifest_version, status, assignments_json, notes, created_at, updated_at, created_by, updated_by FROM deployment_manifests
 WHERE tenant_id = $1::uuid
   AND ($2::uuid IS NULL OR satellite_id = $2::uuid)
   AND ($3::int        IS NULL OR status       = $3::int)
-  AND (
-        $4::timestamptz IS NULL
-        OR (created_at, id) < ($4::timestamptz,
-                               $5::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT $6::int
+OFFSET $4::int
+LIMIT  $5::int
 `
 
-type ListDeploymentManifestsParams struct {
-	TenantID        pgtype.UUID
-	SatelliteID     pgtype.UUID
-	Status          *int32
-	CursorCreatedAt pgtype.Timestamptz
-	CursorID        pgtype.UUID
-	Lim             int32
+type ListDeploymentManifestsForTenantParams struct {
+	TenantID    pgtype.UUID
+	SatelliteID pgtype.UUID
+	Status      *int32
+	PageOffset  int32
+	PageSize    int32
 }
 
-func (q *Queries) ListDeploymentManifests(ctx context.Context, arg ListDeploymentManifestsParams) ([]DeploymentManifest, error) {
-	rows, err := q.db.Query(ctx, listDeploymentManifests,
+func (q *Queries) ListDeploymentManifestsForTenant(ctx context.Context, arg ListDeploymentManifestsForTenantParams) ([]DeploymentManifest, error) {
+	rows, err := q.db.Query(ctx, listDeploymentManifestsForTenant,
 		arg.TenantID,
 		arg.SatelliteID,
 		arg.Status,
-		arg.CursorCreatedAt,
-		arg.CursorID,
-		arg.Lim,
+		arg.PageOffset,
+		arg.PageSize,
 	)
 	if err != nil {
 		return nil, err

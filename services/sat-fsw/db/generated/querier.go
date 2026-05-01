@@ -11,11 +11,13 @@ import (
 )
 
 type Querier interface {
+	CountDeploymentManifestsForTenant(ctx context.Context, arg CountDeploymentManifestsForTenantParams) (int64, error)
+	CountFirmwareBuildsForTenant(ctx context.Context, arg CountFirmwareBuildsForTenantParams) (int64, error)
 	CreateDeploymentManifest(ctx context.Context, arg CreateDeploymentManifestParams) (DeploymentManifest, error)
 	GetDeploymentManifest(ctx context.Context, id pgtype.UUID) (DeploymentManifest, error)
 	GetFirmwareBuild(ctx context.Context, id pgtype.UUID) (FirmwareBuild, error)
-	ListDeploymentManifests(ctx context.Context, arg ListDeploymentManifestsParams) ([]DeploymentManifest, error)
-	ListFirmwareBuilds(ctx context.Context, arg ListFirmwareBuildsParams) ([]FirmwareBuild, error)
+	ListDeploymentManifestsForTenant(ctx context.Context, arg ListDeploymentManifestsForTenantParams) ([]DeploymentManifest, error)
+	ListFirmwareBuildsForTenant(ctx context.Context, arg ListFirmwareBuildsForTenantParams) ([]FirmwareBuild, error)
 	RegisterFirmwareBuild(ctx context.Context, arg RegisterFirmwareBuildParams) (FirmwareBuild, error)
 	UpdateDeploymentManifestStatus(ctx context.Context, arg UpdateDeploymentManifestStatusParams) (DeploymentManifest, error)
 	UpdateFirmwareBuildStatus(ctx context.Context, arg UpdateFirmwareBuildStatusParams) (FirmwareBuild, error)

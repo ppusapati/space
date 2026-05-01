@@ -11,18 +11,20 @@ RETURNING *;
 -- name: GetFirmwareBuild :one
 SELECT * FROM firmware_builds WHERE id = $1;
 
--- name: ListFirmwareBuilds :many
+-- name: CountFirmwareBuildsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM firmware_builds
+WHERE tenant_id = sqlc.arg('tenant_id')::uuid
+  AND (sqlc.narg('subsystem')::text IS NULL OR subsystem = sqlc.narg('subsystem')::text)
+  AND (sqlc.narg('status')::int    IS NULL OR status    = sqlc.narg('status')::int);
+
+-- name: ListFirmwareBuildsForTenant :many
 SELECT * FROM firmware_builds
 WHERE tenant_id = sqlc.arg('tenant_id')::uuid
   AND (sqlc.narg('subsystem')::text IS NULL OR subsystem = sqlc.narg('subsystem')::text)
   AND (sqlc.narg('status')::int    IS NULL OR status    = sqlc.narg('status')::int)
-  AND (
-        sqlc.narg('cursor_created_at')::timestamptz IS NULL
-        OR (created_at, id) < (sqlc.narg('cursor_created_at')::timestamptz,
-                               sqlc.arg('cursor_id')::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT sqlc.arg('lim')::int;
+OFFSET sqlc.arg('page_offset')::int
+LIMIT  sqlc.arg('page_size')::int;
 
 -- name: UpdateFirmwareBuildStatus :one
 UPDATE firmware_builds

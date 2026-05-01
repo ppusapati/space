@@ -6,4 +6,5 @@ use (
 	./eo-pipeline
 	./eo-analytics
 	./sat-mission
+	./sat-fsw
 )

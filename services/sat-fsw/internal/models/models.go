@@ -4,37 +4,37 @@ package models
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"p9e.in/samavaya/packages/ulid"
 )
 
-// FirmwareBuildStatus mirrors satv1.FirmwareBuildStatus.
-type FirmwareBuildStatus int
+// FirmwareBuildStatus mirrors satfswv1.FirmwareBuildStatus.
+type FirmwareBuildStatus int32
 
 // Build status constants.
 const (
-	BuildStatusUnspecified FirmwareBuildStatus = 0
-	BuildStatusBuilding    FirmwareBuildStatus = 1
-	BuildStatusReady       FirmwareBuildStatus = 2
-	BuildStatusRejected    FirmwareBuildStatus = 3
-	BuildStatusDeprecated  FirmwareBuildStatus = 4
+	BuildUnspecified FirmwareBuildStatus = 0
+	BuildBuilding    FirmwareBuildStatus = 1
+	BuildReady       FirmwareBuildStatus = 2
+	BuildRejected    FirmwareBuildStatus = 3
+	BuildDeprecated  FirmwareBuildStatus = 4
 )
 
-// DeploymentStatus mirrors satv1.DeploymentStatus.
-type DeploymentStatus int
+// DeploymentStatus mirrors satfswv1.DeploymentStatus.
+type DeploymentStatus int32
 
 // Deployment status constants.
 const (
-	DeploymentStatusUnspecified DeploymentStatus = 0
-	DeploymentStatusDraft       DeploymentStatus = 1
-	DeploymentStatusApproved    DeploymentStatus = 2
-	DeploymentStatusDeployed    DeploymentStatus = 3
-	DeploymentStatusRolledBack  DeploymentStatus = 4
+	DeploymentUnspecified DeploymentStatus = 0
+	DeploymentDraft       DeploymentStatus = 1
+	DeploymentApproved    DeploymentStatus = 2
+	DeploymentDeployed    DeploymentStatus = 3
+	DeploymentRolledBack  DeploymentStatus = 4
 )
 
-// FirmwareBuild is a built firmware artefact for a flight subsystem.
+// FirmwareBuild is a single firmware artefact.
 type FirmwareBuild struct {
-	ID                uuid.UUID
-	TenantID          uuid.UUID
+	ID                ulid.ID
+	TenantID          ulid.ID
 	TargetPlatform    string
 	Subsystem         string
 	Version           string
@@ -50,11 +50,11 @@ type FirmwareBuild struct {
 	UpdatedBy         string
 }
 
-// DeploymentManifest pins a firmware build per subsystem on a satellite.
+// DeploymentManifest is one assignment of firmware builds onto a satellite.
 type DeploymentManifest struct {
-	ID              uuid.UUID
-	TenantID        uuid.UUID
-	SatelliteID     uuid.UUID
+	ID              ulid.ID
+	TenantID        ulid.ID
+	SatelliteID     ulid.ID
 	ManifestVersion string
 	Status          DeploymentStatus
 	Assignments     map[string]string
@@ -63,4 +63,12 @@ type DeploymentManifest struct {
 	UpdatedAt       time.Time
 	CreatedBy       string
 	UpdatedBy       string
+}
+
+// Page describes server-side pagination state.
+type Page struct {
+	TotalCount int32
+	PageOffset int32
+	PageSize   int32
+	HasNext    bool
 }

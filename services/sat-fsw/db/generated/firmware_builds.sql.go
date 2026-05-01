@@ -11,6 +11,26 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countFirmwareBuildsForTenant = `-- name: CountFirmwareBuildsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM firmware_builds
+WHERE tenant_id = $1::uuid
+  AND ($2::text IS NULL OR subsystem = $2::text)
+  AND ($3::int    IS NULL OR status    = $3::int)
+`
+
+type CountFirmwareBuildsForTenantParams struct {
+	TenantID  pgtype.UUID
+	Subsystem *string
+	Status    *int32
+}
+
+func (q *Queries) CountFirmwareBuildsForTenant(ctx context.Context, arg CountFirmwareBuildsForTenantParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countFirmwareBuildsForTenant, arg.TenantID, arg.Subsystem, arg.Status)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
 const getFirmwareBuild = `-- name: GetFirmwareBuild :one
 SELECT id, tenant_id, target_platform, subsystem, version, git_sha, artefact_uri, artefact_size_bytes, artefact_sha256, status, notes, created_at, updated_at, created_by, updated_by FROM firmware_builds WHERE id = $1
 `
@@ -38,37 +58,31 @@ func (q *Queries) GetFirmwareBuild(ctx context.Context, id pgtype.UUID) (Firmwar
 	return i, err
 }
 
-const listFirmwareBuilds = `-- name: ListFirmwareBuilds :many
+const listFirmwareBuildsForTenant = `-- name: ListFirmwareBuildsForTenant :many
 SELECT id, tenant_id, target_platform, subsystem, version, git_sha, artefact_uri, artefact_size_bytes, artefact_sha256, status, notes, created_at, updated_at, created_by, updated_by FROM firmware_builds
 WHERE tenant_id = $1::uuid
   AND ($2::text IS NULL OR subsystem = $2::text)
   AND ($3::int    IS NULL OR status    = $3::int)
-  AND (
-        $4::timestamptz IS NULL
-        OR (created_at, id) < ($4::timestamptz,
-                               $5::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT $6::int
+OFFSET $4::int
+LIMIT  $5::int
 `
 
-type ListFirmwareBuildsParams struct {
-	TenantID        pgtype.UUID
-	Subsystem       *string
-	Status          *int32
-	CursorCreatedAt pgtype.Timestamptz
-	CursorID        pgtype.UUID
-	Lim             int32
+type ListFirmwareBuildsForTenantParams struct {
+	TenantID   pgtype.UUID
+	Subsystem  *string
+	Status     *int32
+	PageOffset int32
+	PageSize   int32
 }
 
-func (q *Queries) ListFirmwareBuilds(ctx context.Context, arg ListFirmwareBuildsParams) ([]FirmwareBuild, error) {
-	rows, err := q.db.Query(ctx, listFirmwareBuilds,
+func (q *Queries) ListFirmwareBuildsForTenant(ctx context.Context, arg ListFirmwareBuildsForTenantParams) ([]FirmwareBuild, error) {
+	rows, err := q.db.Query(ctx, listFirmwareBuildsForTenant,
 		arg.TenantID,
 		arg.Subsystem,
 		arg.Status,
-		arg.CursorCreatedAt,
-		arg.CursorID,
-		arg.Lim,
+		arg.PageOffset,
+		arg.PageSize,
 	)
 	if err != nil {
 		return nil, err
