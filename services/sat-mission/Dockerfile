@@ -9,6 +9,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags='-s -w' -o /out/sat-mis
 
 FROM gcr.io/distroless/static-debian12:nonroot
 COPY --from=build /out/sat-mission /usr/local/bin/sat-mission
+COPY --from=build /src/services/sat-mission/config /etc/sat-mission/config
+WORKDIR /etc/sat-mission
 USER nonroot:nonroot
 EXPOSE 8080 9090
 ENTRYPOINT ["/usr/local/bin/sat-mission"]

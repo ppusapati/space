@@ -9,6 +9,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags='-s -w' -o /out/eo-cata
 
 FROM gcr.io/distroless/static-debian12:nonroot
 COPY --from=build /out/eo-catalog /usr/local/bin/eo-catalog
+COPY --from=build /src/services/eo-catalog/config /etc/eo-catalog/config
+WORKDIR /etc/eo-catalog
 USER nonroot:nonroot
 EXPOSE 8080 9090
 ENTRYPOINT ["/usr/local/bin/eo-catalog"]

@@ -35,7 +35,7 @@ func run() error {
 	}
 
 	dbCtx, dbCancel := context.WithTimeout(context.Background(), 15*time.Second)
-	pool, err := pgxpool.New(dbCtx, cfg.DSN)
+	pool, err := pgxpool.New(dbCtx, cfg.Database.DSN)
 	dbCancel()
 	if err != nil {
 		return err
@@ -67,7 +67,7 @@ func run() error {
 	pkgserver.RegisterHealthEndpoints(mux)
 
 	srvCfg := pkgserver.DefaultServerConfig(cfg.HTTPPort())
-	srvCfg.AllowedOrigins = cfg.AllowedOrigins
+	srvCfg.AllowedOrigins = cfg.CORS.AllowedOrigins
 	corsHandler := pkgserver.WrapWithCORS(mux, srvCfg.AllowedOrigins)
 	finalHandler := pkgserver.WrapWithH2C(corsHandler)
 	httpServer := pkgserver.NewHTTPServer(srvCfg, finalHandler)
@@ -90,7 +90,7 @@ func run() error {
 		}
 	}
 
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), cfg.Shutdown.Timeout)
 	defer cancel()
 	if err := httpServer.Shutdown(shutdownCtx); err != nil {
 		return err

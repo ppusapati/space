@@ -9,6 +9,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags='-s -w' -o /out/eo-pipe
 
 FROM gcr.io/distroless/static-debian12:nonroot
 COPY --from=build /out/eo-pipeline /usr/local/bin/eo-pipeline
+COPY --from=build /src/services/eo-pipeline/config /etc/eo-pipeline/config
+WORKDIR /etc/eo-pipeline
 USER nonroot:nonroot
 EXPOSE 8080 9090
 ENTRYPOINT ["/usr/local/bin/eo-pipeline"]
