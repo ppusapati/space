@@ -1,0 +1,144 @@
+syntax = "proto3";
+
+package p9e.space.earthobs.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "p9e/space/common/v1/common.proto";
+
+// =====================================================================
+// EO Analytics — model registry + ML inference job orchestration.
+//
+// Model entries describe trained models stored in object storage and
+// servable through eo_ml workers. Inference jobs request inference
+// against a specific model + scene; workers consume them from Kafka and
+// publish results back via UpdateInferenceJobStatus.
+// =====================================================================
+
+enum InferenceTask {
+  INFERENCE_TASK_UNSPECIFIED = 0;
+  INFERENCE_TASK_DETECTION = 1;     // YOLO / Faster R-CNN
+  INFERENCE_TASK_SEGMENTATION = 2;  // U-Net / DeepLabV3+
+  INFERENCE_TASK_CLASSIFICATION = 3;// ViT / ResNet
+}
+
+message Model {
+  string id = 1;
+  string tenant_id = 2;
+  string name = 3;          // unique per tenant (e.g. "yolov8-port")
+  string version = 4;       // semver / commit
+  InferenceTask task = 5;
+  string framework = 6;     // "onnx", "pytorch", "tensorflow"
+  string artefact_uri = 7;  // s3:// path to the model file
+  // Free-form metadata (label schema, input shapes, training metrics).
+  string metadata_json = 8;
+  bool active = 9;
+  p9e.space.common.v1.AuditFields audit = 10;
+}
+
+enum InferenceJobStatus {
+  INFERENCE_JOB_STATUS_UNSPECIFIED = 0;
+  INFERENCE_JOB_STATUS_PENDING = 1;
+  INFERENCE_JOB_STATUS_RUNNING = 2;
+  INFERENCE_JOB_STATUS_SUCCEEDED = 3;
+  INFERENCE_JOB_STATUS_FAILED = 4;
+}
+
+message InferenceJob {
+  string id = 1;
+  string tenant_id = 2;
+  string model_id = 3;
+  string item_id = 4;
+  InferenceJobStatus status = 5;
+  // s3:// uri of the result blob (JSON for detections, NPY for masks).
+  string output_uri = 6;
+  string error_message = 7;
+  google.protobuf.Timestamp started_at = 8;
+  google.protobuf.Timestamp finished_at = 9;
+  p9e.space.common.v1.AuditFields audit = 10;
+}
+
+// ----- model registry -------------------------------------------------
+
+message RegisterModelRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {uuid: true}];
+  string name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  string version = 3 [(buf.validate.field).string = {min_len: 1, max_len: 50}];
+  InferenceTask task = 4 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string framework = 5 [(buf.validate.field).string = {min_len: 1, max_len: 50}];
+  string artefact_uri = 6 [(buf.validate.field).string = {min_len: 1, max_len: 1000}];
+  string metadata_json = 7;
+}
+
+message RegisterModelResponse { Model model = 1; }
+
+message GetModelRequest {
+  string id = 1 [(buf.validate.field).string = {uuid: true}];
+}
+
+message GetModelResponse { Model model = 1; }
+
+message ListModelsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {uuid: true}];
+  optional InferenceTask task = 2;
+  p9e.space.common.v1.PageRequest page = 3;
+}
+
+message ListModelsResponse {
+  repeated Model models = 1;
+  p9e.space.common.v1.PageResponse page = 2;
+}
+
+message DeactivateModelRequest {
+  string id = 1 [(buf.validate.field).string = {uuid: true}];
+}
+
+message DeactivateModelResponse { Model model = 1; }
+
+// ----- inference jobs -------------------------------------------------
+
+message SubmitInferenceJobRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {uuid: true}];
+  string model_id = 2 [(buf.validate.field).string = {uuid: true}];
+  string item_id = 3 [(buf.validate.field).string = {uuid: true}];
+}
+
+message SubmitInferenceJobResponse { InferenceJob job = 1; }
+
+message GetInferenceJobRequest {
+  string id = 1 [(buf.validate.field).string = {uuid: true}];
+}
+
+message GetInferenceJobResponse { InferenceJob job = 1; }
+
+message ListInferenceJobsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {uuid: true}];
+  optional InferenceJobStatus status = 2;
+  p9e.space.common.v1.PageRequest page = 3;
+}
+
+message ListInferenceJobsResponse {
+  repeated InferenceJob jobs = 1;
+  p9e.space.common.v1.PageResponse page = 2;
+}
+
+message UpdateInferenceJobStatusRequest {
+  string id = 1 [(buf.validate.field).string = {uuid: true}];
+  InferenceJobStatus status = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string output_uri = 3;
+  string error_message = 4;
+}
+
+message UpdateInferenceJobStatusResponse { InferenceJob job = 1; }
+
+service AnalyticsService {
+  rpc RegisterModel(RegisterModelRequest) returns (RegisterModelResponse);
+  rpc GetModel(GetModelRequest) returns (GetModelResponse);
+  rpc ListModels(ListModelsRequest) returns (ListModelsResponse);
+  rpc DeactivateModel(DeactivateModelRequest) returns (DeactivateModelResponse);
+
+  rpc SubmitInferenceJob(SubmitInferenceJobRequest) returns (SubmitInferenceJobResponse);
+  rpc GetInferenceJob(GetInferenceJobRequest) returns (GetInferenceJobResponse);
+  rpc ListInferenceJobs(ListInferenceJobsRequest) returns (ListInferenceJobsResponse);
+  rpc UpdateInferenceJobStatus(UpdateInferenceJobStatusRequest) returns (UpdateInferenceJobStatusResponse);
+}

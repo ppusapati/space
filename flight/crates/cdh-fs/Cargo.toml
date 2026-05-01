@@ -1,0 +1,28 @@
+[package]
+name = "cdh-fs"
+description = "On-board log-structured file system with per-record CRC integrity checks and compaction."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+must_use_candidate = "allow"
+module_name_repetitions = "allow"
+similar_names = "allow"
+many_single_char_names = "allow"
+doc_markdown = "allow"
+cast_lossless = "allow"
+cast_possible_truncation = "allow"
+missing_panics_doc = "allow"
+
+[dependencies]
+cdh-ccsds = { path = "../cdh-ccsds" }
+thiserror = { workspace = true }

@@ -1,0 +1,194 @@
+syntax = "proto3";
+
+package p9e.space.earthobs.v1;
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "p9e/space/common/v1/common.proto";
+
+// =====================================================================
+// STAC catalog model — Collections, Items, Assets.
+//
+// A Collection groups Items (scenes); Items group Assets (per-band
+// COG files etc.). All operations are tenant-scoped.
+// =====================================================================
+
+// A bounding box in (lon_min, lat_min, lon_max, lat_max) order. Empty
+// when omitted.
+message BoundingBox {
+  double lon_min = 1;
+  double lat_min = 2;
+  double lon_max = 3;
+  double lat_max = 4;
+}
+
+// A STAC Collection.
+message Collection {
+  string id = 1;
+  string tenant_id = 2;
+  string slug = 3;            // url-safe stable id
+  string title = 4;
+  string description = 5;
+  // ISO 8601 license code (e.g. "CC-BY-4.0", "proprietary").
+  string license = 6;
+  // Optional spatial extent.
+  BoundingBox spatial_extent = 7;
+  // Inclusive temporal extent for items in this collection.
+  google.protobuf.Timestamp temporal_start = 8;
+  google.protobuf.Timestamp temporal_end = 9;
+  p9e.space.common.v1.AuditFields audit = 10;
+}
+
+// One asset inside an Item — typically a single COG band on object
+// storage.
+message Asset {
+  string key = 1;             // band id, e.g. "B04"
+  string href = 2;            // s3:// or https:// URI
+  string media_type = 3;      // e.g. "image/tiff; application=geotiff; profile=cloud-optimized"
+  string title = 4;
+  repeated string roles = 5;  // STAC asset roles, e.g. ["data"], ["thumbnail"]
+}
+
+// A STAC Item — one scene.
+message Item {
+  string id = 1;
+  string tenant_id = 2;
+  string collection_id = 3;
+  string mission = 4;         // "sentinel-2", "landsat-8" etc.
+  string platform = 5;        // satellite identifier (e.g. "S2A")
+  string instrument = 6;      // e.g. "msi"
+  google.protobuf.Timestamp datetime = 7;
+  BoundingBox bbox = 8;
+  // GeoJSON geometry serialised as a string. Empty if bbox is sufficient.
+  string geometry_geojson = 9;
+  double cloud_cover = 10;    // 0..100 percent
+  // Free-form properties bag stored as JSON in the database.
+  string properties_json = 11;
+  repeated Asset assets = 12;
+  p9e.space.common.v1.AuditFields audit = 13;
+}
+
+// =====================================================================
+// Quality assessment results emitted by the QA stage of the pipeline.
+// =====================================================================
+
+message QualityResult {
+  string id = 1;
+  string item_id = 2;
+  // 0..1 cloud cover fraction.
+  double cloud_cover = 3;
+  // Computed root-mean-square radiometric error vs. reference, in
+  // reflectance units.
+  double radiometric_rmse = 4;
+  // Geometric accuracy in metres (1-σ).
+  double geometric_accuracy_m = 5;
+  // Free-form notes from the QA worker.
+  string notes = 6;
+  google.protobuf.Timestamp computed_at = 7;
+}
+
+// =====================================================================
+// Service surface
+// =====================================================================
+
+message CreateCollectionRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {uuid: true}];
+  string slug = 2 [(buf.validate.field).string = {pattern: "^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$"}];
+  string title = 3 [(buf.validate.field).string = {min_len: 1, max_len: 200}];
+  string description = 4;
+  string license = 5;
+  BoundingBox spatial_extent = 6;
+  google.protobuf.Timestamp temporal_start = 7;
+  google.protobuf.Timestamp temporal_end = 8;
+}
+
+message CreateCollectionResponse { Collection collection = 1; }
+
+message GetCollectionRequest {
+  string id = 1 [(buf.validate.field).string = {uuid: true}];
+}
+
+message GetCollectionResponse { Collection collection = 1; }
+
+message ListCollectionsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {uuid: true}];
+  p9e.space.common.v1.PageRequest page = 2;
+}
+
+message ListCollectionsResponse {
+  repeated Collection collections = 1;
+  p9e.space.common.v1.PageResponse page = 2;
+}
+
+message CreateItemRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {uuid: true}];
+  string collection_id = 2 [(buf.validate.field).string = {uuid: true}];
+  string mission = 3 [(buf.validate.field).string = {min_len: 1, max_len: 50}];
+  string platform = 4;
+  string instrument = 5;
+  google.protobuf.Timestamp datetime = 6;
+  BoundingBox bbox = 7;
+  string geometry_geojson = 8;
+  double cloud_cover = 9;
+  string properties_json = 10;
+  repeated Asset assets = 11;
+}
+
+message CreateItemResponse { Item item = 1; }
+
+message GetItemRequest {
+  string id = 1 [(buf.validate.field).string = {uuid: true}];
+}
+
+message GetItemResponse { Item item = 1; }
+
+// SearchItems is a simplified STAC /search: collection + temporal +
+// optional bbox + cloud-cover ceiling. Returns a paginated set
+// ordered by datetime descending.
+message SearchItemsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {uuid: true}];
+  optional string collection_id = 2;
+  google.protobuf.Timestamp datetime_start = 3;
+  google.protobuf.Timestamp datetime_end = 4;
+  optional BoundingBox bbox = 5;
+  optional double max_cloud_cover = 6;
+  p9e.space.common.v1.PageRequest page = 7;
+}
+
+message SearchItemsResponse {
+  repeated Item items = 1;
+  p9e.space.common.v1.PageResponse page = 2;
+}
+
+message RecordQualityRequest {
+  string item_id = 1 [(buf.validate.field).string = {uuid: true}];
+  double cloud_cover = 2;
+  double radiometric_rmse = 3;
+  double geometric_accuracy_m = 4;
+  string notes = 5;
+}
+
+message RecordQualityResponse { QualityResult result = 1; }
+
+message ListQualityForItemRequest {
+  string item_id = 1 [(buf.validate.field).string = {uuid: true}];
+  p9e.space.common.v1.PageRequest page = 2;
+}
+
+message ListQualityForItemResponse {
+  repeated QualityResult results = 1;
+  p9e.space.common.v1.PageResponse page = 2;
+}
+
+service CatalogService {
+  rpc CreateCollection(CreateCollectionRequest) returns (CreateCollectionResponse);
+  rpc GetCollection(GetCollectionRequest) returns (GetCollectionResponse);
+  rpc ListCollections(ListCollectionsRequest) returns (ListCollectionsResponse);
+
+  rpc CreateItem(CreateItemRequest) returns (CreateItemResponse);
+  rpc GetItem(GetItemRequest) returns (GetItemResponse);
+  rpc SearchItems(SearchItemsRequest) returns (SearchItemsResponse);
+
+  rpc RecordQuality(RecordQualityRequest) returns (RecordQualityResponse);
+  rpc ListQualityForItem(ListQualityForItemRequest) returns (ListQualityForItemResponse);
+}

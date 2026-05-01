@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gi_ml_worker"
+version = "0.1.0"
+description = "Kafka consumer that pulls geospatial-intelligence prediction jobs, runs gi_ml, publishes results."
+requires-python = ">=3.11"
+authors = [{ name = "P9E Microsystems Pvt Ltd" }]
+license = { text = "Proprietary" }
+readme = "README.md"
+dependencies = [
+    "gi_ml>=0.1.0",
+    "ml_serving>=0.1.0",
+    "numpy>=1.26",
+    "confluent-kafka>=2.4",
+    "pydantic>=2.5",
+    "tenacity>=8.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[project.scripts]
+gi-ml-worker = "gi_ml_worker.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-q --strict-markers"
+testpaths = ["tests"]

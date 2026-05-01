@@ -1,0 +1,30 @@
+[package]
+name = "gi-export"
+description = "Export geospatial features to GeoJSON and KML. Shapefile and GeoPackage are out of scope and require dedicated dependencies."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+authors.workspace = true
+rust-version.workspace = true
+
+[lints.rust]
+unsafe_code = "deny"
+missing_docs = "warn"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+must_use_candidate = "allow"
+module_name_repetitions = "allow"
+similar_names = "allow"
+many_single_char_names = "allow"
+doc_markdown = "allow"
+format_push_string = "allow"
+items_after_statements = "allow"
+needless_raw_string_hashes = "allow"
+
+[dependencies]
+geojson = "0.24"
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }

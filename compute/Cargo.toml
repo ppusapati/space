@@ -1,0 +1,77 @@
+[workspace]
+resolver = "2"
+# Host-side compute crates only. Flight-software crates (ADCS, C&DH, EPS)
+# live in the sibling `../flight/` workspace so they can be cross-compiled
+# for embedded targets without dragging printpdf, mvt, sgp4, etc. through
+# the resolver.
+members = [
+    "crates/eo-indices",
+    "crates/eo-radiometric",
+    "crates/eo-pansharpen",
+    "crates/eo-geometric",
+    "crates/eo-mosaic",
+    "crates/eo-sar",
+    "crates/eo-atmos-corr",
+    "crates/orbit-prop",
+    "crates/sim-physics",
+    "crates/sim-harness",
+    "crates/gs-tle",
+    "crates/gs-pass-pred",
+    "crates/gs-doppler",
+    "crates/gs-bit-sync",
+    "crates/gs-fec",
+    "crates/gs-antenna",
+    "crates/gs-rf-driver",
+    "crates/gi-fusion-eng",
+    "crates/gi-abi",
+    "crates/gi-tile-render",
+    "crates/gi-report-render",
+    "crates/gi-export",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "Proprietary"
+publish = false
+authors = ["P9E Microsystems Pvt Ltd"]
+rust-version = "1.94"
+
+[workspace.dependencies]
+# Linear algebra and numerics
+nalgebra = { version = "0.33", default-features = false, features = ["std"] }
+ndarray = { version = "0.16", default-features = false, features = ["std"] }
+num-traits = { version = "0.2", default-features = false, features = ["std"] }
+
+# Error handling and logging
+thiserror = "2.0"
+tracing = { version = "0.1", default-features = false, features = ["std", "attributes"] }
+
+# Serialization
+serde = { version = "1", default-features = false, features = ["std", "derive"] }
+serde_json = { version = "1", default-features = false, features = ["std"] }
+
+# Time
+time = { version = "0.3", default-features = false, features = ["std", "serde", "macros", "parsing", "formatting"] }
+chrono = { version = "0.4", default-features = false, features = ["std", "clock", "serde"] }
+
+# Testing
+approx = "0.5"
+proptest = "1.5"
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
+opt-level = 3
+overflow-checks = false
+panic = "abort"
+strip = "symbols"
+
+[profile.release-dbg]
+inherits = "release"
+debug = true
+strip = "none"
+
+[profile.bench]
+inherits = "release"
+debug = true

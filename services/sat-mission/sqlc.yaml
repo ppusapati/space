@@ -1,0 +1,15 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    schema: "db/schema"
+    queries: "db/queries"
+    gen:
+      go:
+        package: "satmissiondb"
+        sql_package: "pgx/v5"
+        out: "db/generated"
+        emit_json_tags: false
+        emit_pointers_for_null_types: true
+        emit_db_tags: false
+        emit_interface: true
+        emit_exact_table_names: false
