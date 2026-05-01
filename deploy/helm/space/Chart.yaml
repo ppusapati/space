@@ -1,0 +1,18 @@
+apiVersion: v2
+name: space
+description: |
+  P9E Microsystems Space Technology Platform — umbrella Helm chart for all
+  17 ConnectRPC services across Earth Observation, Small Satellite
+  Subsystems, Ground Station, and GEOINT modules.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - space
+  - earth-observation
+  - satellite
+  - ground-station
+  - geoint
+  - connectrpc
+maintainers:
+  - name: P9E Microsystems

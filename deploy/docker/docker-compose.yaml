@@ -1,0 +1,373 @@
+# P9E Space — local development docker-compose.
+#
+# Brings up a single PostgreSQL instance with one database per service, all
+# 17 ConnectRPC services, and a small set of supporting infrastructure
+# (Kafka, Zookeeper, Redis) that the wider platform optionally consumes.
+#
+# Usage:
+#   cd deploy/docker
+#   docker compose up -d
+#
+# Each service is exposed on a unique host port in the 18000-18016 range
+# (see ports: below). HTTP/Connect traffic is on the 8080 container port,
+# Prometheus metrics on 9090.
+#
+# All services read their non-secret configuration from /etc/<svc>/config/
+# config.yaml (baked into the image) and overlay the DATABASE_URL env var
+# at startup.
+
+name: p9e-space
+
+x-service-defaults: &svc
+  restart: unless-stopped
+  depends_on:
+    postgres:
+      condition: service_healthy
+  environment:
+    LOG_LEVEL: info
+    ENVIRONMENT: local
+    HTTP_ADDR: ":8080"
+    METRICS_ADDR: ":9090"
+    SHUTDOWN_TIMEOUT: "30s"
+    ALLOWED_ORIGINS: "*"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: p9e
+      POSTGRES_PASSWORD: p9e
+      POSTGRES_DB: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U p9e"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.7.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    healthcheck:
+      test: ["CMD-SHELL", "echo srvr | nc -w 2 localhost 2181 || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  kafka:
+    image: confluentinc/cp-kafka:7.7.1
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    ports:
+      - "9092:9092"
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redisdata:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # ---------- Earth Observation ----------
+  eo-catalog:
+    <<: *svc
+    image: p9e/eo-catalog:dev
+    build:
+      context: ../..
+      dockerfile: services/eo-catalog/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/eo_catalog?sslmode=disable
+    ports: ["18000:8080"]
+
+  eo-pipeline:
+    <<: *svc
+    image: p9e/eo-pipeline:dev
+    build:
+      context: ../..
+      dockerfile: services/eo-pipeline/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/eo_pipeline?sslmode=disable
+    ports: ["18001:8080"]
+
+  eo-analytics:
+    <<: *svc
+    image: p9e/eo-analytics:dev
+    build:
+      context: ../..
+      dockerfile: services/eo-analytics/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/eo_analytics?sslmode=disable
+    ports: ["18002:8080"]
+
+  # ---------- Small Satellite Subsystems ----------
+  sat-mission:
+    <<: *svc
+    image: p9e/sat-mission:dev
+    build:
+      context: ../..
+      dockerfile: services/sat-mission/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/sat_mission?sslmode=disable
+    ports: ["18003:8080"]
+
+  sat-fsw:
+    <<: *svc
+    image: p9e/sat-fsw:dev
+    build:
+      context: ../..
+      dockerfile: services/sat-fsw/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/sat_fsw?sslmode=disable
+    ports: ["18004:8080"]
+
+  sat-telemetry:
+    <<: *svc
+    image: p9e/sat-telemetry:dev
+    build:
+      context: ../..
+      dockerfile: services/sat-telemetry/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/sat_telemetry?sslmode=disable
+    ports: ["18005:8080"]
+
+  sat-command:
+    <<: *svc
+    image: p9e/sat-command:dev
+    build:
+      context: ../..
+      dockerfile: services/sat-command/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/sat_command?sslmode=disable
+    ports: ["18006:8080"]
+
+  sat-simulation:
+    <<: *svc
+    image: p9e/sat-simulation:dev
+    build:
+      context: ../..
+      dockerfile: services/sat-simulation/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/sat_simulation?sslmode=disable
+    ports: ["18007:8080"]
+
+  # ---------- Ground Station ----------
+  gs-mc:
+    <<: *svc
+    image: p9e/gs-mc:dev
+    build:
+      context: ../..
+      dockerfile: services/gs-mc/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/gs_mc?sslmode=disable
+    ports: ["18008:8080"]
+
+  gs-rf:
+    <<: *svc
+    image: p9e/gs-rf:dev
+    build:
+      context: ../..
+      dockerfile: services/gs-rf/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/gs_rf?sslmode=disable
+    ports: ["18009:8080"]
+
+  gs-scheduler:
+    <<: *svc
+    image: p9e/gs-scheduler:dev
+    build:
+      context: ../..
+      dockerfile: services/gs-scheduler/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/gs_scheduler?sslmode=disable
+    ports: ["18010:8080"]
+
+  gs-ingest:
+    <<: *svc
+    image: p9e/gs-ingest:dev
+    build:
+      context: ../..
+      dockerfile: services/gs-ingest/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/gs_ingest?sslmode=disable
+    ports: ["18011:8080"]
+
+  # ---------- GEOINT ----------
+  gi-fusion:
+    <<: *svc
+    image: p9e/gi-fusion:dev
+    build:
+      context: ../..
+      dockerfile: services/gi-fusion/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/gi_fusion?sslmode=disable
+    ports: ["18012:8080"]
+
+  gi-analytics:
+    <<: *svc
+    image: p9e/gi-analytics:dev
+    build:
+      context: ../..
+      dockerfile: services/gi-analytics/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/gi_analytics?sslmode=disable
+    ports: ["18013:8080"]
+
+  gi-tiles:
+    <<: *svc
+    image: p9e/gi-tiles:dev
+    build:
+      context: ../..
+      dockerfile: services/gi-tiles/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/gi_tiles?sslmode=disable
+    ports: ["18014:8080"]
+
+  gi-reports:
+    <<: *svc
+    image: p9e/gi-reports:dev
+    build:
+      context: ../..
+      dockerfile: services/gi-reports/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/gi_reports?sslmode=disable
+    ports: ["18015:8080"]
+
+  gi-predict:
+    <<: *svc
+    image: p9e/gi-predict:dev
+    build:
+      context: ../..
+      dockerfile: services/gi-predict/Dockerfile
+    environment:
+      LOG_LEVEL: info
+      ENVIRONMENT: local
+      HTTP_ADDR: ":8080"
+      METRICS_ADDR: ":9090"
+      SHUTDOWN_TIMEOUT: "30s"
+      ALLOWED_ORIGINS: "*"
+      DATABASE_URL: postgres://p9e:p9e@postgres:5432/gi_predict?sslmode=disable
+    ports: ["18016:8080"]
+
+volumes:
+  pgdata:
+  redisdata:
