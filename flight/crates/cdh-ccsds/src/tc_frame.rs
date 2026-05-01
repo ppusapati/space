@@ -93,7 +93,15 @@ impl TcPrimaryHeader {
         ])
     }
 
-    /// Decode from a slice (must be ≥ 5 bytes).
+    /// Transfer Frame Version Number mandated by CCSDS 232.0-B-3
+    /// (always `0` for current TC frames). Mission policy rejects
+    /// anything else at the decode boundary via [`Self::decode_strict`].
+    pub const EXPECTED_VERSION: u8 = 0;
+
+    /// Decode from a slice (must be ≥ 5 bytes). Permissive: accepts any
+    /// version bits and surfaces them to the caller. Use
+    /// [`Self::decode_strict`] when you want the spec-mandated version
+    /// policy enforced at the protocol boundary.
     ///
     /// # Errors
     /// [`CcsdsError::Truncated`] if the slice is too short.
@@ -112,6 +120,27 @@ impl TcPrimaryHeader {
             frame_length_minus_one: word1 & 0x03FF,
             frame_seq: buf[4],
         })
+    }
+
+    /// Decode and enforce CCSDS 232.0-B-3 §4.1.2.2: the Transfer Frame
+    /// Version Number must be `0`. Use this at the ingest boundary
+    /// (uplink path) to reject unsupported frame versions before they
+    /// propagate further into command processing.
+    ///
+    /// # Errors
+    /// [`CcsdsError::Truncated`] if the slice is too short;
+    /// [`CcsdsError::UnsupportedVersion`] if the version field is not
+    /// [`Self::EXPECTED_VERSION`].
+    pub fn decode_strict(buf: &[u8]) -> Result<Self, CcsdsError> {
+        let header = Self::decode(buf)?;
+        if header.version != Self::EXPECTED_VERSION {
+            return Err(CcsdsError::UnsupportedVersion {
+                field: "tc.version",
+                got: header.version,
+                expected: Self::EXPECTED_VERSION,
+            });
+        }
+        Ok(header)
     }
 }
 
@@ -197,6 +226,48 @@ mod tests {
         let frame = build_tc_frame(h, &[0x10, 0x20, 0x30, 0x40], true).unwrap();
         assert_eq!(frame.len(), 5 + 4 + 2);
         validate_fecf(&frame).unwrap();
+    }
+
+    #[test]
+    fn decode_strict_accepts_spec_version() {
+        let h = TcPrimaryHeader {
+            version: 0,
+            bypass: false,
+            control_command: true,
+            scid: 0x42,
+            vcid: 0x07,
+            frame_length_minus_one: 32,
+            frame_seq: 9,
+        };
+        let bytes = h.encode().unwrap();
+        let decoded = TcPrimaryHeader::decode_strict(&bytes).unwrap();
+        assert_eq!(decoded, h);
+    }
+
+    #[test]
+    fn decode_strict_rejects_nonzero_version() {
+        // Hand-craft a header byte sequence with version = 1 in the top
+        // two bits. Permissive decode must succeed; strict decode must
+        // reject with UnsupportedVersion.
+        let mut bytes = TcPrimaryHeader {
+            version: 0,
+            bypass: false,
+            control_command: false,
+            scid: 0,
+            vcid: 0,
+            frame_length_minus_one: 0,
+            frame_seq: 0,
+        }
+        .encode()
+        .unwrap();
+        bytes[0] |= 0b0100_0000;
+        let lax = TcPrimaryHeader::decode(&bytes).unwrap();
+        assert_eq!(lax.version, 1);
+        let err = TcPrimaryHeader::decode_strict(&bytes).unwrap_err();
+        assert!(matches!(
+            err,
+            CcsdsError::UnsupportedVersion { field: "tc.version", got: 1, expected: 0 }
+        ));
     }
 
     #[test]
