@@ -1,0 +1,20 @@
+service:
+  name: gi-fusion
+  environment: development
+  log_level: info
+
+http:
+  addr: ":8080"
+
+metrics:
+  addr: ":9090"
+
+shutdown:
+  timeout: 30s
+
+database:
+  dsn: ""
+
+cors:
+  allowed_origins:
+    - "*"

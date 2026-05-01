@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package p9e.space.gifusion.v1;
+
+option go_package = "github.com/ppusapati/space/services/gi-fusion/api;gifusionv1";
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// GEOINT Fusion — multi-source data fusion jobs (combine EO scenes,
+// SAR, telemetry, vector layers into a single fused product).
+// All identifiers are ULIDs (26 chars).
+// =====================================================================
+
+enum FusionMethod {
+  FUSION_METHOD_UNSPECIFIED = 0;
+  FUSION_METHOD_PAN_SHARPEN = 1;     // pan-sharpen multi-spectral with high-res panchromatic
+  FUSION_METHOD_TIME_SERIES = 2;     // composite over time
+  FUSION_METHOD_MULTIMODAL  = 3;     // combine EO + SAR + telemetry
+  FUSION_METHOD_VECTOR      = 4;     // vector overlay fusion
+  FUSION_METHOD_CUSTOM      = 5;     // parameters_json drives behavior
+}
+
+enum FusionStatus {
+  FUSION_STATUS_UNSPECIFIED = 0;
+  FUSION_STATUS_QUEUED      = 1;
+  FUSION_STATUS_RUNNING     = 2;
+  FUSION_STATUS_COMPLETED   = 3;
+  FUSION_STATUS_FAILED      = 4;
+  FUSION_STATUS_CANCELED    = 5;
+}
+
+message FusionJob {
+  string id = 1;
+  string tenant_id = 2;
+  FusionMethod method = 3;
+  FusionStatus status = 4;
+  repeated string input_uris = 5;            // s3:// inputs
+  string parameters_json = 6;
+  string output_uri = 7;                     // s3:// of fused product
+  string error_message = 8;
+  google.protobuf.Timestamp started_at = 9;
+  google.protobuf.Timestamp finished_at = 10;
+  packages.api.v1.fields.Fields fields = 11;
+}
+
+// ----- RPCs ---------------------------------------------------------------
+
+message SubmitFusionJobRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  FusionMethod method = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  repeated string input_uris = 3;
+  string parameters_json = 4;
+}
+message SubmitFusionJobResponse { FusionJob job = 1; }
+
+message GetFusionJobRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetFusionJobResponse { FusionJob job = 1; }
+
+message ListFusionJobsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  optional FusionStatus status = 2;
+  optional FusionMethod method = 3;
+  packages.api.v1.pagination.PaginationRequest page = 4;
+}
+message ListFusionJobsResponse {
+  repeated FusionJob jobs = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+message UpdateFusionJobStatusRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+  FusionStatus status = 2 [(buf.validate.field).enum = {defined_only: true, not_in: [0]}];
+  string output_uri = 3;
+  string error_message = 4;
+}
+message UpdateFusionJobStatusResponse { FusionJob job = 1; }
+
+message CancelFusionJobRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message CancelFusionJobResponse { FusionJob job = 1; }
+
+service FusionService {
+  rpc SubmitFusionJob(SubmitFusionJobRequest) returns (SubmitFusionJobResponse);
+  rpc GetFusionJob(GetFusionJobRequest) returns (GetFusionJobResponse);
+  rpc ListFusionJobs(ListFusionJobsRequest) returns (ListFusionJobsResponse);
+  rpc UpdateFusionJobStatus(UpdateFusionJobStatusRequest) returns (UpdateFusionJobStatusResponse);
+  rpc CancelFusionJob(CancelFusionJobRequest) returns (CancelFusionJobResponse);
+}

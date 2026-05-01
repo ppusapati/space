@@ -26,6 +26,8 @@ modules:
     name: buf.build/p9e/gs-scheduler
   - path: gs-ingest/proto
     name: buf.build/p9e/gs-ingest
+  - path: gi-fusion/proto
+    name: buf.build/p9e/gi-fusion
 deps:
   - buf.build/bufbuild/protovalidate
 breaking:
