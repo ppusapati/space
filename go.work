@@ -1,9 +1,3 @@
-go 1.24
+go 1.25.0
 
-use (
-	./pkg
-	./services/earthobs
-	./services/satsubsys
-	./services/groundstation
-	./services/geoint
-)
+use ./pkg
