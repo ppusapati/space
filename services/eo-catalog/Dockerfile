@@ -1,9 +1,8 @@
 # syntax=docker/dockerfile:1.7
-FROM golang:1.24-bookworm AS build
+FROM golang:1.26-bookworm AS build
 WORKDIR /src
-COPY go.work go.work.sum ./
-COPY pkg ./pkg
-COPY api ./api
+COPY services/go.work services/go.work.sum ./services/
+COPY services/packages ./services/packages
 COPY services/eo-catalog ./services/eo-catalog
 WORKDIR /src/services/eo-catalog
 RUN CGO_ENABLED=0 GOOS=linux go build -trimpath -ldflags='-s -w' -o /out/eo-catalog ./cmd/eo-catalog
