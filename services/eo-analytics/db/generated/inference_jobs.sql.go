@@ -11,6 +11,24 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countInferenceJobsForTenant = `-- name: CountInferenceJobsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM inference_jobs
+WHERE tenant_id = $1::uuid
+  AND ($2::int IS NULL OR status = $2::int)
+`
+
+type CountInferenceJobsForTenantParams struct {
+	TenantID pgtype.UUID
+	Status   *int32
+}
+
+func (q *Queries) CountInferenceJobsForTenant(ctx context.Context, arg CountInferenceJobsForTenantParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countInferenceJobsForTenant, arg.TenantID, arg.Status)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
 const createInferenceJob = `-- name: CreateInferenceJob :one
 INSERT INTO inference_jobs (id, tenant_id, model_id, item_id, status, created_by, updated_by)
 VALUES ($1, $2, $3, $4, $5, $6, $6)
@@ -79,34 +97,28 @@ func (q *Queries) GetInferenceJob(ctx context.Context, id pgtype.UUID) (Inferenc
 	return i, err
 }
 
-const listInferenceJobs = `-- name: ListInferenceJobs :many
+const listInferenceJobsForTenant = `-- name: ListInferenceJobsForTenant :many
 SELECT id, tenant_id, model_id, item_id, status, output_uri, error_message, started_at, finished_at, created_at, updated_at, created_by, updated_by FROM inference_jobs
 WHERE tenant_id = $1::uuid
   AND ($2::int IS NULL OR status = $2::int)
-  AND (
-        $3::timestamptz IS NULL
-        OR (created_at, id) < ($3::timestamptz,
-                               $4::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT $5::int
+OFFSET $3::int
+LIMIT  $4::int
 `
 
-type ListInferenceJobsParams struct {
-	TenantID        pgtype.UUID
-	Status          *int32
-	CursorCreatedAt pgtype.Timestamptz
-	CursorID        pgtype.UUID
-	Lim             int32
+type ListInferenceJobsForTenantParams struct {
+	TenantID   pgtype.UUID
+	Status     *int32
+	PageOffset int32
+	PageSize   int32
 }
 
-func (q *Queries) ListInferenceJobs(ctx context.Context, arg ListInferenceJobsParams) ([]InferenceJob, error) {
-	rows, err := q.db.Query(ctx, listInferenceJobs,
+func (q *Queries) ListInferenceJobsForTenant(ctx context.Context, arg ListInferenceJobsForTenantParams) ([]InferenceJob, error) {
+	rows, err := q.db.Query(ctx, listInferenceJobsForTenant,
 		arg.TenantID,
 		arg.Status,
-		arg.CursorCreatedAt,
-		arg.CursorID,
-		arg.Lim,
+		arg.PageOffset,
+		arg.PageSize,
 	)
 	if err != nil {
 		return nil, err
@@ -143,32 +155,32 @@ func (q *Queries) ListInferenceJobs(ctx context.Context, arg ListInferenceJobsPa
 const updateInferenceJobStatus = `-- name: UpdateInferenceJobStatus :one
 UPDATE inference_jobs
 SET
-    status        = $2,
-    output_uri    = COALESCE(NULLIF($3, ''), output_uri),
-    error_message = COALESCE(NULLIF($4, ''), error_message),
-    started_at    = CASE WHEN $2 = 2 THEN COALESCE(started_at, now()) ELSE started_at END,
-    finished_at   = CASE WHEN $2 IN (3, 4) THEN now() ELSE finished_at END,
+    status        = $1::int,
+    output_uri    = COALESCE(NULLIF($2::text, ''), output_uri),
+    error_message = COALESCE(NULLIF($3::text, ''), error_message),
+    started_at    = CASE WHEN $1::int = 2 THEN COALESCE(started_at, now()) ELSE started_at END,
+    finished_at   = CASE WHEN $1::int IN (3, 4) THEN now() ELSE finished_at END,
     updated_at    = now(),
-    updated_by    = $5
-WHERE id = $1
+    updated_by    = $4::text
+WHERE id = $5::uuid
 RETURNING id, tenant_id, model_id, item_id, status, output_uri, error_message, started_at, finished_at, created_at, updated_at, created_by, updated_by
 `
 
 type UpdateInferenceJobStatusParams struct {
-	ID        pgtype.UUID
-	Status    int32
-	Column3   interface{}
-	Column4   interface{}
-	UpdatedBy string
+	Status       int32
+	OutputUri    string
+	ErrorMessage string
+	UpdatedBy    string
+	ID           pgtype.UUID
 }
 
 func (q *Queries) UpdateInferenceJobStatus(ctx context.Context, arg UpdateInferenceJobStatusParams) (InferenceJob, error) {
 	row := q.db.QueryRow(ctx, updateInferenceJobStatus,
-		arg.ID,
 		arg.Status,
-		arg.Column3,
-		arg.Column4,
+		arg.OutputUri,
+		arg.ErrorMessage,
 		arg.UpdatedBy,
+		arg.ID,
 	)
 	var i InferenceJob
 	err := row.Scan(

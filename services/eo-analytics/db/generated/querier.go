@@ -11,12 +11,14 @@ import (
 )
 
 type Querier interface {
+	CountInferenceJobsForTenant(ctx context.Context, arg CountInferenceJobsForTenantParams) (int64, error)
+	CountModelsForTenant(ctx context.Context, arg CountModelsForTenantParams) (int64, error)
 	CreateInferenceJob(ctx context.Context, arg CreateInferenceJobParams) (InferenceJob, error)
 	DeactivateModel(ctx context.Context, arg DeactivateModelParams) (Model, error)
 	GetInferenceJob(ctx context.Context, id pgtype.UUID) (InferenceJob, error)
 	GetModel(ctx context.Context, id pgtype.UUID) (Model, error)
-	ListInferenceJobs(ctx context.Context, arg ListInferenceJobsParams) ([]InferenceJob, error)
-	ListModels(ctx context.Context, arg ListModelsParams) ([]Model, error)
+	ListInferenceJobsForTenant(ctx context.Context, arg ListInferenceJobsForTenantParams) ([]InferenceJob, error)
+	ListModelsForTenant(ctx context.Context, arg ListModelsForTenantParams) ([]Model, error)
 	RegisterModel(ctx context.Context, arg RegisterModelParams) (Model, error)
 	UpdateInferenceJobStatus(ctx context.Context, arg UpdateInferenceJobStatusParams) (InferenceJob, error)
 }

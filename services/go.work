@@ -4,4 +4,5 @@ use (
 	./packages
 	./eo-catalog
 	./eo-pipeline
+	./eo-analytics
 )

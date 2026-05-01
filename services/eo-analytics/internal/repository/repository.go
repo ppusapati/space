@@ -1,106 +1,122 @@
-// Package repository wraps eo-analytics sqlc.
+// Package repository wraps the eo-analytics sqlc layer.
 package repository
 
 import (
 	"context"
 	"errors"
-	"time"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
+	"p9e.in/samavaya/packages/ulid"
+
 	eoanalyticsdb "github.com/ppusapati/space/services/eo-analytics/db/generated"
-	"github.com/ppusapati/space/services/eo-analytics/internal/mappers"
+	"github.com/ppusapati/space/services/eo-analytics/internal/mapper"
 	"github.com/ppusapati/space/services/eo-analytics/internal/models"
 )
 
 // ErrNotFound is returned when no row matches.
 var ErrNotFound = errors.New("repository: not found")
 
-// Repository aggregates the entity repositories.
-type Repository struct {
-	Models *ModelRepository
-	Jobs   *InferenceJobRepository
-}
-
-// New constructs a Repository.
-func New(pool *pgxpool.Pool) *Repository {
-	q := eoanalyticsdb.New(pool)
-	return &Repository{
-		Models: &ModelRepository{q: q, pool: pool},
-		Jobs:   &InferenceJobRepository{q: q, pool: pool},
-	}
-}
-
-// ModelRepository persists Models.
-type ModelRepository struct {
+// Repo persists Models and InferenceJobs.
+type Repo struct {
 	q    *eoanalyticsdb.Queries
 	pool *pgxpool.Pool
 }
 
-// Register inserts a new Model.
-func (r *ModelRepository) Register(ctx context.Context, m *models.Model) (*models.Model, error) {
+// New constructs a Repo.
+func New(pool *pgxpool.Pool) *Repo {
+	return &Repo{q: eoanalyticsdb.New(pool), pool: pool}
+}
+
+// ----- Models --------------------------------------------------------------
+
+// RegisterModelParams holds the input for [Repo.RegisterModel].
+type RegisterModelParams struct {
+	ID           ulid.ID
+	TenantID     ulid.ID
+	Name         string
+	Version      string
+	Task         models.InferenceTask
+	Framework    string
+	ArtefactURI  string
+	MetadataJSON string
+	CreatedBy    string
+}
+
+// RegisterModel inserts a new model row.
+func (r *Repo) RegisterModel(ctx context.Context, p RegisterModelParams) (*models.Model, error) {
 	row, err := r.q.RegisterModel(ctx, eoanalyticsdb.RegisterModelParams{
-		ID:           mappers.PgUUID(m.ID),
-		TenantID:     mappers.PgUUID(m.TenantID),
-		Name:         m.Name,
-		Version:      m.Version,
-		Task:         int32(m.Task),
-		Framework:    m.Framework,
-		ArtefactUri:  m.ArtefactURI,
-		MetadataJson: []byte(m.MetadataJSON),
-		CreatedBy:    m.CreatedBy,
+		ID:           mapper.PgUUID(p.ID),
+		TenantID:     mapper.PgUUID(p.TenantID),
+		Name:         p.Name,
+		Version:      p.Version,
+		Task:         int32(p.Task),
+		Framework:    p.Framework,
+		ArtefactUri:  p.ArtefactURI,
+		MetadataJson: []byte(mapper.NormalizeMetadataJSON(p.MetadataJSON)),
+		CreatedBy:    p.CreatedBy,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return mappers.ModelFromRow(row), nil
+	return mapper.ModelFromRow(row), nil
 }
 
-// Get fetches a Model by id.
-func (r *ModelRepository) Get(ctx context.Context, id uuid.UUID) (*models.Model, error) {
-	row, err := r.q.GetModel(ctx, mappers.PgUUID(id))
+// GetModel returns a model by id.
+func (r *Repo) GetModel(ctx context.Context, id ulid.ID) (*models.Model, error) {
+	row, err := r.q.GetModel(ctx, mapper.PgUUID(id))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrNotFound
 		}
 		return nil, err
 	}
-	return mappers.ModelFromRow(row), nil
+	return mapper.ModelFromRow(row), nil
 }
 
-// List returns one page of Models for the tenant.
-func (r *ModelRepository) List(
-	ctx context.Context, tenantID uuid.UUID, task *models.InferenceTask,
-	cursorTS *time.Time, cursorID uuid.UUID, limit int32,
-) ([]*models.Model, error) {
-	var taskArg *int32
-	if task != nil {
-		v := int32(*task)
-		taskArg = &v
+// ListModelsParams holds the input for [Repo.ListModelsForTenant].
+type ListModelsParams struct {
+	TenantID   ulid.ID
+	Task       *models.InferenceTask
+	PageOffset int32
+	PageSize   int32
+}
+
+// ListModelsForTenant returns one page of models.
+func (r *Repo) ListModelsForTenant(ctx context.Context, p ListModelsParams) ([]*models.Model, int32, error) {
+	var taskPtr *int32
+	if p.Task != nil {
+		v := int32(*p.Task)
+		taskPtr = &v
 	}
-	rows, err := r.q.ListModels(ctx, eoanalyticsdb.ListModelsParams{
-		TenantID:        mappers.PgUUID(tenantID),
-		Task:            taskArg,
-		CursorCreatedAt: mappers.PgTimestampPtr(cursorTS),
-		CursorID:        mappers.PgUUID(cursorID),
-		Lim:             limit,
+	total, err := r.q.CountModelsForTenant(ctx, eoanalyticsdb.CountModelsForTenantParams{
+		TenantID: mapper.PgUUID(p.TenantID),
+		Task:     taskPtr,
 	})
 	if err != nil {
-		return nil, err
+		return nil, 0, err
+	}
+	rows, err := r.q.ListModelsForTenant(ctx, eoanalyticsdb.ListModelsForTenantParams{
+		TenantID:   mapper.PgUUID(p.TenantID),
+		Task:       taskPtr,
+		PageOffset: p.PageOffset,
+		PageSize:   p.PageSize,
+	})
+	if err != nil {
+		return nil, 0, err
 	}
 	out := make([]*models.Model, 0, len(rows))
 	for _, row := range rows {
-		out = append(out, mappers.ModelFromRow(row))
+		out = append(out, mapper.ModelFromRow(row))
 	}
-	return out, nil
+	return out, int32(total), nil
 }
 
-// Deactivate marks a Model inactive.
-func (r *ModelRepository) Deactivate(ctx context.Context, id uuid.UUID, updatedBy string) (*models.Model, error) {
+// DeactivateModel deactivates a model.
+func (r *Repo) DeactivateModel(ctx context.Context, id ulid.ID, updatedBy string) (*models.Model, error) {
 	row, err := r.q.DeactivateModel(ctx, eoanalyticsdb.DeactivateModelParams{
-		ID:        mappers.PgUUID(id),
+		ID:        mapper.PgUUID(id),
 		UpdatedBy: updatedBy,
 	})
 	if err != nil {
@@ -109,81 +125,97 @@ func (r *ModelRepository) Deactivate(ctx context.Context, id uuid.UUID, updatedB
 		}
 		return nil, err
 	}
-	return mappers.ModelFromRow(row), nil
+	return mapper.ModelFromRow(row), nil
 }
 
-// InferenceJobRepository persists InferenceJobs.
-type InferenceJobRepository struct {
-	q    *eoanalyticsdb.Queries
-	pool *pgxpool.Pool
+// ----- InferenceJobs -------------------------------------------------------
+
+// CreateInferenceJobParams holds the input for [Repo.CreateInferenceJob].
+type CreateInferenceJobParams struct {
+	ID        ulid.ID
+	TenantID  ulid.ID
+	ModelID   ulid.ID
+	ItemID    ulid.ID
+	Status    models.InferenceJobStatus
+	CreatedBy string
 }
 
-// Create inserts a new pending InferenceJob.
-func (r *InferenceJobRepository) Create(ctx context.Context, j *models.InferenceJob) (*models.InferenceJob, error) {
+// CreateInferenceJob inserts a new inference job row.
+func (r *Repo) CreateInferenceJob(ctx context.Context, p CreateInferenceJobParams) (*models.InferenceJob, error) {
 	row, err := r.q.CreateInferenceJob(ctx, eoanalyticsdb.CreateInferenceJobParams{
-		ID:        mappers.PgUUID(j.ID),
-		TenantID:  mappers.PgUUID(j.TenantID),
-		ModelID:   mappers.PgUUID(j.ModelID),
-		ItemID:    mappers.PgUUID(j.ItemID),
-		Status:    int32(j.Status),
-		CreatedBy: j.CreatedBy,
+		ID:        mapper.PgUUID(p.ID),
+		TenantID:  mapper.PgUUID(p.TenantID),
+		ModelID:   mapper.PgUUID(p.ModelID),
+		ItemID:    mapper.PgUUID(p.ItemID),
+		Status:    int32(p.Status),
+		CreatedBy: p.CreatedBy,
 	})
 	if err != nil {
 		return nil, err
 	}
-	return mappers.InferenceJobFromRow(row), nil
+	return mapper.InferenceJobFromRow(row), nil
 }
 
-// Get returns by id.
-func (r *InferenceJobRepository) Get(ctx context.Context, id uuid.UUID) (*models.InferenceJob, error) {
-	row, err := r.q.GetInferenceJob(ctx, mappers.PgUUID(id))
+// GetInferenceJob returns an inference job by id.
+func (r *Repo) GetInferenceJob(ctx context.Context, id ulid.ID) (*models.InferenceJob, error) {
+	row, err := r.q.GetInferenceJob(ctx, mapper.PgUUID(id))
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, ErrNotFound
 		}
 		return nil, err
 	}
-	return mappers.InferenceJobFromRow(row), nil
+	return mapper.InferenceJobFromRow(row), nil
 }
 
-// List returns one page of jobs filtered optionally by status.
-func (r *InferenceJobRepository) List(
-	ctx context.Context, tenantID uuid.UUID, status *models.InferenceJobStatus,
-	cursorTS *time.Time, cursorID uuid.UUID, limit int32,
-) ([]*models.InferenceJob, error) {
-	var statusArg *int32
-	if status != nil {
-		v := int32(*status)
-		statusArg = &v
+// ListInferenceJobsParams holds the input for [Repo.ListInferenceJobsForTenant].
+type ListInferenceJobsParams struct {
+	TenantID   ulid.ID
+	Status     *models.InferenceJobStatus
+	PageOffset int32
+	PageSize   int32
+}
+
+// ListInferenceJobsForTenant returns one page of inference jobs.
+func (r *Repo) ListInferenceJobsForTenant(ctx context.Context, p ListInferenceJobsParams) ([]*models.InferenceJob, int32, error) {
+	var statusPtr *int32
+	if p.Status != nil {
+		v := int32(*p.Status)
+		statusPtr = &v
 	}
-	rows, err := r.q.ListInferenceJobs(ctx, eoanalyticsdb.ListInferenceJobsParams{
-		TenantID:        mappers.PgUUID(tenantID),
-		Status:          statusArg,
-		CursorCreatedAt: mappers.PgTimestampPtr(cursorTS),
-		CursorID:        mappers.PgUUID(cursorID),
-		Lim:             limit,
+	total, err := r.q.CountInferenceJobsForTenant(ctx, eoanalyticsdb.CountInferenceJobsForTenantParams{
+		TenantID: mapper.PgUUID(p.TenantID),
+		Status:   statusPtr,
 	})
 	if err != nil {
-		return nil, err
+		return nil, 0, err
+	}
+	rows, err := r.q.ListInferenceJobsForTenant(ctx, eoanalyticsdb.ListInferenceJobsForTenantParams{
+		TenantID:   mapper.PgUUID(p.TenantID),
+		Status:     statusPtr,
+		PageOffset: p.PageOffset,
+		PageSize:   p.PageSize,
+	})
+	if err != nil {
+		return nil, 0, err
 	}
 	out := make([]*models.InferenceJob, 0, len(rows))
 	for _, row := range rows {
-		out = append(out, mappers.InferenceJobFromRow(row))
+		out = append(out, mapper.InferenceJobFromRow(row))
 	}
-	return out, nil
+	return out, int32(total), nil
 }
 
-// UpdateStatus transitions a job.
-func (r *InferenceJobRepository) UpdateStatus(
-	ctx context.Context, id uuid.UUID, status models.InferenceJobStatus,
-	outputURI, errMsg, updatedBy string,
+// UpdateInferenceJobStatus updates the status of a job.
+func (r *Repo) UpdateInferenceJobStatus(
+	ctx context.Context, id ulid.ID, status models.InferenceJobStatus, outputURI, errorMessage, updatedBy string,
 ) (*models.InferenceJob, error) {
 	row, err := r.q.UpdateInferenceJobStatus(ctx, eoanalyticsdb.UpdateInferenceJobStatusParams{
-		ID:        mappers.PgUUID(id),
-		Status:    int32(status),
-		Column3:   outputURI,
-		Column4:   errMsg,
-		UpdatedBy: updatedBy,
+		ID:           mapper.PgUUID(id),
+		Status:       int32(status),
+		OutputUri:    outputURI,
+		ErrorMessage: errorMessage,
+		UpdatedBy:    updatedBy,
 	})
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -191,5 +223,5 @@ func (r *InferenceJobRepository) UpdateStatus(
 		}
 		return nil, err
 	}
-	return mappers.InferenceJobFromRow(row), nil
+	return mapper.InferenceJobFromRow(row), nil
 }

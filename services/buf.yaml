@@ -6,6 +6,14 @@ modules:
     name: buf.build/p9e/eo-catalog
   - path: eo-pipeline/proto
     name: buf.build/p9e/eo-pipeline
+  - path: eo-analytics/proto
+    name: buf.build/p9e/eo-analytics
+  - path: sat-mission/proto
+    name: buf.build/p9e/sat-mission
+  - path: sat-fsw/proto
+    name: buf.build/p9e/sat-fsw
+  - path: sat-telemetry/proto
+    name: buf.build/p9e/sat-telemetry
 deps:
   - buf.build/bufbuild/protovalidate
 breaking:

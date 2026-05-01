@@ -11,18 +11,38 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countModelsForTenant = `-- name: CountModelsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM models
+WHERE tenant_id = $1::uuid
+  AND ($2::int IS NULL OR task = $2::int)
+`
+
+type CountModelsForTenantParams struct {
+	TenantID pgtype.UUID
+	Task     *int32
+}
+
+func (q *Queries) CountModelsForTenant(ctx context.Context, arg CountModelsForTenantParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countModelsForTenant, arg.TenantID, arg.Task)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
 const deactivateModel = `-- name: DeactivateModel :one
-UPDATE models SET active = false, updated_at = now(), updated_by = $2 WHERE id = $1
+UPDATE models
+SET active = false, updated_at = now(), updated_by = $1::text
+WHERE id = $2::uuid
 RETURNING id, tenant_id, name, version, task, framework, artefact_uri, metadata_json, active, created_at, updated_at, created_by, updated_by
 `
 
 type DeactivateModelParams struct {
-	ID        pgtype.UUID
 	UpdatedBy string
+	ID        pgtype.UUID
 }
 
 func (q *Queries) DeactivateModel(ctx context.Context, arg DeactivateModelParams) (Model, error) {
-	row := q.db.QueryRow(ctx, deactivateModel, arg.ID, arg.UpdatedBy)
+	row := q.db.QueryRow(ctx, deactivateModel, arg.UpdatedBy, arg.ID)
 	var i Model
 	err := row.Scan(
 		&i.ID,
@@ -67,34 +87,28 @@ func (q *Queries) GetModel(ctx context.Context, id pgtype.UUID) (Model, error) {
 	return i, err
 }
 
-const listModels = `-- name: ListModels :many
+const listModelsForTenant = `-- name: ListModelsForTenant :many
 SELECT id, tenant_id, name, version, task, framework, artefact_uri, metadata_json, active, created_at, updated_at, created_by, updated_by FROM models
 WHERE tenant_id = $1::uuid
   AND ($2::int IS NULL OR task = $2::int)
-  AND (
-        $3::timestamptz IS NULL
-        OR (created_at, id) < ($3::timestamptz,
-                               $4::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT $5::int
+OFFSET $3::int
+LIMIT  $4::int
 `
 
-type ListModelsParams struct {
-	TenantID        pgtype.UUID
-	Task            *int32
-	CursorCreatedAt pgtype.Timestamptz
-	CursorID        pgtype.UUID
-	Lim             int32
+type ListModelsForTenantParams struct {
+	TenantID   pgtype.UUID
+	Task       *int32
+	PageOffset int32
+	PageSize   int32
 }
 
-func (q *Queries) ListModels(ctx context.Context, arg ListModelsParams) ([]Model, error) {
-	rows, err := q.db.Query(ctx, listModels,
+func (q *Queries) ListModelsForTenant(ctx context.Context, arg ListModelsForTenantParams) ([]Model, error) {
+	rows, err := q.db.Query(ctx, listModelsForTenant,
 		arg.TenantID,
 		arg.Task,
-		arg.CursorCreatedAt,
-		arg.CursorID,
-		arg.Lim,
+		arg.PageOffset,
+		arg.PageSize,
 	)
 	if err != nil {
 		return nil, err

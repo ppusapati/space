@@ -4,27 +4,27 @@ package models
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"p9e.in/samavaya/packages/ulid"
 )
 
-// InferenceTask matches eov1.InferenceTask.
-type InferenceTask int
+// InferenceTask mirrors eoanalyticsv1.InferenceTask.
+type InferenceTask int32
 
 // Task constants.
 const (
-	TaskUnspecified  InferenceTask = 0
-	TaskDetection    InferenceTask = 1
-	TaskSegmentation InferenceTask = 2
+	TaskUnspecified    InferenceTask = 0
+	TaskDetection      InferenceTask = 1
+	TaskSegmentation   InferenceTask = 2
 	TaskClassification InferenceTask = 3
 )
 
-// InferenceJobStatus matches eov1.InferenceJobStatus.
-type InferenceJobStatus int
+// InferenceJobStatus mirrors eoanalyticsv1.InferenceJobStatus.
+type InferenceJobStatus int32
 
 // Status constants.
 const (
 	StatusUnspecified InferenceJobStatus = 0
-	StatusPending     InferenceJobStatus = 1
+	StatusQueued      InferenceJobStatus = 1
 	StatusRunning     InferenceJobStatus = 2
 	StatusSucceeded   InferenceJobStatus = 3
 	StatusFailed      InferenceJobStatus = 4
@@ -32,8 +32,8 @@ const (
 
 // Model is a registered ML model.
 type Model struct {
-	ID           uuid.UUID
-	TenantID     uuid.UUID
+	ID           ulid.ID
+	TenantID     ulid.ID
 	Name         string
 	Version      string
 	Task         InferenceTask
@@ -47,24 +47,27 @@ type Model struct {
 	UpdatedBy    string
 }
 
-// InferenceJob is one inference request against a model.
+// InferenceJob is a single inference task.
 type InferenceJob struct {
-	ID           uuid.UUID
-	TenantID     uuid.UUID
-	ModelID      uuid.UUID
-	ItemID       uuid.UUID
+	ID           ulid.ID
+	TenantID     ulid.ID
+	ModelID      ulid.ID
+	ItemID       ulid.ID
 	Status       InferenceJobStatus
 	OutputURI    string
 	ErrorMessage string
-	StartedAt    *time.Time
-	FinishedAt   *time.Time
+	StartedAt    time.Time
+	FinishedAt   time.Time
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	CreatedBy    string
 	UpdatedBy    string
 }
 
-// IsTerminal reports whether the status is Succeeded or Failed.
-func (j *InferenceJob) IsTerminal() bool {
-	return j.Status == StatusSucceeded || j.Status == StatusFailed
+// Page describes server-side pagination state.
+type Page struct {
+	TotalCount int32
+	PageOffset int32
+	PageSize   int32
+	HasNext    bool
 }
