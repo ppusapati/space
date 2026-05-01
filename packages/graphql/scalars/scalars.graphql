@@ -1,0 +1,86 @@
+# Custom Scalar Types for GraphQL Federation
+
+"""
+DateTime scalar - ISO 8601 formatted timestamp
+Example: 2026-03-01T12:00:00Z
+"""
+scalar DateTime
+
+"""
+Date scalar - ISO 8601 formatted date
+Example: 2026-03-01
+"""
+scalar Date
+
+"""
+Time scalar - ISO 8601 formatted time
+Example: 12:00:00
+"""
+scalar Time
+
+"""
+JSON scalar - Arbitrary JSON object
+Use for flexible data structures
+"""
+scalar JSON
+
+"""
+BigInt scalar - 64-bit signed integer
+Use for large numbers (transaction IDs, etc)
+"""
+scalar BigInt
+
+"""
+Decimal scalar - Arbitrary precision decimal
+Use for monetary values, percentages
+Example: 1234.56
+"""
+scalar Decimal
+
+"""
+UUID scalar - RFC 4122 UUID
+Example: 550e8400-e29b-41d4-a716-446655440000
+"""
+scalar UUID
+
+"""
+URL scalar - Valid URL string
+Example: https://example.com/path
+"""
+scalar URL
+
+"""
+Email scalar - Valid email address
+Example: user@example.com
+"""
+scalar Email
+
+"""
+PhoneNumber scalar - Valid phone number
+Example: +1-555-123-4567
+"""
+scalar PhoneNumber
+
+"""
+Latitude scalar - Geographic latitude (-90 to 90)
+Example: 40.7128
+"""
+scalar Latitude
+
+"""
+Longitude scalar - Geographic longitude (-180 to 180)
+Example: -74.0060
+"""
+scalar Longitude
+
+"""
+GeoJSON scalar - GeoJSON geometry object
+Example: {"type": "Point", "coordinates": [lon, lat]}
+"""
+scalar GeoJSON
+
+"""
+Currency scalar - ISO 4217 currency code
+Example: USD, EUR, GBP
+"""
+scalar Currency

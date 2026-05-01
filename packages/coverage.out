@@ -1,0 +1,18 @@
+mode: set
+kosha/database/pgxpostgres/pgxprovider.go:28.89,30.2 1 1
+kosha/database/pgxpostgres/pgxprovider.go:36.75,38.2 1 1
+kosha/database/pgxpostgres/pgxprovider.go:54.42,56.2 1 1
+kosha/database/pgxpostgres/pgxprovider.go:58.32,60.2 1 0
+kosha/database/pgxpostgres/pgxprovider.go:63.37,76.2 2 0
+kosha/database/pgxpostgres/postgres.go:28.50,33.2 1 1
+kosha/database/pgxpostgres/postgres.go:36.60,47.16 3 1
+kosha/database/pgxpostgres/postgres.go:47.16,49.3 1 1
+kosha/database/pgxpostgres/postgres.go:52.2,53.16 2 1
+kosha/database/pgxpostgres/postgres.go:53.16,55.3 1 0
+kosha/database/pgxpostgres/postgres.go:58.2,67.38 7 1
+kosha/database/pgxpostgres/postgres.go:67.38,70.3 2 1
+kosha/database/pgxpostgres/postgres.go:73.2,73.53 1 0
+kosha/database/pgxpostgres/postgres.go:73.53,76.3 2 0
+kosha/database/pgxpostgres/postgres.go:79.2,79.20 1 0
+kosha/database/pgxpostgres/postgres.go:79.20,81.3 1 0
+kosha/database/pgxpostgres/postgres.go:83.2,83.27 1 0

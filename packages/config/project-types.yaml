@@ -1,0 +1,534 @@
+# Project Type Configurations
+# This is the foundation for the config-based system
+# Defines all project types and their specific requirements
+
+solar:
+  name: "Solar Power Project"
+  description: "Ground-mounted, rooftop, or floating solar installations"
+  enabled: true
+
+  # Project-specific types
+  subtypes:
+    - GROUND_MOUNTED
+    - ROOFTOP
+    - FLOATING
+    - CANAL_TOP
+    - AGRI_SOLAR
+    - SOLAR_PARK
+
+  # Capacity specifications
+  capacity:
+    min_mw: 0.1
+    max_mw: 1000
+    unit: "MW"
+    typical_range: [10, 100]
+
+  # Technical specifications
+  technical:
+    panel_types:
+      - MONOCRYSTALLINE
+      - POLYCRYSTALLINE
+      - THIN_FILM
+      - BIFACIAL
+
+    inverter_types:
+      - STRING_INVERTER
+      - CENTRAL_INVERTER
+      - HYBRID_INVERTER
+      - MODULAR_INVERTER
+
+    mounting_types:
+      - FIXED
+      - SINGLE_AXIS_TRACKING
+      - DUAL_AXIS_TRACKING
+
+    performance:
+      expected_cuf: [15, 25]  # % Capacity Utilization Factor
+      expected_pr: [75, 85]   # % Performance Ratio
+
+  # Transmission requirements
+  transmission:
+    required: true
+    voltage_levels: [11, 33, 66, 132, 220, 400]  # kV
+    feasibility_study: true
+    connection_type:
+      - GRID_CONNECTED
+      - OFF_GRID
+      - HYBRID
+
+  # Right of Way
+  right_of_way:
+    required: true
+    corridor_width_m: [40, 60]  # Depends on voltage
+    survey_required: true
+    environmental_clearance: true
+    forest_clearance: true
+
+  # Land requirements
+  land:
+    min_area_acres: 4  # ~1 acre per MW typically
+    land_type_preferred:
+      - REVENUE_WASTELAND
+      - BARREN_LAND
+      - DEGRADED_LAND
+      - GOVT_LAND
+    land_type_restricted:
+      - AGRICULTURAL_LAND
+      - FOREST_LAND
+      - PROTECTED_AREA
+
+  # Government permissions
+  permissions:
+    central:
+      - MoP_NOC
+      - Ministry_of_New_Renewable_Energy
+
+    state:
+      - Forest_Department_Clearance
+      - Environment_Department_Clearance
+      - Revenue_Department_Land_Lease
+      - Electricity_Board_Approval
+      - District_Administration_Approval
+
+    district:
+      - District_Collector_Order
+      - Land_Records_Update
+      - Water_Board_Approval
+      - Gram_Panchayat_Resolution
+
+    local:
+      - Village_Gram_Sabha_Approval
+      - Municipal_Clearance_if_applicable
+      - Police_No_Objection
+
+  # Approvals workflow
+  approvals:
+    sequential_steps:
+      1:
+        name: "District Administration Initial Approval"
+        duration_days: 30
+        documents_required:
+          - Project_Proposal
+          - Site_Plan
+          - Land_Lease_Agreement_Draft
+          - Environmental_Assessment_Report
+
+      2:
+        name: "Forest Department Clearance"
+        duration_days: 90
+        documents_required:
+          - Forest_Survey_Report
+          - Tree_Census
+          - Environmental_Impact_Assessment
+          - No_Forest_Land_Certificate
+
+      3:
+        name: "Environment Department Approval"
+        duration_days: 60
+        documents_required:
+          - Environmental_Impact_Assessment
+          - Environmental_Management_Plan
+          - Public_Hearing_Report
+
+      4:
+        name: "Electricity Board Interconnection Approval"
+        duration_days: 45
+        documents_required:
+          - Transmission_Feasibility_Report
+          - One_line_Diagram
+          - Technical_Specifications
+          - Fault_Level_Study
+
+      5:
+        name: "Revenue Department Land Lease Approval"
+        duration_days: 60
+        documents_required:
+          - Land_Lease_Agreement_Signed
+          - Landowner_Clearance
+          - Mutation_Documents
+          - Revenue_Records
+
+      6:
+        name: "Final Commissioning Approval"
+        duration_days: 30
+        documents_required:
+          - Completion_Certificate
+          - Third_Party_Inspection_Report
+          - Performance_Test_Report
+
+  # Compliance requirements
+  compliance:
+    safety_standards:
+      - IEC_61215
+      - IEC_61730
+      - IS_12652
+      - IS_1885
+
+    grid_standards:
+      - Grid_Code_India
+      - CERC_Regulations
+      - State_Electricity_Regulatory_Commission_Rules
+
+    environmental:
+      - Environmental_Protection_Act
+      - Air_Quality_Standards
+      - Water_Quality_Standards
+      - Waste_Management_Rules
+
+    labor:
+      - Building_Safety_Act
+      - Occupational_Safety_Health_Code
+      - Factory_Act
+
+  # Cost elements
+  cost_breakdown:
+    civil_works: [10, 15]        # % of total capex
+    electrical_works: [15, 20]
+    land_cost: [5, 20]           # Highly variable
+    transmission_infrastructure: [10, 25]
+    row_cost: [5, 15]
+    contingency: [10, 15]
+
+  # Timeline
+  timeline:
+    land_acquisition: 180        # days
+    govt_approvals: 270         # days
+    transmission_feasibility: 120
+    row_acquisition: 240
+    engineering_design: 90
+    construction: 240
+    commissioning: 60
+    total_typical: 1080         # ~3 years for large project
+
+  # Finance
+  finance:
+    typical_capex_per_mw: [3500000, 4500000]  # INR per MW
+    debt_equity_ratio: [0.7, 0.8]
+    expected_irr: [12, 16]      # %
+    expected_payback_years: [5, 7]
+    government_subsidy:
+      scheme: "PM KUSUM"
+      components:
+        - COMPONENT_A  # Utility scale 50-500 MW
+        - COMPONENT_B  # Rooftop 100kW-2MW
+        - COMPONENT_C  # Agricultural pumps
+
+  # Insurance requirements
+  insurance:
+    required_types:
+      - THIRD_PARTY_LIABILITY
+      - COMPREHENSIVE_COVERAGE
+      - EQUIPMENT_BREAKDOWN
+      - BUSINESS_INTERRUPTION
+
+    coverage_years: 25
+    coverage_amount_percent: 100
+
+  # Post-commissioning
+  operations:
+    expected_lifespan_years: 25
+    annual_maintenance_percent: [1, 1.5]  # % of capex
+    performance_monitoring: true
+    insurance_required: true
+
+wind:
+  name: "Wind Power Project"
+  enabled: true
+  subtypes:
+    - ONSHORE
+    - OFFSHORE
+
+  capacity:
+    min_mw: 0.5
+    max_mw: 5000
+    unit: "MW"
+    typical_range: [10, 50]
+
+  technical:
+    turbine_capacity: [1, 15]  # MW
+    hub_height_m: [80, 150]
+    rotor_diameter_m: [40, 240]
+    wind_class: ["IA", "IB", "II", "III"]  # IEC 61400 standards
+
+  land:
+    min_area_acres: 50  # Larger footprint than solar
+    land_type_preferred:
+      - OPEN_LAND
+      - GOVT_WASTELAND
+    land_type_restricted:
+      - FOREST_LAND
+      - PROTECTED_AREA
+
+  transmission:
+    required: true
+    voltage_levels: [11, 33, 66, 132]
+
+  compliance:
+    bird_impact_assessment: true
+    aviation_clearance: true
+    radar_clearance: true
+
+  timeline:
+    total_typical: 1200  # ~3.5 years
+
+hydro:
+  name: "Hydroelectric Power Project"
+  enabled: true
+  subtypes:
+    - RUN_OF_RIVER
+    - RESERVOIR_BASED
+    - PUMPED_STORAGE
+
+  capacity:
+    min_mw: 1
+    max_mw: 10000
+
+  land:
+    requires_water_body: true
+    water_rights_critical: true
+
+  permissions:
+    federal:
+      - Water_Resources_Ministry_Approval
+      - Environmental_Clearance
+      - Forest_Clearance
+      - Tribal_Affairs_Clearance
+
+  timeline:
+    total_typical: 1825  # ~5 years minimum
+
+residential:
+  name: "Residential Real Estate Project"
+  enabled: true
+  subtypes:
+    - APARTMENT
+    - VILLA
+    - TOWNSHIP
+    - ROW_HOUSE
+
+  capacity:
+    unit: "units"
+    min_units: 1
+    max_units: 5000
+
+  land:
+    land_type_preferred:
+      - COMMERCIAL_LAND
+      - RESIDENTIAL_LAND
+
+  permissions:
+    local:
+      - Municipal_Approval
+      - Building_Permission
+      - Occupancy_Certificate
+      - Environmental_Clearance
+
+  compliance:
+    building_standards:
+      - National_Building_Code
+      - Local_Building_Bye_Laws
+      - Earthquake_Safety
+      - Accessibility_Standards
+
+warehouse:
+  name: "Warehouse and Logistics"
+  enabled: true
+  subtypes:
+    - COLD_STORAGE
+    - GENERAL_WAREHOUSE
+    - DATA_CENTER
+    - LOGISTICS_HUB
+
+  capacity:
+    unit: "sq_ft"
+    min_sqft: 50000
+    max_sqft: 1000000
+
+  land:
+    land_type_preferred:
+      - INDUSTRIAL_LAND
+      - COMMERCIAL_LAND
+
+  permissions:
+    local:
+      - Municipal_Approval
+      - Industrial_License
+      - Pollution_Board_Clearance
+      - Fire_Safety_Clearance
+
+industrial:
+  name: "Industrial Manufacturing"
+  enabled: true
+  subtypes:
+    - TEXTILE
+    - FOOD_PROCESSING
+    - PHARMACEUTICALS
+    - ELECTRONICS
+    - AUTOMOTIVE
+
+  capacity:
+    unit: "sq_ft"
+
+  permissions:
+    environmental:
+      - Industrial_Approval
+      - Pollution_Control_Board_Clearance
+      - Hazardous_Waste_Management_Plan
+
+    safety:
+      - Factory_Act_Compliance
+      - Fire_Safety_Approval
+      - Electrical_Safety
+
+dairy:
+  name: "Dairy Farm Project"
+  enabled: true
+  capacity:
+    unit: "animals"
+    min_capacity: 50
+    max_capacity: 50000
+
+  land:
+    min_area_acres: 10
+    land_type_preferred:
+      - AGRICULTURAL_LAND
+      - GOVT_WASTELAND
+
+  permissions:
+    environmental:
+      - Water_Board_Approval
+      - Pollution_Control_Board_Approval
+      - Waste_Management_Plan
+
+    safety:
+      - Animal_Welfare_Compliance
+      - Public_Health_Clearance
+
+agro_processing:
+  name: "Agricultural Processing"
+  enabled: true
+  subtypes:
+    - SUGAR_MILL
+    - RICE_MILL
+    - OIL_EXTRACTION
+    - SPICE_PROCESSING
+    - JAGGERY_UNIT
+
+  land:
+    min_area_acres: 20
+    land_type_preferred:
+      - AGRICULTURAL_LAND
+
+  permissions:
+    agricultural:
+      - Agricultural_Department_Approval
+      - Cooperative_Approval
+
+    environmental:
+      - Pollution_Control_Board_Approval
+      - Water_Pollution_Control_Approval
+
+data_center:
+  name: "Data Center Infrastructure"
+  enabled: true
+  capacity:
+    unit: "MW"
+    min_mw: 1
+    max_mw: 100
+
+  land:
+    min_area_acres: 5
+
+  permissions:
+    security:
+      - Ministry_of_Defense_Approval
+      - Telecom_Commission_Approval
+      - Cybersecurity_Clearance
+
+    technical:
+      - Power_Supply_Guarantee
+      - Cooling_Infrastructure
+      - Network_Connectivity
+
+guest_house:
+  name: "Guest House / Hospitality"
+  enabled: true
+  subtypes:
+    - HOTEL
+    - RESORT
+    - GUEST_HOUSE
+    - HOMESTAY
+
+  capacity:
+    unit: "rooms"
+
+  permissions:
+    tourism:
+      - Tourism_Board_Approval
+      - Hotel_License
+      - Food_License
+
+# Common fields applied to all project types
+common:
+  # Owner/Stakeholder fields
+  stakeholder_fields:
+    - project_owner
+    - project_manager
+    - technical_consultant
+    - legal_counsel
+    - environmental_consultant
+    - financial_advisor
+
+  # Financial fields applied to all
+  financial_fields:
+    - total_project_cost
+    - equity_investment
+    - debt_required
+    - government_subsidy
+    - contingency_reserve
+    - expected_irr
+    - payback_period
+
+  # Timeline fields
+  timeline_fields:
+    - approval_completion_date
+    - land_acquisition_completion_date
+    - engineering_completion_date
+    - construction_start_date
+    - construction_completion_date
+    - commissioning_date
+
+  # Regulatory fields
+  regulatory_fields:
+    - environmental_clearance
+    - forest_clearance
+    - water_board_approval
+    - tribal_affairs_approval
+    - local_authority_approval
+    - government_land_lease_if_applicable
+
+  # Risk fields
+  risk_fields:
+    - geological_risk
+    - environmental_risk
+    - regulatory_risk
+    - financial_risk
+    - market_risk
+    - construction_risk
+
+  # Insurance fields
+  insurance_fields:
+    - comprehensive_insurance
+    - liability_insurance
+    - equipment_breakdown_insurance
+    - business_interruption_insurance
+    - contingency_insurance
+
+  # Monitoring fields
+  monitoring_fields:
+    - performance_monitoring
+    - financial_monitoring
+    - regulatory_compliance_monitoring
+    - environmental_monitoring
+    - safety_monitoring
+    - stakeholder_communication

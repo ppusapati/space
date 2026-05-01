@@ -1,0 +1,281 @@
+// Wire types for the class registry — the shared engine behind every
+// consolidated business domain in Samavāya (see
+// docs/GENERIC_INDUSTRY_IMPLEMENTATION.md).
+//
+// Two surfaces are defined here:
+//
+//   1. AttributeValue — the discriminated-union value type carried in
+//      entity attribute maps on every generic domain service's
+//      request/response. Every `map<string, AttributeValue>` on a
+//      workcenter/asset/journal/etc. proto uses this type.
+//
+//   2. ClassRegistryService — the introspection RPCs the frontend
+//      calls to render class-aware forms without shipping YAML to the
+//      browser. ListClasses + GetClassSchema cover the whole need.
+//
+// What this file does NOT do: define per-domain entity services.
+// Those live in each consolidated domain's own proto
+// (business/<module>/<domain>/proto/<domain>.proto).
+
+syntax = "proto3";
+
+package packages.classregistry.v1;
+
+option go_package = "p9e.in/samavaya/packages/classregistry/api/v1;classregistryv1";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+import "packages/proto/context.proto";
+
+// ============================================================================
+// AttributeValue — the discriminated union
+// ============================================================================
+
+// AttributeValue is the typed-union carrier for class-scoped attribute
+// values. Entity payloads for generic domain services use
+// map<string, AttributeValue> so the wire contract stays typed at the
+// RPC level while attribute shape is validated against the class's
+// YAML-declared schema at runtime.
+//
+// Exactly one of the oneof fields is populated per value. The Kind
+// enum is a redundant discriminator so consumers that cannot read
+// oneof state (legacy wire codecs) still know which variant to decode.
+message AttributeValue {
+  AttributeKind kind = 1;
+
+  oneof value {
+    string string_value = 10;
+    int64 int_value = 11;
+    // Decimal-safe string representation. Repositories persist as
+    // NUMERIC; evaluators parse on demand to avoid float drift.
+    string decimal_value = 12;
+    bool bool_value = 13;
+    // Date without time-of-day. Serialized as ISO-8601 Y-M-D.
+    string date_value = 14;
+    google.protobuf.Timestamp timestamp_value = 15;
+    google.protobuf.Duration duration_value = 16;
+    MoneyValue money_value = 17;
+    GeoPointValue geo_point_value = 18;
+
+    StringArray string_array = 20;
+    IntArray int_array = 21;
+    DecimalArray decimal_array = 22;
+
+    // Used for both reference (lookup FK) and enum kinds — both carry
+    // a single string identifier on the wire.
+    AttributeObject object_value = 30;
+    FileRef file_value = 31;
+  }
+}
+
+// AttributeKind mirrors packages/classregistry/types.go AttributeKind.
+// The set is closed — adding a kind requires coordinated change to
+// the Go type, the proto, and the validator.
+enum AttributeKind {
+  ATTRIBUTE_KIND_UNSPECIFIED = 0;
+  ATTRIBUTE_KIND_STRING = 1;
+  ATTRIBUTE_KIND_INT = 2;
+  ATTRIBUTE_KIND_DECIMAL = 3;
+  ATTRIBUTE_KIND_BOOL = 4;
+  ATTRIBUTE_KIND_DATE = 5;
+  ATTRIBUTE_KIND_TIMESTAMP = 6;
+  ATTRIBUTE_KIND_DURATION = 7;
+  ATTRIBUTE_KIND_MONEY = 8;
+  ATTRIBUTE_KIND_GEO_POINT = 9;
+  ATTRIBUTE_KIND_STRING_ARRAY = 10;
+  ATTRIBUTE_KIND_INT_ARRAY = 11;
+  ATTRIBUTE_KIND_DECIMAL_ARRAY = 12;
+  ATTRIBUTE_KIND_ENUM = 13;
+  ATTRIBUTE_KIND_REFERENCE = 14;
+  ATTRIBUTE_KIND_OBJECT = 15;
+  ATTRIBUTE_KIND_FILE = 16;
+}
+
+message MoneyValue {
+  // Decimal-safe string. Repositories convert to NUMERIC on write.
+  string amount = 1;
+  // ISO-4217, e.g. "INR", "USD", "EUR".
+  string currency = 2;
+}
+
+message GeoPointValue {
+  double lat = 1;
+  double lon = 2;
+}
+
+message StringArray {
+  repeated string values = 1;
+}
+
+message IntArray {
+  repeated int64 values = 1;
+}
+
+message DecimalArray {
+  // Each element is a decimal-safe string.
+  repeated string values = 1;
+}
+
+// AttributeObject is a nested map used for object-kind attributes. Its
+// schema is defined in the class registry's object spec; values are
+// validated against that schema at write time.
+message AttributeObject {
+  map<string, AttributeValue> fields = 1;
+}
+
+// FileRef points to a blob stored via packages/filestorage. The
+// BlobRef is the authoritative identifier; filename + content_type +
+// size_bytes are cached metadata for display.
+message FileRef {
+  string blob_ref = 1;
+  string filename = 2;
+  string content_type = 3;
+  int64 size_bytes = 4;
+}
+
+// ============================================================================
+// Class-schema introspection
+// ============================================================================
+
+// ClassRegistryService exposes the loaded class registry to callers
+// that need to know class shape at runtime — primarily the frontend's
+// form renderer and the admin UI's class browser.
+//
+// Read-only: class definitions are deployment-time artifacts.
+// Per-tenant class overrides (F.6.2) wrap this service with a
+// tenant-aware facade at the composition root.
+service ClassRegistryService {
+  // ListClasses returns every class defined for a domain, sorted by
+  // name. Empty response means the domain hasn't been consolidated
+  // yet — callers treat that as "no classes configured".
+  rpc ListClasses(ListClassesRequest) returns (ListClassesResponse);
+
+  // GetClassSchema returns one class's full resolved definition
+  // (attributes inherited from base classes already merged in,
+  // derived-attribute formulas included, processes listed).
+  // Callers use this to render class-aware forms.
+  rpc GetClassSchema(GetClassSchemaRequest) returns (GetClassSchemaResponse);
+
+  // ListDomains returns the list of domains the registry currently
+  // holds YAML for. Ordered alphabetically. Used by admin UIs to
+  // enumerate the registry and by tooling to drive bulk operations.
+  rpc ListDomains(ListDomainsRequest) returns (ListDomainsResponse);
+}
+
+message ListClassesRequest {
+  packages.api.v1.context.TenantContext context = 1;
+  // Required. The domain (e.g. "workcenter", "asset", "bom") whose
+  // classes should be listed.
+  string domain = 2;
+}
+
+message ListClassesResponse {
+  repeated ClassSummary classes = 1;
+}
+
+// ClassSummary is the compact listing form — enough to render a
+// class picker without fetching every attribute.
+message ClassSummary {
+  string name = 1;
+  string label = 2;
+  string description = 3;
+  // Industries (profile names) that pre-enable this class at
+  // onboarding time. Frontend can filter classes to just those
+  // matching the tenant's industry.
+  repeated string industries = 4;
+  // True if the class declares at least one process (Layer 3
+  // calculation). UIs that surface process-specific actions read
+  // this.
+  bool has_processes = 5;
+}
+
+message GetClassSchemaRequest {
+  packages.api.v1.context.TenantContext context = 1;
+  string domain = 2;
+  string class = 3;
+}
+
+message GetClassSchemaResponse {
+  ClassDefinition class = 1;
+}
+
+// ClassDefinition is the wire version of classregistry.ClassDef —
+// same shape, proto types. Consumed by the form renderer.
+message ClassDefinition {
+  string domain = 1;
+  string name = 2;
+  string label = 3;
+  string description = 4;
+  repeated string industries = 5;
+  map<string, AttributeDefinition> attributes = 6;
+  repeated string compliance_checks = 7;
+  repeated string capacity_metrics = 8;
+  repeated string processes = 9;
+  map<string, DerivedAttributeDefinition> derived_attributes = 10;
+  repeated CustomExtensionDefinition custom_extensions = 11;
+  string workflow = 12;
+  AuditPolicy audit = 13;
+}
+
+message AttributeDefinition {
+  AttributeKind kind = 1;
+  bool required = 2;
+  AttributeValue default_value = 3; // optional; present only if declared
+  // Numeric bounds for int / decimal / money / duration; zero-valued
+  // doubles are distinguishable from "unset" via the has_* flags.
+  bool has_min = 4;
+  double min = 5;
+  bool has_max = 6;
+  double max = 7;
+  // Enum values — populated only for kind=ENUM.
+  repeated string values = 8;
+  // For kind=REFERENCE — the lookup table name the FK targets.
+  string lookup = 9;
+  // For kind=STRING — regex pattern the value must match.
+  string pattern = 10;
+  // Storage hint for the domain's repository. "attributes_jsonb" by
+  // default; "typed_column:<col>" for audit-critical fields that live
+  // in a dedicated SQL column.
+  string storage = 11;
+  string description = 12;
+  // If non-empty, the attribute is deprecated since this version.
+  // Validator emits a warning; callers see the value in form UIs for
+  // the deprecation notice.
+  string deprecated_since = 13;
+  // For kind=OBJECT — the nested schema.
+  map<string, AttributeDefinition> object_schema = 14;
+  // For kind=*_ARRAY — the element kind.
+  AttributeKind array_element_kind = 15;
+}
+
+message DerivedAttributeDefinition {
+  string name = 1;
+  // Original formula text. The frontend can surface this in tooltips;
+  // the backend already parsed + validated it at load time.
+  string formula = 2;
+  string unit = 3;
+  // Attribute keys the formula reads. Frontend uses this to decide
+  // when to recompute a preview value as the user edits the form.
+  repeated string depends_on = 4;
+}
+
+message CustomExtensionDefinition {
+  string name = 1;
+  string service_path = 2;
+  bool required = 3;
+  string description = 4;
+}
+
+message AuditPolicy {
+  bool track_changes = 1;
+  int32 retain_days = 2;
+  repeated string regulatory_frameworks = 3;
+}
+
+message ListDomainsRequest {
+  packages.api.v1.context.TenantContext context = 1;
+}
+
+message ListDomainsResponse {
+  repeated string domains = 1;
+}

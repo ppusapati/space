@@ -1,0 +1,110 @@
+# Custom Directives for GraphQL Federation
+
+"""
+@auth - Require authentication with specific role
+Usage: @auth(role: "admin")
+Enforces role-based access control on fields/types
+"""
+directive @auth(role: String!) on FIELD_DEFINITION | OBJECT
+
+"""
+@rateLimit - Rate limit a field or mutation
+Usage: @rateLimit(limit: 100, window: "1m")
+Prevents abuse of expensive operations
+Window: "1s", "1m", "1h", "1d"
+"""
+directive @rateLimit(limit: Int!, window: String!) on FIELD_DEFINITION
+
+"""
+@cache - Cache resolver results
+Usage: @cache(ttl: 3600)
+Reduces database queries by caching results
+TTL in seconds (default: 300)
+"""
+directive @cache(ttl: Int = 300) on FIELD_DEFINITION
+
+"""
+@sensitive - Mark field as containing sensitive data
+Usage: @sensitive
+PII, passwords, tokens, etc should be marked
+Use with audit logging
+"""
+directive @sensitive on FIELD_DEFINITION
+
+"""
+@readonly - Field is read-only
+Usage: @readonly
+Prevents mutations on these fields
+System-generated fields
+"""
+directive @readonly on FIELD_DEFINITION
+
+"""
+@deprecated - Deprecate a field
+Usage: @deprecated(reason: "Use newField instead")
+Standard GraphQL deprecation
+"""
+directive @deprecated(reason: String!) on FIELD_DEFINITION | ENUM_VALUE
+
+"""
+@requires - Field requires other fields to be fetched
+Usage: @requires(fields: "id address")
+Federation directive for field resolution
+"""
+directive @requires(fields: String!) on FIELD_DEFINITION
+
+"""
+@external - Field is provided by another service
+Usage: @external
+Federation directive for type extensions
+"""
+directive @external on FIELD_DEFINITION
+
+"""
+@provides - Field provides information about a type
+Usage: @provides(fields: "id name")
+Federation directive for optimization
+"""
+directive @provides(fields: String!) on FIELD_DEFINITION
+
+"""
+@cost - Specify query complexity cost
+Usage: @cost(amount: 5)
+Track query complexity to prevent DOS
+"""
+directive @cost(amount: Int = 1) on FIELD_DEFINITION
+
+"""
+@async - Mark resolver as asynchronous
+Usage: @async
+Indicates batching or async operation
+"""
+directive @async on FIELD_DEFINITION
+
+"""
+@transaction - Require database transaction
+Usage: @transaction
+Ensures ACID properties for mutations
+"""
+directive @transaction on FIELD_DEFINITION | OBJECT
+
+"""
+@audit - Audit changes to this field
+Usage: @audit
+Log all modifications for compliance
+"""
+directive @audit on FIELD_DEFINITION
+
+"""
+@validate - Apply custom validation
+Usage: @validate(rule: "email")
+Available rules: email, url, phone, uuid, currency
+"""
+directive @validate(rule: String!) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+"""
+@immutable - Field cannot be changed after creation
+Usage: @immutable
+Used for IDs, created timestamps, etc
+"""
+directive @immutable on FIELD_DEFINITION
