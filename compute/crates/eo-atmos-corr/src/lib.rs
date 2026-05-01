@@ -176,11 +176,15 @@ pub fn run_atmos_correction(job: &AtmosCorrJob) -> Result<AtmosCorrResult, Atmos
             Ok(Some(status)) => {
                 let mut stdout = String::new();
                 let mut stderr = String::new();
-                if let Some(mut s) = child.stdout.take() {
-                    let _ = std::io::Read::read_to_string(&mut s, &mut stdout);
+                if let Some(mut s) = child.stdout.take()
+                    && let Err(e) = std::io::Read::read_to_string(&mut s, &mut stdout)
+                {
+                    tracing::warn!(?backend_name, error = %e, "stdout capture failed");
                 }
-                if let Some(mut s) = child.stderr.take() {
-                    let _ = std::io::Read::read_to_string(&mut s, &mut stderr);
+                if let Some(mut s) = child.stderr.take()
+                    && let Err(e) = std::io::Read::read_to_string(&mut s, &mut stderr)
+                {
+                    tracing::warn!(?backend_name, error = %e, "stderr capture failed");
                 }
                 if !status.success() {
                     return Err(AtmosCorrError::NonZeroExit {

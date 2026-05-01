@@ -45,6 +45,31 @@ pub enum TleError {
     },
 }
 
+/// TLE line designator.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum LineNumber {
+    /// First line (`1 ...`).
+    One,
+    /// Second line (`2 ...`).
+    Two,
+}
+
+impl LineNumber {
+    fn as_u8(self) -> u8 {
+        match self {
+            LineNumber::One => 1,
+            LineNumber::Two => 2,
+        }
+    }
+
+    fn ascii(self) -> u8 {
+        match self {
+            LineNumber::One => b'1',
+            LineNumber::Two => b'2',
+        }
+    }
+}
+
 /// Validate the modulo-10 checksum of a 69-character TLE line.
 ///
 /// The TLE checksum sums every digit, with each `-` counting as 1, and
@@ -52,19 +77,16 @@ pub enum TleError {
 ///
 /// # Errors
 /// [`TleError`] if length / line number / checksum is wrong.
-pub fn validate_line(line: u8, s: &str) -> Result<(), TleError> {
-    let bytes: Vec<u8> = s.bytes().collect();
+pub fn validate_line(line: LineNumber, s: &str) -> Result<(), TleError> {
+    let bytes = s.as_bytes();
+    let line_num = line.as_u8();
     if bytes.len() != 69 {
-        return Err(TleError::WrongLength { line, got: bytes.len() });
+        return Err(TleError::WrongLength { line: line_num, got: bytes.len() });
     }
-    let expected_first = match line {
-        1 => b'1',
-        2 => b'2',
-        _ => panic!("validate_line called with line != 1 or 2"),
-    };
+    let expected_first = line.ascii();
     if bytes[0] != expected_first {
         return Err(TleError::WrongLineNumber {
-            line,
+            line: line_num,
             got: bytes[0] as char,
             expected: expected_first as char,
         });
@@ -80,11 +102,15 @@ pub fn validate_line(line: u8, s: &str) -> Result<(), TleError> {
     let computed = (sum % 10) as u8;
     let expected = bytes[68];
     if !expected.is_ascii_digit() {
-        return Err(TleError::BadChecksum { line, computed, expected: 0 });
+        return Err(TleError::BadChecksum { line: line_num, computed, expected: 0 });
     }
     let expected_digit = expected - b'0';
     if computed != expected_digit {
-        return Err(TleError::BadChecksum { line, computed, expected: expected_digit });
+        return Err(TleError::BadChecksum {
+            line: line_num,
+            computed,
+            expected: expected_digit,
+        });
     }
     Ok(())
 }
@@ -94,8 +120,8 @@ pub fn validate_line(line: u8, s: &str) -> Result<(), TleError> {
 /// # Errors
 /// First failing line propagates as [`TleError`].
 pub fn validate_pair(line1: &str, line2: &str) -> Result<(), TleError> {
-    validate_line(1, line1)?;
-    validate_line(2, line2)?;
+    validate_line(LineNumber::One, line1)?;
+    validate_line(LineNumber::Two, line2)?;
     Ok(())
 }
 
@@ -151,13 +177,28 @@ mod tests {
         let mut bad = VANGUARD_LINE1.to_string();
         // Flip the trailing checksum digit.
         bad.replace_range(68..69, "0");
-        assert!(matches!(validate_line(1, &bad).unwrap_err(), TleError::BadChecksum { .. }));
+        assert!(matches!(
+            validate_line(LineNumber::One, &bad).unwrap_err(),
+            TleError::BadChecksum { .. }
+        ));
     }
 
     #[test]
     fn wrong_length_rejected() {
         let short = "1 00005U 58002B   00179.78495062";
-        assert!(matches!(validate_line(1, short).unwrap_err(), TleError::WrongLength { .. }));
+        assert!(matches!(
+            validate_line(LineNumber::One, short).unwrap_err(),
+            TleError::WrongLength { .. }
+        ));
+    }
+
+    #[test]
+    fn wrong_line_number_rejected() {
+        // Pass line 2 to LineNumber::One — should be rejected by first-byte check.
+        assert!(matches!(
+            validate_line(LineNumber::One, VANGUARD_LINE2).unwrap_err(),
+            TleError::WrongLineNumber { .. }
+        ));
     }
 
     #[test]

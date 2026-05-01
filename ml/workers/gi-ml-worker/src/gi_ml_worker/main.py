@@ -5,9 +5,9 @@ import logging
 import os
 import sys
 
-from .bus import InMemoryBus, Job, JobBus, JobResult, JobStatus
+from ml_serving import InMemoryBus, Job, JobBus, JobResult, JobStatus, ObjectStore
+
 from .handler import Handler, HandlerError
-from .storage import ObjectStore
 
 log = logging.getLogger("gi_ml_worker")
 

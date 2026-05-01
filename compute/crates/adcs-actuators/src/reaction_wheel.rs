@@ -198,6 +198,20 @@ mod tests {
         assert_abs_diff_eq!(arr.wheels[0].momentum, -0.1, epsilon = 1e-9);
     }
 
+    /// Regression: closed-loop check that demanded body torque equals
+    /// the body torque actually applied while the wheels are below
+    /// saturation. A previous bug had the sign wrong on allocation,
+    /// which this guards against.
+    #[test]
+    fn applied_body_torque_matches_demand_unsaturated() {
+        let mut arr = standard_3();
+        let demand = Vector3::new(0.01, -0.005, 0.02);
+        let applied = arr.step(demand, 0.01);
+        for i in 0..3 {
+            assert_abs_diff_eq!(applied[i], demand[i], epsilon = 1e-9);
+        }
+    }
+
     #[test]
     fn rejects_non_unit_axis() {
         let w = ReactionWheel {

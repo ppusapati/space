@@ -41,7 +41,7 @@ impl AffineGeo {
 
 /// Orthorectify `src` onto an output grid defined by `out_shape` and `geo`,
 /// using `rpc` to project each output pixel through the DEM and resampling
-/// the source array with `method`. Pixels for which the RPC inverse falls
+/// the source array with `method`. Pixels for which the RPC forward maps
 /// outside the source array are filled with [`f32::NAN`].
 ///
 /// `geo` is interpreted as `(lon, lat)` — `pixel_x` increases longitude per
@@ -49,7 +49,7 @@ impl AffineGeo {
 /// negative). The DEM lookup is performed at the same `(lat, lon)`.
 ///
 /// # Errors
-/// Returns [`GeometricError`] for empty inputs.
+/// Returns [`GeometricError::Empty`] for zero-size inputs.
 pub fn orthorectify(
     src: ArrayView2<'_, f32>,
     rpc: &Rpc,
@@ -57,8 +57,6 @@ pub fn orthorectify(
     out_shape: (usize, usize),
     geo: AffineGeo,
     method: Method,
-    inverse_tol: f64,
-    inverse_max_iter: u32,
 ) -> Result<Array2<f32>, GeometricError> {
     let (sr, sc) = src.dim();
     if sr == 0 || sc == 0 || out_shape.0 == 0 || out_shape.1 == 0 {
@@ -70,9 +68,6 @@ pub fn orthorectify(
             let (lon, lat) = geo.pixel_to_world(row, col);
             let h = dem.elevation_at(lat, lon).unwrap_or(0.0);
             let (line, samp) = rpc.forward(lat, lon, h);
-            // RPC forward may produce out-of-bounds when the output grid
-            // covers a wider area than the source. Sample handles bounds.
-            let _ = (inverse_tol, inverse_max_iter); // hooks for inverse-direction variants
             if let Some(v) = sample(src, line, samp, method) {
                 out[(row, col)] = v;
             }
@@ -137,7 +132,7 @@ mod tests {
         //   col 0 -> lon 0, col 4 -> lon 4
         let geo = AffineGeo { origin_x: 0.0, origin_y: 4.0, pixel_x: 1.0, pixel_y: -1.0 };
         let out =
-            orthorectify(src.view(), &rpc, &dem, (5, 5), geo, Method::Bilinear, 1e-9, 50).unwrap();
+            orthorectify(src.view(), &rpc, &dem, (5, 5), geo, Method::Bilinear).unwrap();
         // For row=0, lat=4 -> line=4 (RPC); col=0, lon=0 -> sample=0
         // src[(4,0)] = 40
         assert_abs_diff_eq!(out[(0, 0)], 40.0, epsilon = 1e-3);

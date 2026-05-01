@@ -6,9 +6,9 @@ import os
 import sys
 from pathlib import Path
 
-from .bus import InMemoryBus, Job, JobBus, JobResult, JobStatus, KafkaBus
+from ml_serving import InMemoryBus, Job, JobBus, JobResult, JobStatus, ObjectStore
+
 from .handler import Handler, HandlerError
-from .storage import LocalStorage, ObjectStore
 
 log = logging.getLogger("eo_ml_worker")
 

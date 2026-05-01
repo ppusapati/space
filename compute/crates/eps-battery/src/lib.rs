@@ -76,6 +76,9 @@ impl OcvSocCurve {
     }
 
     /// Linearly interpolate `voltage(soc)`.
+    ///
+    /// The constructor [`OcvSocCurve::new`] enforces `points.len() >= 2`,
+    /// so the internal `first()` / `last()` accesses are infallible.
     #[must_use]
     pub fn voltage_at(&self, soc: f64) -> f64 {
         let s = soc.clamp(self.points.first().unwrap().0, self.points.last().unwrap().0);
@@ -92,6 +95,9 @@ impl OcvSocCurve {
 
     /// Inverse: linearly interpolate `soc(voltage)`. Saturates outside
     /// the table range.
+    ///
+    /// The constructor enforces `points.len() >= 2`, so the internal
+    /// `first()` / `last()` accesses are infallible.
     #[must_use]
     pub fn soc_at(&self, voltage: f64) -> f64 {
         let v_first = self.points.first().unwrap().1;
@@ -293,6 +299,43 @@ mod tests {
         }
         let expected = 0.5 - 0.5 / (10.0 * 0.97);
         assert_abs_diff_eq!(b.soc, expected, epsilon = 1e-3);
+    }
+
+    /// Regression: charge-path SOC growth must use the **charge** efficiency
+    /// (η_c = 0.98), distinct from the discharge path's η_d = 0.97. A
+    /// previous formula bug applied the wrong factor to discharge; this
+    /// test pins both paths so a future copy-paste cannot reintroduce it.
+    #[test]
+    fn coulomb_counting_charge_uses_charge_efficiency() {
+        let mut b = nominal_battery();
+        b.soc = 0.5;
+        // Charge at 1 A for 1800 s = 0.5 Ah; ΔSOC = +0.5·η_c / 10 = 0.049.
+        for _ in 0..1800 {
+            b.step(-1.0, 3.7, 1.0);
+        }
+        let expected = 0.5 + 0.5 * 0.98 / 10.0;
+        assert_abs_diff_eq!(b.soc, expected, epsilon = 1e-3);
+    }
+
+    /// Regression: a full charge-then-discharge cycle should leave the
+    /// battery at a slightly *lower* SOC than where it started, by
+    /// exactly the round-trip-efficiency loss `(1 − η_c · η_d)`.
+    #[test]
+    fn round_trip_efficiency_loss() {
+        let mut b = nominal_battery();
+        b.soc = 0.5;
+        // Charge 1 A for 360 s = 0.1 Ah, then discharge 1 A for 360 s.
+        for _ in 0..360 {
+            b.step(-1.0, 3.7, 1.0);
+        }
+        for _ in 0..360 {
+            b.step(1.0, 3.7, 1.0);
+        }
+        // Net delta = (0.1 · η_c) − (0.1 / η_d) per nameplate Ah.
+        let expected =
+            0.5 + (0.1 * 0.98) / 10.0 - (0.1 / 0.97) / 10.0;
+        assert_abs_diff_eq!(b.soc, expected, epsilon = 1e-4);
+        assert!(b.soc < 0.5, "round-trip should lose energy");
     }
 
     #[test]

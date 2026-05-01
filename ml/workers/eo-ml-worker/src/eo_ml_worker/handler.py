@@ -7,9 +7,7 @@ from dataclasses import asdict, dataclass
 
 import numpy as np
 from eo_ml import Classifier, Detector, Segmenter
-from ml_serving import ModelRegistry, ModelNotFound
-
-from .bus import Job
+from ml_serving import Job, ModelRegistry, ModelNotFound
 
 
 @dataclass(frozen=True)

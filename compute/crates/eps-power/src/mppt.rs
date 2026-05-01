@@ -145,4 +145,34 @@ mod tests {
     fn rejects_invalid_step() {
         assert!(PerturbAndObserve::new(0.5, 0.0, 0.0, 1.0).is_err());
     }
+
+    /// Regression: when started **above** the MPP, the algorithm must
+    /// climb *down* — the previous bug was a sign flip that made it
+    /// drift away from the MPP regardless of initial position.
+    #[test]
+    fn p_and_o_descends_when_initialised_above_mpp() {
+        let mut mppt = PerturbAndObserve::new(0.9, 0.005, 0.0, 1.0).unwrap();
+        for _ in 0..2000 {
+            let v = mppt.duty.clamp(0.0, 1.0);
+            let i = iv(v);
+            mppt.step(v, i);
+        }
+        assert!(
+            (mppt.duty - 0.5).abs() < 0.02,
+            "duty did not converge from above-MPP start: {}",
+            mppt.duty
+        );
+    }
+
+    /// Regression: respect the configured duty bounds even when the
+    /// gradient would push us beyond them.
+    #[test]
+    fn p_and_o_clamps_to_duty_bounds() {
+        let mut mppt = PerturbAndObserve::new(0.5, 0.05, 0.4, 0.6).unwrap();
+        for _ in 0..200 {
+            // Constant signal → algorithm wanders, but duty must stay clamped.
+            mppt.step(0.5, 0.0);
+        }
+        assert!(mppt.duty >= 0.4 - 1e-9 && mppt.duty <= 0.6 + 1e-9);
+    }
 }

@@ -108,7 +108,6 @@ pub fn predict_passes(
     let dt_days = step_seconds / 86_400.0;
     let mut prev_above = false;
     let mut entry_jd = 0.0_f64;
-    let mut entry_elev = f64::NEG_INFINITY;
     let mut max_elev = f64::NEG_INFINITY;
     let mut max_jd = 0.0_f64;
     while t <= end + 1e-12 {
@@ -116,7 +115,6 @@ pub fn predict_passes(
         let above = elev >= station.min_elevation_rad;
         if above && !prev_above {
             entry_jd = t;
-            entry_elev = elev;
             max_elev = elev;
             max_jd = t;
         } else if above && elev > max_elev {
@@ -147,7 +145,6 @@ pub fn predict_passes(
                 los_jd: los,
                 max_elevation_rad: sample_elevation(propagator, epoch_jd, station, tca),
             });
-            let _ = entry_elev;
             max_elev = f64::NEG_INFINITY;
         }
         prev_above = above;
@@ -279,5 +276,45 @@ mod tests {
         let range = r_enu.norm();
         let elevation = (r_enu.z / range).asin();
         assert_abs_diff_eq!(elevation, std::f64::consts::FRAC_PI_2, epsilon = 1e-6);
+    }
+
+    /// End-to-end pass prediction over a Vanguard-1 TLE for a single
+    /// 24-hour window. Vanguard-1 has a ~133-minute orbit, so a station
+    /// at the equator with a wide horizon mask should see at least one
+    /// pass per day. Each detected pass must have AOS < TCA < LOS.
+    #[test]
+    fn predict_passes_finds_at_least_one_pass_per_day() {
+        const VANGUARD_LINE1: &str =
+            "1 00005U 58002B   00179.78495062  .00000023  00000-0  28098-4 0  4753";
+        const VANGUARD_LINE2: &str =
+            "2 00005  34.2682 348.7242 1859667 331.7664  19.3264 10.82419157413667";
+        let propagator = Sgp4Propagator::from_tle(VANGUARD_LINE1, VANGUARD_LINE2).unwrap();
+        // Vanguard-1 TLE epoch field "00179.78495062" → year 2000,
+        // day-of-year 179.78495062. JD(2000-01-01 00:00 UTC) = 2_451_544.5.
+        let epoch_jd = 2_451_544.5 + (179.784_950_62 - 1.0);
+        // Equatorial station with a permissive 5° horizon mask.
+        let station = GroundStation {
+            lat_rad: 0.0,
+            lon_rad: 0.0,
+            height_m: 0.0,
+            min_elevation_rad: 5.0_f64.to_radians(),
+        };
+        let passes = predict_passes(
+            &propagator,
+            epoch_jd,
+            station,
+            epoch_jd,
+            1.0,    // 24 hours
+            30.0,   // 30-second coarse step
+        );
+        assert!(!passes.is_empty(), "no passes found in 24h");
+        for p in &passes {
+            assert!(p.aos_jd < p.tca_jd, "AOS not before TCA: {} ≥ {}", p.aos_jd, p.tca_jd);
+            assert!(p.tca_jd < p.los_jd, "TCA not before LOS: {} ≥ {}", p.tca_jd, p.los_jd);
+            assert!(
+                p.max_elevation_rad >= station.min_elevation_rad,
+                "TCA elevation below mask"
+            );
+        }
     }
 }

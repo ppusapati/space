@@ -1,7 +1,16 @@
 """Geospatial-intelligence prediction worker."""
-from .bus import InMemoryBus, Job, JobBus, JobResult, JobStatus, KafkaBus
+from ml_serving import (
+    InMemoryBus,
+    Job,
+    JobBus,
+    JobResult,
+    JobStatus,
+    KafkaBus,
+    LocalStorage,
+    ObjectStore,
+)
+
 from .handler import Handler, HandlerError
-from .storage import LocalStorage, ObjectStore
 
 __all__ = [
     "InMemoryBus",
@@ -10,8 +19,8 @@ __all__ = [
     "JobResult",
     "JobStatus",
     "KafkaBus",
-    "Handler",
-    "HandlerError",
     "LocalStorage",
     "ObjectStore",
+    "Handler",
+    "HandlerError",
 ]

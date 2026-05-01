@@ -76,6 +76,25 @@ pub struct RecoveryStats {
     pub corrupted_records: u32,
 }
 
+/// Read a big-endian `u32` from `buf[offset..offset+4]`. Panics only if
+/// the caller violates the slice precondition; callers must ensure
+/// `offset + 4 <= buf.len()`.
+#[inline]
+fn read_u32_be(buf: &[u8], offset: usize) -> u32 {
+    u32::from_be_bytes([
+        buf[offset],
+        buf[offset + 1],
+        buf[offset + 2],
+        buf[offset + 3],
+    ])
+}
+
+/// Read a big-endian `u16` from `buf[offset..offset+2]`.
+#[inline]
+fn read_u16_be(buf: &[u8], offset: usize) -> u16 {
+    u16::from_be_bytes([buf[offset], buf[offset + 1]])
+}
+
 /// Log-structured filesystem.
 pub struct Filesystem {
     buffer: Vec<u8>,
@@ -120,17 +139,13 @@ impl Filesystem {
                 break;
             }
             let tag_byte = fs.buffer[offset];
-            let len = u32::from_be_bytes(
-                fs.buffer[offset + 6..offset + 10].try_into().unwrap(),
-            ) as usize;
-            let crc_received = u16::from_be_bytes(
-                fs.buffer[offset + 10..offset + 12].try_into().unwrap(),
-            );
-            if Tag::from_byte(tag_byte).is_none() {
+            let len = read_u32_be(&fs.buffer, offset + 6) as usize;
+            let crc_received = read_u16_be(&fs.buffer, offset + 10);
+            let Some(tag) = Tag::from_byte(tag_byte) else {
                 fs.recovery.corrupted_records += 1;
                 offset += HEADER_LEN;
                 continue;
-            }
+            };
             if offset + HEADER_LEN + len > fs.buffer.len() {
                 fs.recovery.corrupted_records += 1;
                 break;
@@ -147,10 +162,8 @@ impl Filesystem {
                 continue;
             }
             // Update index.
-            let file_id = u32::from_be_bytes(
-                fs.buffer[offset + 2..offset + 6].try_into().unwrap(),
-            );
-            match Tag::from_byte(tag_byte).unwrap() {
+            let file_id = read_u32_be(&fs.buffer, offset + 2);
+            match tag {
                 Tag::Write => {
                     fs.index.insert(file_id, (offset + HEADER_LEN, len));
                 }

@@ -59,26 +59,26 @@ where
     M: Fn(&State, f64) -> f64,
 {
     /// Run the scenario and return the result.
+    ///
+    /// `acceleration(state, t)` and `torque(state, t)` are evaluated **once
+    /// per outer integration step**; the four RK4 sub-steps reuse the same
+    /// time-stamped callable. This is exact when the user-supplied
+    /// callbacks depend only on `state`, and a good approximation when
+    /// they depend slowly on `t` relative to `dt`.
     pub fn run(&self) -> RunResult {
         let mut state = self.initial_state;
         let mut t = 0.0_f64;
         let mut steps = 0_u64;
         let mut metric = Vec::with_capacity(((self.final_time / self.dt).abs() as usize).max(16));
-        // Cache references so the closures can be passed directly.
-        let accel = |s: &State| (self.acceleration)(s, t);
-        let torque = |s: &State| (self.torque)(s, t);
-        // Note: rk4_step takes &impl Fn(&State) -> Vec3, so we capture `t`
-        // once per outer step. Inner sub-steps still see the cached `t`,
-        // which is acceptable when the callbacks are slowly varying with t.
-        let _ = (&accel, &torque); // silence unused-binding warnings if not used.
         loop {
             metric.push((self.metric)(&state, t));
             if t >= self.final_time - 0.5 * self.dt.abs() {
                 break;
             }
-            let acc_local = |s: &State| (self.acceleration)(s, t);
-            let trq_local = |s: &State| (self.torque)(s, t);
-            state = rk4_step(state, self.inertia, self.dt, &acc_local, &trq_local);
+            let t_now = t;
+            let accel_step = |s: &State| (self.acceleration)(s, t_now);
+            let torque_step = |s: &State| (self.torque)(s, t_now);
+            state = rk4_step(state, self.inertia, self.dt, &accel_step, &torque_step);
             t += self.dt;
             steps += 1;
         }

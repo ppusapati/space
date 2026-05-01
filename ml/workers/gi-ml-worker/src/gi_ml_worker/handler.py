@@ -14,7 +14,7 @@ from gi_ml import (
     project_landcover,
 )
 
-from .bus import Job
+from ml_serving import Job
 
 
 @dataclass(frozen=True)

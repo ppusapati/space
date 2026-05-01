@@ -21,6 +21,7 @@ fn write_script(dir: &std::path::Path, name: &str, body: &str) -> PathBuf {
 }
 
 #[test]
+#[serial_test::serial]
 fn missing_input_returns_error() {
     let tmp = tempfile::tempdir().unwrap();
     let bin = write_script(tmp.path(), "fake.sh", "#!/bin/sh\nexit 0\n");
@@ -38,6 +39,7 @@ fn missing_input_returns_error() {
 }
 
 #[test]
+#[serial_test::serial]
 fn non_zero_exit_propagates() {
     let tmp = tempfile::tempdir().unwrap();
     let input_dir = tmp.path().join("S2A_MSIL1C_demo.SAFE");
@@ -61,6 +63,7 @@ fn non_zero_exit_propagates() {
 }
 
 #[test]
+#[serial_test::serial]
 fn successful_run_with_output_dir() {
     let tmp = tempfile::tempdir().unwrap();
     let input_dir = tmp.path().join("S2A_MSIL1C_demo.SAFE");
@@ -85,6 +88,7 @@ fn successful_run_with_output_dir() {
 }
 
 #[test]
+#[serial_test::serial]
 fn timeout_kills_long_running_backend() {
     let tmp = tempfile::tempdir().unwrap();
     let input_dir = tmp.path().join("S2A_MSIL1C_demo.SAFE");
@@ -105,6 +109,7 @@ fn timeout_kills_long_running_backend() {
 }
 
 #[test]
+#[serial_test::serial]
 fn rejects_invalid_resolution() {
     let tmp = tempfile::tempdir().unwrap();
     let input_dir = tmp.path().join("S2A_MSIL1C_demo.SAFE");
