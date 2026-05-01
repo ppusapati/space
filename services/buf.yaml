@@ -16,6 +16,8 @@ modules:
     name: buf.build/p9e/sat-telemetry
   - path: sat-command/proto
     name: buf.build/p9e/sat-command
+  - path: sat-simulation/proto
+    name: buf.build/p9e/sat-simulation
 deps:
   - buf.build/bufbuild/protovalidate
 breaking:
