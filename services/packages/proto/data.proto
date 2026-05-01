@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package packages.api.v1.data;
 option go_package = "p9e.in/samavaya/packages/api/v1/data;data";
-import "packages/proto/query.proto";
+import "query.proto";
 import "google/protobuf/struct.proto";
 
 message DynamicValue{

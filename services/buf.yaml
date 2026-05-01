@@ -1,0 +1,16 @@
+version: v2
+modules:
+  - path: packages/proto
+    name: buf.build/p9e/packages
+  - path: eo-catalog/proto
+    name: buf.build/p9e/eo-catalog
+deps:
+  - buf.build/bufbuild/protovalidate
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - DEFAULT
+  except:
+    - PACKAGE_VERSION_SUFFIX

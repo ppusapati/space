@@ -6,7 +6,7 @@ option go_package = "p9e.in/samavaya/packages/api/v1/response;response";
 
 import "google/protobuf/descriptor.proto";
 import "google/protobuf/wrappers.proto";
-import "packages/proto/context.proto";
+import "context.proto";
 
 message Status {
   int32 code = 1;
