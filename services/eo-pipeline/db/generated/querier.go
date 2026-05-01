@@ -11,9 +11,10 @@ import (
 )
 
 type Querier interface {
+	CountJobsForTenant(ctx context.Context, arg CountJobsForTenantParams) (int64, error)
 	CreateJob(ctx context.Context, arg CreateJobParams) (Job, error)
 	GetJob(ctx context.Context, id pgtype.UUID) (Job, error)
-	ListJobs(ctx context.Context, arg ListJobsParams) ([]Job, error)
+	ListJobsForTenant(ctx context.Context, arg ListJobsForTenantParams) ([]Job, error)
 	UpdateJobStatus(ctx context.Context, arg UpdateJobStatusParams) (Job, error)
 }
 

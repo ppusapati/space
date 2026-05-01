@@ -1,16 +1,16 @@
-// Package models holds the eo-pipeline domain types.
+// Package models holds eo-pipeline domain types.
 package models
 
 import (
 	"time"
 
-	"github.com/google/uuid"
+	"p9e.in/samavaya/packages/ulid"
 )
 
-// JobStage matches eov1.JobStage.
-type JobStage int
+// JobStage mirrors eopipelinev1.JobStage.
+type JobStage int32
 
-// Stage constants — must match the proto enum.
+// Stage constants.
 const (
 	StageUnspecified     JobStage = 0
 	StageRadiometric     JobStage = 1
@@ -23,8 +23,8 @@ const (
 	StageSARPolarimetric JobStage = 8
 )
 
-// JobStatus matches eov1.JobStatus.
-type JobStatus int
+// JobStatus mirrors eopipelinev1.JobStatus.
+type JobStatus int32
 
 // Status constants.
 const (
@@ -36,26 +36,28 @@ const (
 	StatusCancelled   JobStatus = 5
 )
 
-// Job is one processing-job record.
+// Job is a single processing job.
 type Job struct {
-	ID             uuid.UUID
-	TenantID       uuid.UUID
-	ItemID         uuid.UUID
+	ID             ulid.ID
+	TenantID       ulid.ID
+	ItemID         ulid.ID
 	Stage          JobStage
 	Status         JobStatus
 	ParametersJSON string
 	OutputURI      string
 	ErrorMessage   string
-	StartedAt      *time.Time
-	FinishedAt     *time.Time
+	StartedAt      time.Time
+	FinishedAt     time.Time
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	CreatedBy      string
 	UpdatedBy      string
 }
 
-// IsTerminal reports whether the status is one of Succeeded / Failed /
-// Cancelled.
-func (j *Job) IsTerminal() bool {
-	return j.Status == StatusSucceeded || j.Status == StatusFailed || j.Status == StatusCancelled
+// Page describes server-side pagination state.
+type Page struct {
+	TotalCount int32
+	PageOffset int32
+	PageSize   int32
+	HasNext    bool
 }

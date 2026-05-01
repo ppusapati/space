@@ -11,6 +11,26 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countJobsForTenant = `-- name: CountJobsForTenant :one
+SELECT COUNT(*)::bigint AS total FROM jobs
+WHERE tenant_id = $1::uuid
+  AND ($2::int IS NULL OR status = $2::int)
+  AND ($3::int  IS NULL OR stage  = $3::int)
+`
+
+type CountJobsForTenantParams struct {
+	TenantID pgtype.UUID
+	Status   *int32
+	Stage    *int32
+}
+
+func (q *Queries) CountJobsForTenant(ctx context.Context, arg CountJobsForTenantParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countJobsForTenant, arg.TenantID, arg.Status, arg.Stage)
+	var total int64
+	err := row.Scan(&total)
+	return total, err
+}
+
 const createJob = `-- name: CreateJob :one
 INSERT INTO jobs (
     id, tenant_id, item_id, stage, status, parameters_json, created_by, updated_by
@@ -84,37 +104,31 @@ func (q *Queries) GetJob(ctx context.Context, id pgtype.UUID) (Job, error) {
 	return i, err
 }
 
-const listJobs = `-- name: ListJobs :many
+const listJobsForTenant = `-- name: ListJobsForTenant :many
 SELECT id, tenant_id, item_id, stage, status, parameters_json, output_uri, error_message, started_at, finished_at, created_at, updated_at, created_by, updated_by FROM jobs
 WHERE tenant_id = $1::uuid
   AND ($2::int IS NULL OR status = $2::int)
   AND ($3::int  IS NULL OR stage  = $3::int)
-  AND (
-        $4::timestamptz IS NULL
-        OR (created_at, id) < ($4::timestamptz,
-                               $5::uuid)
-      )
 ORDER BY created_at DESC, id DESC
-LIMIT $6::int
+OFFSET $4::int
+LIMIT  $5::int
 `
 
-type ListJobsParams struct {
-	TenantID        pgtype.UUID
-	Status          *int32
-	Stage           *int32
-	CursorCreatedAt pgtype.Timestamptz
-	CursorID        pgtype.UUID
-	Lim             int32
+type ListJobsForTenantParams struct {
+	TenantID   pgtype.UUID
+	Status     *int32
+	Stage      *int32
+	PageOffset int32
+	PageSize   int32
 }
 
-func (q *Queries) ListJobs(ctx context.Context, arg ListJobsParams) ([]Job, error) {
-	rows, err := q.db.Query(ctx, listJobs,
+func (q *Queries) ListJobsForTenant(ctx context.Context, arg ListJobsForTenantParams) ([]Job, error) {
+	rows, err := q.db.Query(ctx, listJobsForTenant,
 		arg.TenantID,
 		arg.Status,
 		arg.Stage,
-		arg.CursorCreatedAt,
-		arg.CursorID,
-		arg.Lim,
+		arg.PageOffset,
+		arg.PageSize,
 	)
 	if err != nil {
 		return nil, err
@@ -152,32 +166,32 @@ func (q *Queries) ListJobs(ctx context.Context, arg ListJobsParams) ([]Job, erro
 const updateJobStatus = `-- name: UpdateJobStatus :one
 UPDATE jobs
 SET
-    status        = $2,
-    output_uri    = COALESCE(NULLIF($3, ''), output_uri),
-    error_message = COALESCE(NULLIF($4, ''), error_message),
-    started_at    = CASE WHEN $2 = 2 THEN COALESCE(started_at, now()) ELSE started_at END,
-    finished_at   = CASE WHEN $2 IN (3, 4, 5) THEN now() ELSE finished_at END,
+    status        = $1::int,
+    output_uri    = COALESCE(NULLIF($2::text, ''), output_uri),
+    error_message = COALESCE(NULLIF($3::text, ''), error_message),
+    started_at    = CASE WHEN $1::int = 2 THEN COALESCE(started_at, now()) ELSE started_at END,
+    finished_at   = CASE WHEN $1::int IN (3, 4, 5) THEN now() ELSE finished_at END,
     updated_at    = now(),
-    updated_by    = $5
-WHERE id = $1
+    updated_by    = $4::text
+WHERE id = $5::uuid
 RETURNING id, tenant_id, item_id, stage, status, parameters_json, output_uri, error_message, started_at, finished_at, created_at, updated_at, created_by, updated_by
 `
 
 type UpdateJobStatusParams struct {
-	ID        pgtype.UUID
-	Status    int32
-	Column3   interface{}
-	Column4   interface{}
-	UpdatedBy string
+	Status       int32
+	OutputUri    string
+	ErrorMessage string
+	UpdatedBy    string
+	ID           pgtype.UUID
 }
 
 func (q *Queries) UpdateJobStatus(ctx context.Context, arg UpdateJobStatusParams) (Job, error) {
 	row := q.db.QueryRow(ctx, updateJobStatus,
-		arg.ID,
 		arg.Status,
-		arg.Column3,
-		arg.Column4,
+		arg.OutputUri,
+		arg.ErrorMessage,
 		arg.UpdatedBy,
+		arg.ID,
 	)
 	var i Job
 	err := row.Scan(

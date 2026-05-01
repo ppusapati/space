@@ -4,6 +4,8 @@ modules:
     name: buf.build/p9e/packages
   - path: eo-catalog/proto
     name: buf.build/p9e/eo-catalog
+  - path: eo-pipeline/proto
+    name: buf.build/p9e/eo-pipeline
 deps:
   - buf.build/bufbuild/protovalidate
 breaking:
