@@ -12,4 +12,5 @@ use (
 	./sat-simulation
 	./gs-mc
 	./gs-rf
+	./gs-scheduler
 )
