@@ -15,4 +15,5 @@ use (
 	./gs-scheduler
 	./gs-ingest
 	./gi-fusion
+	./gi-analytics
 )

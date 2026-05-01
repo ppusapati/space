@@ -28,6 +28,8 @@ modules:
     name: buf.build/p9e/gs-ingest
   - path: gi-fusion/proto
     name: buf.build/p9e/gi-fusion
+  - path: gi-analytics/proto
+    name: buf.build/p9e/gi-analytics
 deps:
   - buf.build/bufbuild/protovalidate
 breaking:
