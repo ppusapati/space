@@ -20,6 +20,8 @@ modules:
     name: buf.build/p9e/sat-simulation
   - path: gs-mc/proto
     name: buf.build/p9e/gs-mc
+  - path: gs-rf/proto
+    name: buf.build/p9e/gs-rf
 deps:
   - buf.build/bufbuild/protovalidate
 breaking:

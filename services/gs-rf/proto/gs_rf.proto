@@ -1,0 +1,144 @@
+syntax = "proto3";
+
+package p9e.space.gsrf.v1;
+
+option go_package = "github.com/ppusapati/space/services/gs-rf/api;gsrfv1";
+
+import "buf/validate/validate.proto";
+import "google/protobuf/timestamp.proto";
+import "fields.proto";
+import "pagination.proto";
+
+// =====================================================================
+// Ground Station RF — link budget calculations and live RF measurements
+// for a satellite contact (pass). All identifiers are ULIDs (26 chars).
+// =====================================================================
+
+message LinkBudget {
+  string id = 1;
+  string tenant_id = 2;
+  string pass_id = 3;                 // contact pass (gs-scheduler)
+  string station_id = 4;              // gs-mc ground station
+  string antenna_id = 5;              // gs-mc antenna
+  string satellite_id = 6;
+  uint64 carrier_freq_hz = 7;
+  double tx_power_dbm = 8;
+  double tx_gain_dbi = 9;
+  double rx_gain_dbi = 10;
+  double rx_noise_temp_k = 11;
+  double bandwidth_hz = 12;
+  double slant_range_km = 13;         // worst-case slant range
+  double free_space_loss_db = 14;
+  double atmospheric_loss_db = 15;
+  double polarization_loss_db = 16;
+  double pointing_loss_db = 17;
+  double predicted_eb_n0_db = 18;     // energy per bit / noise density
+  double predicted_snr_db = 19;
+  double link_margin_db = 20;
+  string notes = 21;
+  packages.api.v1.fields.Fields fields = 22;
+}
+
+message LinkMeasurement {
+  string id = 1;
+  string tenant_id = 2;
+  string pass_id = 3;
+  string station_id = 4;
+  string antenna_id = 5;
+  google.protobuf.Timestamp sampled_at = 6;
+  double rssi_dbm = 7;
+  double snr_db = 8;
+  double ber = 9;                     // bit error rate
+  double fer = 10;                    // frame error rate
+  uint64 frequency_hz = 11;
+  double doppler_shift_hz = 12;
+  packages.api.v1.fields.Fields fields = 13;
+}
+
+// ----- LinkBudget RPCs ----------------------------------------------------
+
+message CreateLinkBudgetRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string pass_id = 2 [(buf.validate.field).string = {len: 26}];
+  string station_id = 3 [(buf.validate.field).string = {len: 26}];
+  string antenna_id = 4 [(buf.validate.field).string = {len: 26}];
+  string satellite_id = 5 [(buf.validate.field).string = {len: 26}];
+  uint64 carrier_freq_hz = 6;
+  double tx_power_dbm = 7;
+  double tx_gain_dbi = 8;
+  double rx_gain_dbi = 9;
+  double rx_noise_temp_k = 10;
+  double bandwidth_hz = 11;
+  double slant_range_km = 12;
+  double free_space_loss_db = 13;
+  double atmospheric_loss_db = 14;
+  double polarization_loss_db = 15;
+  double pointing_loss_db = 16;
+  double predicted_eb_n0_db = 17;
+  double predicted_snr_db = 18;
+  double link_margin_db = 19;
+  string notes = 20;
+}
+message CreateLinkBudgetResponse { LinkBudget budget = 1; }
+
+message GetLinkBudgetRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetLinkBudgetResponse { LinkBudget budget = 1; }
+
+message ListLinkBudgetsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string pass_id = 2;
+  string station_id = 3;
+  string satellite_id = 4;
+  packages.api.v1.pagination.PaginationRequest page = 5;
+}
+message ListLinkBudgetsResponse {
+  repeated LinkBudget budgets = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+// ----- LinkMeasurement RPCs -----------------------------------------------
+
+message RecordMeasurementRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string pass_id = 2 [(buf.validate.field).string = {len: 26}];
+  string station_id = 3 [(buf.validate.field).string = {len: 26}];
+  string antenna_id = 4 [(buf.validate.field).string = {len: 26}];
+  google.protobuf.Timestamp sampled_at = 5;
+  double rssi_dbm = 6;
+  double snr_db = 7;
+  double ber = 8 [(buf.validate.field).double = {gte: 0, lte: 1}];
+  double fer = 9 [(buf.validate.field).double = {gte: 0, lte: 1}];
+  uint64 frequency_hz = 10;
+  double doppler_shift_hz = 11;
+}
+message RecordMeasurementResponse { LinkMeasurement measurement = 1; }
+
+message GetMeasurementRequest {
+  string id = 1 [(buf.validate.field).string = {len: 26}];
+}
+message GetMeasurementResponse { LinkMeasurement measurement = 1; }
+
+message ListMeasurementsRequest {
+  string tenant_id = 1 [(buf.validate.field).string = {len: 26}];
+  string pass_id = 2;
+  string station_id = 3;
+  google.protobuf.Timestamp time_start = 4;
+  google.protobuf.Timestamp time_end = 5;
+  packages.api.v1.pagination.PaginationRequest page = 6;
+}
+message ListMeasurementsResponse {
+  repeated LinkMeasurement measurements = 1;
+  packages.api.v1.pagination.PaginationResponse page = 2;
+}
+
+service RFService {
+  rpc CreateLinkBudget(CreateLinkBudgetRequest) returns (CreateLinkBudgetResponse);
+  rpc GetLinkBudget(GetLinkBudgetRequest) returns (GetLinkBudgetResponse);
+  rpc ListLinkBudgets(ListLinkBudgetsRequest) returns (ListLinkBudgetsResponse);
+
+  rpc RecordMeasurement(RecordMeasurementRequest) returns (RecordMeasurementResponse);
+  rpc GetMeasurement(GetMeasurementRequest) returns (GetMeasurementResponse);
+  rpc ListMeasurements(ListMeasurementsRequest) returns (ListMeasurementsResponse);
+}

@@ -11,4 +11,5 @@ use (
 	./sat-command
 	./sat-simulation
 	./gs-mc
+	./gs-rf
 )
