@@ -13,4 +13,5 @@ use (
 	./gs-mc
 	./gs-rf
 	./gs-scheduler
+	./gs-ingest
 )

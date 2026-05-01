@@ -24,6 +24,8 @@ modules:
     name: buf.build/p9e/gs-rf
   - path: gs-scheduler/proto
     name: buf.build/p9e/gs-scheduler
+  - path: gs-ingest/proto
+    name: buf.build/p9e/gs-ingest
 deps:
   - buf.build/bufbuild/protovalidate
 breaking:
