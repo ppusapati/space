@@ -178,24 +178,27 @@ Goal: lay the substrate the rest of the platform plugs into. No domain code in t
 
 **Trace:** REQ-FUNC-PLT-AUDIT-003, REQ-FUNC-GS-TM-002, REQ-FUNC-GS-TM-003; design.md §5.1, §5.4
 **Owner:** Platform Infra
-**Status:** backlog
+**Status:** done
 **Estimate:** 5
 **Depends on:** none
 **Files (create/modify):**
-  - `infra/atlas/atlas.hcl` (new) — Atlas project config (declarative HCL, drift detection)
-  - `infra/atlas/migrations/0001_extensions.sql` (new) — `CREATE EXTENSION IF NOT EXISTS timescaledb; CREATE EXTENSION IF NOT EXISTS postgis; CREATE EXTENSION IF NOT EXISTS pg_trgm;`
-  - `infra/atlas/migrations/0002_retention_policies.sql` (new) — Timescale retention policies for `telemetry_samples` (raw 7d / 1-min 90d / 1-h 5y), `audit_events` (5y online + 7y cold pointer), `processing_job_events` (1y)
-  - `infra/helm/charts/chetana-platform/templates/jobs/atlas-migrate.yaml` (new) — pre-deploy hook job that runs Atlas against the cluster Postgres
-  - `infra/helm/charts/chetana-platform/values.yaml` (modify) — Postgres FIPS image reference; Timescale enabled flag
-  - `services/packages/db/migrate/runner.go` (new) — Go wrapper invoked by service entrypoints to assert "migrations up" before serving
-  - `tools/db/seed-test.sh` (new) — local-dev TimescaleDB seeded fixture
+  - `infra/atlas/atlas.hcl` (new) — Atlas project config (versioned-mode migration directory; envs: `local`, `test`, `prod`)
+  - `services/packages/db/migrate/migrations/0001_extensions.sql` (new) — `CREATE EXTENSION IF NOT EXISTS timescaledb; CREATE EXTENSION IF NOT EXISTS postgis; CREATE EXTENSION IF NOT EXISTS pg_trgm; CREATE EXTENSION IF NOT EXISTS pgcrypto`
+  - `services/packages/db/migrate/migrations/0002_retention_policies.sql` (new) — Timescale retention policies for `telemetry_samples` (raw 7d / 1-min 90d / 1-h 5y), `audit_events` (5y online + 7y cold pointer), `processing_job_events` (1y); guarded by `DO` blocks that activate only when the owning service's hypertable exists (Phase 1/2)
+  - `services/packages/db/migrate/migrations/atlas.sum` (new) — Atlas-managed checksum file (`atlas migrate hash`)
+  - `services/packages/db/migrate/runner.go` (new) — Go wrapper invoked by service entrypoints to assert "migrations up" before serving (embeds the `migrations/` SQL files via `//go:embed`; advisory-lock-protected; tracks state in `chetana_schema_migrations`)
+  - `services/packages/db/migrate/runner_test.go` (new) — unit tests for the runner (FS enumeration, txmode directive, statement splitter, checksum stability)
+  - `services/packages/db/migrate/runner_integration_test.go` (new, `//go:build integration`) — end-to-end test against a real TimescaleDB; reads `CHETANA_TEST_DB_URL`, skips when unset
+  - `tools/db/seed-test.sh` (new) — local-dev TimescaleDB container helper (`start`/`stop`/`apply`/`psql`)
+  - `deploy/docker/docker-compose.yaml` (modify) — switch `postgres:16-alpine` → `timescale/timescaledb-ha:pg16` (TimescaleDB + PostGIS bundled); volume path moved to `/home/postgres/pgdata` per the new image layout
 **Acceptance criteria:**
-  1. `atlas migrate apply --env prod` succeeds against a fresh Postgres instance and is idempotent (`apply` again is a no-op).
-  2. `psql -c '\dx'` lists `timescaledb`, `postgis`, `pg_trgm`.
+  1. `atlas migrate apply --env prod` succeeds against a fresh Postgres+Timescale+PostGIS instance and is idempotent (`apply` again is a no-op).
+  2. `psql -c '\dx'` lists `timescaledb`, `postgis`, `pg_trgm`, `pgcrypto`.
   3. `select * from timescaledb_information.dimensions` shows hypertable partitioning is active for the placeholder hypertables once services land in Phase 1/2.
-  4. Helm pre-deploy hook completes within 60s on a primed cluster.
+  4. Helm pre-deploy hook completes within 60s on a primed cluster. *(Hook YAML lands in PR-E (TASK-P0-INFRA-001) since the umbrella Helm chart is created there; this task delivers the migration runner + Atlas project that the hook will invoke.)*
 **Verification:**
-  - Integration: `infra/atlas/test/migrate_test.go` — applies migrations to a Testcontainers Postgres + Timescale image, asserts the catalog state.
+  - Unit: `services/packages/db/migrate/runner_test.go` — passes (`go test ./db/migrate/...`).
+  - Integration: `services/packages/db/migrate/runner_integration_test.go` — applies migrations to a real Postgres+Timescale instance launched via `tools/db/seed-test.sh start`, asserts the catalog state and that re-apply is a true no-op (no `applied_at` drift).
 
 ### TASK-P0-OBS-001: PR-D — OTel + `/metrics` + `/ready-with-deps` + FIPS self-check in `services/packages/connect/server`
 

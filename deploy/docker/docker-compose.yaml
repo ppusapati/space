@@ -33,13 +33,16 @@ x-service-defaults: &svc
 
 services:
   postgres:
-    image: postgres:16-alpine
+    # TASK-P0-DB-001: TimescaleDB-HA bundles Postgres 16 + TimescaleDB +
+    # PostGIS + pg_trgm in one image, matching the cluster-wide extension
+    # contract in infra/atlas/migrations/0001_extensions.sql.
+    image: timescale/timescaledb-ha:pg16
     environment:
       POSTGRES_USER: p9e
       POSTGRES_PASSWORD: p9e
       POSTGRES_DB: postgres
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/home/postgres/pgdata
       - ./initdb:/docker-entrypoint-initdb.d:ro
     ports:
       - "5432:5432"
