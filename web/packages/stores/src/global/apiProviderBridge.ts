@@ -1,6 +1,6 @@
 // /**
 //  * API Provider Bridge
-//  * Bridges @samavāya/stores to @samavāya/api provider interfaces.
+//  * Bridges @chetana/stores to @chetana/api provider interfaces.
 //  * Call initApiProviders() during app startup to wire up the stores
 //  * as concrete implementations of the API provider interfaces.
 //  * @packageDocumentation
@@ -11,7 +11,7 @@
 // //   type AuthProvider,
 // //   type SessionProvider,
 // //   type ToastProvider,
-// // } from '@samavāya/api';
+// // } from '@chetana/api';
 // import { get } from 'svelte/store';
 // import { authStore } from './auth.store.js';
 // import { sessionStore } from './session.store.js';

@@ -6,7 +6,7 @@
 import { writable, derived, get, type Writable, type Readable } from 'svelte/store';
 
 // Static type-only imports — erased at runtime, no circular dependency risk
-// import type { LoginResponse, RefreshTokenResponse, ValidateTokenResponse } from '@samavāya/proto/gen/core/identity/auth/proto/auth_pb.js';
+// import type { LoginResponse, RefreshTokenResponse, ValidateTokenResponse } from '@chetana/proto/gen/core/identity/auth/proto/auth_pb.js';
 
 // ============================================================================
 // TYPES
@@ -176,9 +176,9 @@ function createAuthStore() {
   //   try {
   //     // Dynamic imports to avoid circular deps (stores ← api ← stores)
   //     const { create } = await import('@bufbuild/protobuf');
-  //     // const { getAuthService } = await import('@samavāya/api');
+  //     // const { getAuthService } = await import('@chetana/api');
   //     const { LoginRequestSchema } = await import(
-  //       '@samavāya/proto/gen/core/identity/auth/proto/auth_pb.js'
+  //       '@chetana/proto/gen/core/identity/auth/proto/auth_pb.js'
   //     );
 
   //     const res: LoginResponse = await getAuthService().login(
@@ -247,9 +247,9 @@ function createAuthStore() {
   //     const state = get(store);
   //     if (state.session?.id) {
   //       const { create } = await import('@bufbuild/protobuf');
-  //       const { getAuthService } = await import('@samavāya/api');
+  //       const { getAuthService } = await import('@chetana/api');
   //       const { LogoutRequestSchema } = await import(
-  //         '@samavāya/proto/gen/core/identity/auth/proto/auth_pb.js'
+  //         '@chetana/proto/gen/core/identity/auth/proto/auth_pb.js'
   //       );
   //       await getAuthService().logout(
   //         create(LogoutRequestSchema, { sessionId: state.session.id }),
@@ -284,7 +284,7 @@ function createAuthStore() {
   }
 
   // ============================================================================
-  // LOGIN / LOGOUT — wired to AuthService via @samavāya/api
+  // LOGIN / LOGOUT — wired to AuthService via @chetana/api
   // ============================================================================
   //
   // These call the live ConnectRPC AuthService at /core.identity.auth.api.v1.AuthService/Login.
@@ -302,8 +302,8 @@ function createAuthStore() {
       // Dynamic imports avoid pulling api/proto into the static import graph
       // of stores' index.ts (keeps tree-shaking healthier in non-login flows).
       const { create } = await import('@bufbuild/protobuf');
-      const { getAuthService } = await import('@samavāya/api');
-      const authPb = await import('@samavāya/proto/gen/core/identity/auth/proto/auth_pb.js');
+      const { getAuthService } = await import('@chetana/api');
+      const authPb = await import('@chetana/proto/gen/core/identity/auth/proto/auth_pb.js');
 
       const res = await getAuthService().login(
         create(authPb.LoginRequestSchema, {
@@ -406,8 +406,8 @@ function createAuthStore() {
     try {
       if (state.session?.id) {
         const { create } = await import('@bufbuild/protobuf');
-        const { getAuthService } = await import('@samavāya/api');
-        const authPb = await import('@samavāya/proto/gen/core/identity/auth/proto/auth_pb.js');
+        const { getAuthService } = await import('@chetana/api');
+        const authPb = await import('@chetana/proto/gen/core/identity/auth/proto/auth_pb.js');
         // RevokeSession is the typed name in the backend; if it doesn't
         // exist on the generated client, the catch swallows the error and
         // we still clear local state below.
@@ -437,9 +437,9 @@ function createAuthStore() {
 
   //   try {
   //     const { create } = await import('@bufbuild/protobuf');
-  //     const { getAuthService } = await import('@samavāya/api');
+  //     const { getAuthService } = await import('@chetana/api');
   //     const { RefreshTokenRequestSchema } = await import(
-  //       '@samavāya/proto/gen/core/identity/auth/proto/auth_pb.js'
+  //       '@chetana/proto/gen/core/identity/auth/proto/auth_pb.js'
   //     );
 
   //     const res: RefreshTokenResponse = await getAuthService().refreshToken(
@@ -558,9 +558,9 @@ function createAuthStore() {
   //         // Validate token and get user info from backend
   //         try {
   //           const { create } = await import('@bufbuild/protobuf');
-  //           const { getAuthService } = await import('@samavāya/api');
+  //           const { getAuthService } = await import('@chetana/api');
   //           const { ValidateTokenRequestSchema } = await import(
-  //             '@samavāya/proto/gen/core/identity/auth/proto/auth_pb.js'
+  //             '@chetana/proto/gen/core/identity/auth/proto/auth_pb.js'
   //           );
 
   //           const res: ValidateTokenResponse = await getAuthService().validateToken(

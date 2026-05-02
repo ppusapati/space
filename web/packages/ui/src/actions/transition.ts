@@ -3,7 +3,7 @@
  * These work alongside Svelte's built-in transitions
  *
  * Usage:
- * import { fadeScale, slideUp } from '@samavāya/ui';
+ * import { fadeScale, slideUp } from '@chetana/ui';
  * <div transition:fadeScale>Content</div>
  */
 

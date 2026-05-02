@@ -1,7 +1,7 @@
 {
-  "name": "@samavāya/ui",
+  "name": "@chetana/ui",
   "version": "1.0.0",
-  "description": "Svelte component library for samavāya ERP",
+  "description": "Svelte component library for Chetana ERP",
   "type": "module",
   "svelte": "./src/index.ts",
   "main": "./dist/index.js",
@@ -88,10 +88,10 @@
     "svelte": "^5.0.0"
   },
   "dependencies": {
-    "@p9e.in/samavaya": "workspace:*",
+    "@p9e.in/chetana": "workspace:*",
     "@p9e.in/utils": "workspace:*",
-    "@samavāya/core": "workspace:*",
-    "@samavāya/stores": "workspace:*",
+    "@chetana/core": "workspace:*",
+    "@chetana/stores": "workspace:*",
     "echarts": "^5.5.0"
   },
   "devDependencies": {
@@ -117,7 +117,7 @@
     "components",
     "ui",
     "erp",
-    "samavāya",
+    "Chetana",
     "design-system",
     "unocss"
   ],

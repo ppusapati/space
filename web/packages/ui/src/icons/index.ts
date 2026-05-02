@@ -1,5 +1,5 @@
 /**
- * @samavāya/ui/icons - SVG Icon Library
+ * @chetana/ui/icons - SVG Icon Library
  *
  * A comprehensive collection of 400+ SVG icons that work offline.
  * All icons are bundled as path data for tree-shaking optimization.
@@ -7,7 +7,7 @@
  * Usage:
  * ```svelte
  * <script>
- *   import { Icon } from '@samavāya/ui/icons';
+ *   import { Icon } from '@chetana/ui/icons';
  * </script>
  *
  * <Icon name="home" size="md" />

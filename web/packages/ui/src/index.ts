@@ -1,5 +1,5 @@
 /**
- * @samavāya/ui - Svelte Component Library for Samavāya ERP
+ * @chetana/ui - Svelte Component Library for Chetana ERP
  *
  * All UI components in one package, organized by domain:
  *   - actions     (Button, Accordion, drag-and-drop)

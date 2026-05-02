@@ -14,7 +14,7 @@
    * native FormData when submitted via a non-AJAX form post (browser
    * accessibility tools also rely on this shape).
    */
-  import type { HiddenField } from '@samavāya/core';
+  import type { HiddenField } from '@chetana/core';
 
   interface Props {
     field: HiddenField;

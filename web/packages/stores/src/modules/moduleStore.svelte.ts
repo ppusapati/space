@@ -6,7 +6,7 @@
  * API is unreachable.
  *
  * Usage:
- *   import { moduleStore } from '@samavāya/stores/modules';
+ *   import { moduleStore } from '@chetana/stores/modules';
  *   moduleStore.loadModules();
  *   moduleStore.selectModule('finance');
  */
@@ -17,7 +17,7 @@
 // causing "Unexpected token" errors at any `interface`/`: T`/`import type`
 // it sees). The fix is two-pronged:
 //   1. types extracted to the sibling .types.ts file (this import).
-//   2. vite.config.ts excludes `@samavāya/stores` from optimizeDeps so
+//   2. vite.config.ts excludes `@chetana/stores` from optimizeDeps so
 //      SvelteKit's own pipeline (which DOES run vitePreprocess) handles
 //      this rune module instead of the bare optimizer.
 import type {

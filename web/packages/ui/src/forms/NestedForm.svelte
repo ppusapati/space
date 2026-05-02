@@ -17,7 +17,7 @@
    * Contract: emits `change` with the full updated object whenever any
    * child field changes.
    */
-  import type { ObjectField, FormFieldConfig } from '@samavāya/core';
+  import type { ObjectField, FormFieldConfig } from '@chetana/core';
   import { createEventDispatcher } from 'svelte';
 
   interface Props {

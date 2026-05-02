@@ -1,7 +1,7 @@
 {
-  "name": "@samavāya/stores",
+  "name": "@chetana/stores",
   "version": "0.0.1",
-  "description": "State management stores for samavāya ERP",
+  "description": "State management stores for Chetana ERP",
   "type": "module",
   "main": "./src/index.ts",
   "module": "./src/index.ts",
@@ -20,8 +20,8 @@
   },
   "dependencies": {
     "@bufbuild/protobuf": "^2.0.0",
-    "@samavāya/core": "workspace:*",
-    "@samavāya/proto": "workspace:*",
+    "@chetana/core": "workspace:*",
+    "@chetana/proto": "workspace:*",
     "svelte": "^5.0.0"
   },
   "devDependencies": {

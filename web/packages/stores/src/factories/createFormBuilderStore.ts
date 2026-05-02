@@ -7,7 +7,7 @@
  */
 
 import { writable, derived, get, type Writable, type Readable } from 'svelte/store';
-import type { FormFieldConfig, FormSchema } from '@samavāya/core';
+import type { FormFieldConfig, FormSchema } from '@chetana/core';
 
 // ============================================================================
 // TYPES

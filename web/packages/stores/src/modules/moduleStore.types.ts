@@ -11,7 +11,7 @@
  *
  * Splitting types into a plain `.ts` sibling keeps the rune file
  * minimal-typed (only annotations + generic-on-rune) while letting
- * importers consume the types from `@samavāya/stores/modules` via
+ * importers consume the types from `@chetana/stores/modules` via
  * the index barrel.
  *
  * 2026-04-29 — extracted to unstick the FE dev server boot.

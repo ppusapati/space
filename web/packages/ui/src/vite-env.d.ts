@@ -1,7 +1,7 @@
 /// <reference types="vite/client" />
 
 // This brings in `import.meta.env` typings (ImportMetaEnv) so Svelte
-// components in @samavāya/ui that read VITE_API_URL or import.meta.env.DEV
+// components in @chetana/ui that read VITE_API_URL or import.meta.env.DEV
 // type-check correctly under svelte-check. Without this triple-slash
 // directive, TypeScript's default ImportMeta has no `env` property and
 // every reference produces an error.

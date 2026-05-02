@@ -1,6 +1,6 @@
 <script lang="ts">
   import DynamicFormRenderer from './DynamicFormRenderer.svelte';
-  import type { FormSchema } from '@samavāya/core';
+  import type { FormSchema } from '@chetana/core';
 
   // Example form schema with all 39 field types
   const exampleSchema = {

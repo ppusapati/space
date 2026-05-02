@@ -171,7 +171,7 @@ function createDefaultTheme(mode: ThemeMode = 'light'): ThemeConfig {
   return {
     id: 'default',
     name: 'Default Theme',
-    description: 'The default samavāya theme',
+    description: 'The default Chetana theme',
     mode,
     colors: {
       brand: {
@@ -356,10 +356,10 @@ function createThemeStore() {
 
     const css = generateCssVariables(theme);
 
-    let styleEl = document.getElementById('samavāya-theme-vars');
+    let styleEl = document.getElementById('Chetana-theme-vars');
     if (!styleEl) {
       styleEl = document.createElement('style');
-      styleEl.id = 'samavāya-theme-vars';
+      styleEl.id = 'Chetana-theme-vars';
       document.head.appendChild(styleEl);
     }
     styleEl.textContent = css;
@@ -376,10 +376,10 @@ function createThemeStore() {
     initialize: () => {
       update(state => {
         const savedThemeId = typeof localStorage !== 'undefined'
-          ? localStorage.getItem('samavāya-theme-id')
+          ? localStorage.getItem('Chetana-theme-id')
           : null;
         const savedMode = typeof localStorage !== 'undefined'
-          ? localStorage.getItem('samavāya-theme-mode') as ThemeMode
+          ? localStorage.getItem('Chetana-theme-mode') as ThemeMode
           : null;
 
         const mode = savedMode || (state.mode === 'system' ? getSystemMode() : state.mode);
@@ -409,7 +409,7 @@ function createThemeStore() {
         applyTheme(theme);
 
         if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('samavāya-theme-mode', mode);
+          localStorage.setItem('Chetana-theme-mode', mode);
         }
 
         return { ...state, mode };
@@ -427,7 +427,7 @@ function createThemeStore() {
         applyTheme(theme);
 
         if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('samavāya-theme-mode', newMode);
+          localStorage.setItem('Chetana-theme-mode', newMode);
         }
 
         return { ...state, mode: newMode };
@@ -541,7 +541,7 @@ function createThemeStore() {
         applyTheme(theme);
 
         if (typeof localStorage !== 'undefined') {
-          localStorage.setItem('samavāya-theme-id', themeId);
+          localStorage.setItem('Chetana-theme-id', themeId);
         }
 
         return { ...state, currentThemeId: themeId };
@@ -552,10 +552,10 @@ function createThemeStore() {
     setCustomCss: (css: string) => {
       update(state => {
         if (typeof document !== 'undefined') {
-          let styleEl = document.getElementById('samavāya-custom-css');
+          let styleEl = document.getElementById('Chetana-custom-css');
           if (!styleEl) {
             styleEl = document.createElement('style');
-            styleEl.id = 'samavāya-custom-css';
+            styleEl.id = 'Chetana-custom-css';
             document.head.appendChild(styleEl);
           }
           styleEl.textContent = css;
@@ -601,8 +601,8 @@ function createThemeStore() {
       const defaultTheme = createDefaultTheme('light');
       applyTheme(defaultTheme);
       if (typeof localStorage !== 'undefined') {
-        localStorage.removeItem('samavāya-theme-id');
-        localStorage.removeItem('samavāya-theme-mode');
+        localStorage.removeItem('Chetana-theme-id');
+        localStorage.removeItem('Chetana-theme-mode');
       }
     },
   };

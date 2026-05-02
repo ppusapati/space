@@ -8,7 +8,7 @@
   import Checkbox from './Checkbox.svelte';
   import TextArea from './TextArea.svelte';
   import { sortable, reorderItems, draggable, droppable } from '../actions';
-  import type { FormFieldConfig, FormSchema } from '@samavāya/core';
+  import type { FormFieldConfig, FormSchema } from '@chetana/core';
   import {
     type FormBuilderProps,
     type FormBuilderState,

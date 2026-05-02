@@ -10,7 +10,7 @@ import type {
   SortConfig,
   SelectionState,
   LoadingState,
-} from '@samavāya/core';
+} from '@chetana/core';
 
 // ============================================================================
 // TYPES

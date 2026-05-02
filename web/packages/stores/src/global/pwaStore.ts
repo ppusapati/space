@@ -454,7 +454,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
  */
 function openDatabase(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('samavāya-erp-pwa', 1);
+    const request = indexedDB.open('Chetana-erp-pwa', 1);
 
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);

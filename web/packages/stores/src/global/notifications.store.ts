@@ -4,7 +4,7 @@
  */
 
 import { writable, derived, get, type Readable } from 'svelte/store';
-import type { ColorVariant, ExtendedPosition } from '@samavāya/core';
+import type { ColorVariant, ExtendedPosition } from '@chetana/core';
 
 // ============================================================================
 // TYPES

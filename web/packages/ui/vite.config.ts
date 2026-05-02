@@ -20,7 +20,7 @@ export default defineConfig({
       external: [
         'svelte', 'svelte/internal', 'svelte/store',
         'xlsx', 'jspdf', 'jspdf-autotable',
-        '@samavāya/stores', '@samavāya/core', '@samavāya/proto',
+        '@chetana/stores', '@chetana/core', '@chetana/proto',
       ]
     }
   }

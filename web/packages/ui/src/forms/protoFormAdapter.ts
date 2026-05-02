@@ -12,7 +12,7 @@ import type {
   FormFieldConfig,
   FormSection,
   // FormSchemaLayout is the form-pipeline FormLayout type (aliased in
-  // @samavāya/core's barrel export so it doesn't collide with the
+  // @chetana/core's barrel export so it doesn't collide with the
   // layout-system FormLayout used by DashboardLayout, MasterDetailLayout,
   // etc.). DynamicFormRenderer.svelte and CrudFormPage.svelte both
   // consume schema.layout as { type, columns, gap, sections } — that's
@@ -38,11 +38,11 @@ import type {
   ObjectField,
   HiddenField,
   SelectOption,
-} from '@samavāya/core';
+} from '@chetana/core';
 
 // ============================================================================
 // PROTO TYPES (inline to avoid cross-package dependency from UI -> API)
-// These mirror the types in @samavāya/api/types/formservice.types
+// These mirror the types in @chetana/api/types/formservice.types
 // ============================================================================
 
 /** Proto FieldType enum values */

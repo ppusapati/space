@@ -33,7 +33,7 @@ export { default as LookupField } from './LookupField.svelte';
 export { default as MultiLookupField } from './MultiLookupField.svelte';
 export { default as TreeSelector } from './TreeSelector.svelte';
 // TreeNode is intentionally not re-exported here; it conflicts with the TreeNode type in display.types.ts.
-// Import it directly from '@samavāya/ui/src/forms/TreeNode.svelte' if needed.
+// Import it directly from '@chetana/ui/src/forms/TreeNode.svelte' if needed.
 export { default as CascadeSelect } from './CascadeSelect.svelte';
 export { default as TableField } from './TableField.svelte';
 export { default as BarcodeInput } from './BarcodeInput.svelte';

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { writable } from 'svelte/store';
-  import type { FormSchema, FormFieldConfig, FormSection } from '@samavāya/core';
+  import type { FormSchema, FormFieldConfig, FormSection } from '@chetana/core';
   import { cn } from '../utils/classnames';
 
   // Import all field components

@@ -16,7 +16,7 @@
    * handleFieldChange flow — the parent rolls the new array into the
    * outer form's values map by field id.
    */
-  import type { ArrayField, FormFieldConfig } from '@samavāya/core';
+  import type { ArrayField, FormFieldConfig } from '@chetana/core';
   import { createEventDispatcher } from 'svelte';
 
   interface Props {

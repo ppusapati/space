@@ -19,7 +19,7 @@
    * a pivot configurator. Forms wire these by declaring `type: 'custom'`
    * with their own component import.
    */
-  import type { CustomField } from '@samavāya/core';
+  import type { CustomField } from '@chetana/core';
   import type { Component } from 'svelte';
 
   interface Props {

@@ -18,7 +18,7 @@
    * groups are preferred when the option set is small (<8) and the
    * user benefits from seeing all options at once.
    */
-  import type { CheckboxGroupField } from '@samavāya/core';
+  import type { CheckboxGroupField } from '@chetana/core';
   import { createEventDispatcher } from 'svelte';
 
   interface Props {

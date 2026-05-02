@@ -1,6 +1,6 @@
 /**
- * @samavāya/stores
- * State management stores for samavāya ERP
+ * @chetana/stores
+ * State management stores for Chetana ERP
  * @packageDocumentation
  */
 
@@ -10,7 +10,7 @@
 export * from './global/index.js';
 
 // ============================================================================
-// API PROVIDER BRIDGE (wires stores → @samavāya/api providers)
+// API PROVIDER BRIDGE (wires stores → @chetana/api providers)
 // ============================================================================
 // Call initApiProviders() ONCE from apps/shell/src/hooks.client.ts BEFORE
 // initializeApi(). The interceptors registered by initializeApi start
@@ -29,4 +29,4 @@ export * from './factories/index.js';
 
 // Theme stores are already exported from ./global/index.js
 // The ./theme/ module contains advanced theme configuration which can be imported directly
-// import { ... } from '@samavāya/stores/theme'
+// import { ... } from '@chetana/stores/theme'

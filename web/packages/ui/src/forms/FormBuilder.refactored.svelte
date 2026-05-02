@@ -8,7 +8,7 @@
   import Checkbox from './Checkbox.svelte';
   import TextArea from './TextArea.svelte';
   import { sortable, reorderItems, draggable, droppable } from '../actions';
-  import type { FormFieldConfig, FormSchema } from '@samavāya/core';
+  import type { FormFieldConfig, FormSchema } from '@chetana/core';
   import {
     type FormBuilderProps,
     type FormBuilderState,
@@ -39,8 +39,8 @@
     spacing: { 1: '0.25rem', 1.5: '0.375rem', 2: '0.5rem', 3: '0.75rem', 4: '1rem', 6: '1.5rem' },
   };
 
-  // Form state management (use createFormBuilderStore from @samavāya/stores)
-  import { createFormBuilderStore } from '@samavāya/stores';
+  // Form state management (use createFormBuilderStore from @chetana/stores)
+  import { createFormBuilderStore } from '@chetana/stores';
   const _builderStore = createFormBuilderStore();
   const formBuilder = _builderStore;
   const setFormBuilderState = (s: any) => _builderStore.setState(s);

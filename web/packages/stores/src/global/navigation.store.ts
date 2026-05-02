@@ -4,7 +4,7 @@
  */
 
 import { writable, derived, get, type Readable } from 'svelte/store';
-import type { MenuItem, BreadcrumbItem } from '@samavāya/core';
+import type { MenuItem, BreadcrumbItem } from '@chetana/core';
 
 // ============================================================================
 // TYPES

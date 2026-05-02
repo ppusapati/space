@@ -1,7 +1,7 @@
 {
-  "name": "@samavāya/types",
+  "name": "@chetana/types",
   "version": "1.0.0",
-  "description": "Shared TypeScript types for Samavāya ERP - single source of truth for all type definitions",
+  "description": "Shared TypeScript types for Chetana ERP - single source of truth for all type definitions",
   "type": "module",
   "exports": {
     ".": {
@@ -18,10 +18,10 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@samavāya/core": "workspace:*"
+    "@chetana/core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.8.3"
   },
-  "keywords": ["typescript", "types", "samavāya", "erp"]
+  "keywords": ["typescript", "types", "Chetana", "erp"]
 }

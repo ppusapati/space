@@ -2,14 +2,14 @@
  * API Provider Bridge
  *
  * Concrete implementations of the AuthProvider + SessionProvider contracts
- * declared in @samavāya/api/providers, backed by the runtime authStore +
+ * declared in @chetana/api/providers, backed by the runtime authStore +
  * sessionStore in this package.
  *
- * Why this file exists: @samavāya/api defines the contract surface that
- * its interceptors (auth + tenant) consume; @samavāya/stores owns the
+ * Why this file exists: @chetana/api defines the contract surface that
+ * its interceptors (auth + tenant) consume; @chetana/stores owns the
  * runtime state. Putting concrete impls here breaks the cyclic dependency
  * (api ↔ stores) by inverting which package depends on which —
- * @samavāya/stores depends on @samavāya/api (for the contract types),
+ * @chetana/stores depends on @chetana/api (for the contract types),
  * not the other way around.
  *
  * Wire-up: call initApiProviders() ONCE from apps/shell/src/hooks.client.ts
@@ -26,7 +26,7 @@ import {
   type SessionProvider,
   type SessionContext,
   type ToastProvider,
-} from '@samavāya/api';
+} from '@chetana/api';
 
 import { authStore } from './global/auth.store.js';
 import { sessionStore } from './global/session.store.js';
@@ -36,7 +36,7 @@ import { toastStore } from './global/notifications.store.js';
 // AuthProvider — bridges authStore to the API contract
 // ============================================================================
 //
-// The auth interceptor (createAuthInterceptor in @samavāya/api) calls:
+// The auth interceptor (createAuthInterceptor in @chetana/api) calls:
 //   auth.isAuthenticated() before each request — true → attach Authorization header
 //   auth.getTokens() to read accessToken
 //   auth.refreshTokens() if the access token is near expiry
@@ -81,9 +81,9 @@ const authProviderImpl: AuthProvider = {
     }
 
     const { create } = await import('@bufbuild/protobuf');
-    const { getAuthService } = await import('@samavāya/api');
+    const { getAuthService } = await import('@chetana/api');
     const authPb = await import(
-      '@samavāya/proto/gen/core/identity/auth/proto/auth_pb.js'
+      '@chetana/proto/gen/core/identity/auth/proto/auth_pb.js'
     );
 
     const res = await getAuthService().refreshToken(
@@ -201,7 +201,7 @@ const toastProviderImpl: ToastProvider = {
 // ============================================================================
 
 /**
- * Wire the concrete provider implementations into the @samavāya/api
+ * Wire the concrete provider implementations into the @chetana/api
  * provider registry. Call this ONCE from hooks.client.ts BEFORE
  * initializeApi() — the interceptors registered by initializeApi will
  * immediately call getAuthProvider()/getSessionProvider() during their

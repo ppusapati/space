@@ -4,7 +4,7 @@
  */
 
 import { writable, derived, get, type Writable, type Readable } from 'svelte/store';
-import type { FormStatus, FormValidation, ValidationRule, FieldValidation } from '@samavāya/core';
+import type { FormStatus, FormValidation, ValidationRule, FieldValidation } from '@chetana/core';
 
 // ============================================================================
 // TYPES

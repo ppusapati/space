@@ -27,7 +27,7 @@
 
   let chartRef: EChart;
 
-  const MAP_NAME = '__samavaya_custom_map__';
+  const MAP_NAME = '__chetana_custom_map__';
 
   const dispatch = createEventDispatcher();
 

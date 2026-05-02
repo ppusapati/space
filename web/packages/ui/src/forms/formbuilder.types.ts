@@ -3,7 +3,7 @@
  * Types for the visual drag-and-drop form builder
  */
 
-import type { FormFieldConfig, FormSchemaLayout as FormLayout, FormSection, FormSchema } from '@samavāya/core';
+import type { FormFieldConfig, FormSchemaLayout as FormLayout, FormSection, FormSchema } from '@chetana/core';
 import type { Size } from '../types';
 
 // ============================================================================

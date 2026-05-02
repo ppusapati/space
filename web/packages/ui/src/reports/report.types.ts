@@ -21,7 +21,7 @@ import type {
   DrilldownFilterMapping,
   KPIAggregate,
   KPIThreshold,
-} from '@samavāya/core';
+} from '@chetana/core';
 
 // Re-export core types for convenience
 export type {

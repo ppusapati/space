@@ -1,18 +1,18 @@
 /**
- * @samavāya/types
- * Single source of truth for all shared TypeScript types across Samavāya ERP.
+ * @chetana/types
+ * Single source of truth for all shared TypeScript types across Chetana ERP.
  *
- * Re-exports all types from @samavāya/core with convenient groupings.
+ * Re-exports all types from @chetana/core with convenient groupings.
  * Import from here instead of hunting across packages.
  *
  * @example
- * import type { FormSchema, Size, BaseEntity, MenuItem } from '@samavāya/types';
+ * import type { FormSchema, Size, BaseEntity, MenuItem } from '@chetana/types';
  *
  * @packageDocumentation
  */
 
 // ============================================================================
-// ALL CORE TYPES (re-exported from @samavāya/core)
+// ALL CORE TYPES (re-exported from @chetana/core)
 // ============================================================================
 
 export type {
@@ -76,7 +76,7 @@ export type {
   KeysOfType,
   Nullable,
   Maybe,
-} from '@samavāya/core';
+} from '@chetana/core';
 
 // ---- Form Types ----
 export type {
@@ -121,7 +121,7 @@ export type {
   FormSchema,
   FormSection,
   FormSubmission,
-} from '@samavāya/core';
+} from '@chetana/core';
 
 // ---- Page Types ----
 export type {
@@ -134,7 +134,7 @@ export type {
   DashboardPage,
   ReportPage,
   PageConfig,
-} from '@samavāya/core';
+} from '@chetana/core';
 
 // ---- Layout Types ----
 export type {
@@ -146,9 +146,9 @@ export type {
   FormLayout,
   FormLayoutConfig,
   ResponsiveValue,
-} from '@samavāya/core';
+} from '@chetana/core';
 
-export { BREAKPOINTS } from '@samavāya/core';
+export { BREAKPOINTS } from '@chetana/core';
 
 // ---- Modal Types ----
 export type {
@@ -161,7 +161,7 @@ export type {
   DrawerModal,
   ModalInstance,
   ModalManagerState,
-} from '@samavāya/core';
+} from '@chetana/core';
 
 // ---- List / Table Types ----
 export type {
@@ -174,7 +174,7 @@ export type {
   SimpleList,
   TreeList,
   VirtualList,
-} from '@samavāya/core';
+} from '@chetana/core';
 
 // ---- Detail Types ----
 export type {
@@ -187,7 +187,7 @@ export type {
   DocumentDetail,
   TimelineDetail,
   AuditDetail,
-} from '@samavāya/core';
+} from '@chetana/core';
 
 // ---- View Types ----
 export type {
@@ -205,4 +205,4 @@ export type {
   ActivityItem,
   StatisticsView,
   MetricItem,
-} from '@samavāya/core';
+} from '@chetana/core';
