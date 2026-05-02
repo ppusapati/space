@@ -13,44 +13,44 @@
 import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
-import { BIAnalyticsService } from '@samavāya/proto/gen/business/insights/bianalytics/proto/bianalytics_pb.js';
-import { DashboardService } from '@samavāya/proto/gen/business/insights/dashboard/proto/dashboard_pb.js';
-import { ReportService } from '@samavāya/proto/gen/business/insights/insighthub/proto/insighthub_pb.js';
+import { BIAnalyticsService } from '@chetana/proto/gen/business/insights/bianalytics/proto/bianalytics_pb.js';
+import { DashboardService } from '@chetana/proto/gen/business/insights/dashboard/proto/dashboard_pb.js';
+import { ReportService } from '@chetana/proto/gen/business/insights/insighthub/proto/insighthub_pb.js';
 import {
   ReportExecutionService,
   ReportSchedulingService,
   ReportSubscriptionService,
   ReportAlertsService,
   CacheService,
-} from '@samavāya/proto/gen/business/insights/insightviewer/proto/insightviewer_pb.js';
-import { SearchService } from '@samavāya/proto/gen/core/platform/search/proto/metasearch_pb.js';
+} from '@chetana/proto/gen/business/insights/insightviewer/proto/insightviewer_pb.js';
+import { SearchService } from '@chetana/proto/gen/core/platform/search/proto/metasearch_pb.js';
 
 // Vertical-specific — Agriculture
-import { AgricultureBIAnalyticsService } from '@samavāya/proto/gen/business/insights/bianalytics/proto/agriculture/bianalytics_agriculture_pb.js';
-import { AgricultureDashboardService } from '@samavāya/proto/gen/business/insights/dashboard/proto/agriculture/dashboard_agriculture_pb.js';
-import { AgricultureReportService } from '@samavāya/proto/gen/business/insights/insighthub/proto/agriculture/insighthub_agriculture_pb.js';
-import { AgricultureReportViewerService } from '@samavāya/proto/gen/business/insights/insightviewer/proto/agriculture/insightviewer_agriculture_pb.js';
-import { AgricultureSearchService } from '@samavāya/proto/gen/core/platform/search/proto/agriculture/metasearch_agriculture_pb.js';
+import { AgricultureBIAnalyticsService } from '@chetana/proto/gen/business/insights/bianalytics/proto/agriculture/bianalytics_agriculture_pb.js';
+import { AgricultureDashboardService } from '@chetana/proto/gen/business/insights/dashboard/proto/agriculture/dashboard_agriculture_pb.js';
+import { AgricultureReportService } from '@chetana/proto/gen/business/insights/insighthub/proto/agriculture/insighthub_agriculture_pb.js';
+import { AgricultureReportViewerService } from '@chetana/proto/gen/business/insights/insightviewer/proto/agriculture/insightviewer_agriculture_pb.js';
+import { AgricultureSearchService } from '@chetana/proto/gen/core/platform/search/proto/agriculture/metasearch_agriculture_pb.js';
 
 // Vertical-specific — Construction
-import { ConstructionDashboardService } from '@samavāya/proto/gen/business/insights/dashboard/proto/construction/dashboard_construction_pb.js';
+import { ConstructionDashboardService } from '@chetana/proto/gen/business/insights/dashboard/proto/construction/dashboard_construction_pb.js';
 
 // Vertical-specific — MfgVertical (Manufacturing)
-import { MfgVerticalBIAnalyticsService } from '@samavāya/proto/gen/business/insights/bianalytics/proto/mfgvertical/bianalytics_mfgvertical_pb.js';
-import { MfgVerticalDashboardService } from '@samavāya/proto/gen/business/insights/dashboard/proto/mfgvertical/dashboard_mfgvertical_pb.js';
-import { MfgVerticalReportService } from '@samavāya/proto/gen/business/insights/insighthub/proto/mfgvertical/insighthub_mfgvertical_pb.js';
-import { MfgVerticalReportViewerService } from '@samavāya/proto/gen/business/insights/insightviewer/proto/mfgvertical/insightviewer_mfgvertical_pb.js';
-import { MfgVerticalSearchService } from '@samavāya/proto/gen/core/platform/search/proto/mfgvertical/metasearch_mfgvertical_pb.js';
+import { MfgVerticalBIAnalyticsService } from '@chetana/proto/gen/business/insights/bianalytics/proto/mfgvertical/bianalytics_mfgvertical_pb.js';
+import { MfgVerticalDashboardService } from '@chetana/proto/gen/business/insights/dashboard/proto/mfgvertical/dashboard_mfgvertical_pb.js';
+import { MfgVerticalReportService } from '@chetana/proto/gen/business/insights/insighthub/proto/mfgvertical/insighthub_mfgvertical_pb.js';
+import { MfgVerticalReportViewerService } from '@chetana/proto/gen/business/insights/insightviewer/proto/mfgvertical/insightviewer_mfgvertical_pb.js';
+import { MfgVerticalSearchService } from '@chetana/proto/gen/core/platform/search/proto/mfgvertical/metasearch_mfgvertical_pb.js';
 
 // Vertical-specific — Solar
-import { solarBIAnalyticsService } from '@samavāya/proto/gen/business/insights/bianalytics/proto/solar/bianalytics_solar_pb.js';
-import { solarDashboardService } from '@samavāya/proto/gen/business/insights/dashboard/proto/solar/dashboard_solar_pb.js';
-import { solarReportService } from '@samavāya/proto/gen/business/insights/insighthub/proto/solar/insighthub_solar_pb.js';
-import { solarReportViewerService } from '@samavāya/proto/gen/business/insights/insightviewer/proto/solar/insightviewer_solar_pb.js';
-import { solarSearchService } from '@samavāya/proto/gen/core/platform/search/proto/solar/metasearch_solar_pb.js';
+import { solarBIAnalyticsService } from '@chetana/proto/gen/business/insights/bianalytics/proto/solar/bianalytics_solar_pb.js';
+import { solarDashboardService } from '@chetana/proto/gen/business/insights/dashboard/proto/solar/dashboard_solar_pb.js';
+import { solarReportService } from '@chetana/proto/gen/business/insights/insighthub/proto/solar/insighthub_solar_pb.js';
+import { solarReportViewerService } from '@chetana/proto/gen/business/insights/insightviewer/proto/solar/insightviewer_solar_pb.js';
+import { solarSearchService } from '@chetana/proto/gen/core/platform/search/proto/solar/metasearch_solar_pb.js';
 
 // Vertical-specific — Water
-import { WaterDashboardService } from '@samavāya/proto/gen/business/insights/dashboard/proto/water/dashboard_water_pb.js';
+import { WaterDashboardService } from '@chetana/proto/gen/business/insights/dashboard/proto/water/dashboard_water_pb.js';
 
 export {
   BIAnalyticsService,

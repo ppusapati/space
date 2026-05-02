@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"connectrpc.com/connect"
-	"p9e.in/samavaya/packages/errors"
+	"p9e.in/chetana/packages/errors"
 )
 
 func TestNew_SetsCodeReasonMessage(t *testing.T) {

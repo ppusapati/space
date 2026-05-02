@@ -1,5 +1,5 @@
 /**
- * samavāya ERP - Service Worker
+ * Chetana ERP - Service Worker
  *
  * Provides:
  * - Offline-first caching strategy
@@ -9,7 +9,7 @@
  */
 
 const CACHE_VERSION = 'v1';
-const CACHE_NAME = `samavāya-erp-${CACHE_VERSION}`;
+const CACHE_NAME = `Chetana-erp-${CACHE_VERSION}`;
 const OFFLINE_URL = '/offline.html';
 
 // Assets to cache on install (App Shell)
@@ -74,7 +74,7 @@ self.addEventListener('activate', (event) => {
       const cacheNames = await caches.keys();
       await Promise.all(
         cacheNames
-          .filter((name) => name.startsWith('samavāya-erp-') && name !== CACHE_NAME)
+          .filter((name) => name.startsWith('Chetana-erp-') && name !== CACHE_NAME)
           .map((name) => {
             console.log('[SW] Deleting old cache:', name);
             return caches.delete(name);
@@ -275,7 +275,7 @@ self.addEventListener('push', (event) => {
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title || 'samavāya ERP', options)
+    self.registration.showNotification(data.title || 'Chetana ERP', options)
   );
 });
 
@@ -414,7 +414,7 @@ async function getCacheSize() {
 
 function openDatabase() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('samavāya-erp-sw', 1);
+    const request = indexedDB.open('Chetana-erp-sw', 1);
 
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);

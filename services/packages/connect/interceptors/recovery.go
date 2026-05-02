@@ -7,7 +7,7 @@ import (
 
 	"connectrpc.com/connect"
 
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/p9log"
 )
 
 // RecoveryInterceptorOption configures the Recovery interceptor.

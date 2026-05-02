@@ -7,10 +7,10 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
-	"p9e.in/samavaya/packages/circuitbreaker"
-	"p9e.in/samavaya/packages/loadbalancer"
-	"p9e.in/samavaya/packages/registry"
+	"p9e.in/chetana/packages/p9log"
+	"p9e.in/chetana/packages/circuitbreaker"
+	"p9e.in/chetana/packages/loadbalancer"
+	"p9e.in/chetana/packages/registry"
 )
 
 // ServiceMesh provides service-to-service routing with policies, retries, and circuit breaking.

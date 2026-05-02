@@ -3,7 +3,7 @@ package serviceclient
 import (
 	"context"
 
-	"p9e.in/samavaya/packages/events/bus"
+	"p9e.in/chetana/packages/events/bus"
 )
 
 // Publisher[E] fire-and-forgets a typed event. Monolith mode uses the

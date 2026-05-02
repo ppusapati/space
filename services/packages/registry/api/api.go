@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
-	"p9e.in/samavaya/packages/registry"
+	"p9e.in/chetana/packages/p9log"
+	"p9e.in/chetana/packages/registry"
 )
 
 // Server implements HTTP API for service registry.

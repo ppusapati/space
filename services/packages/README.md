@@ -141,7 +141,7 @@ packages/
 
 ```go
 import (
-    "p9e.in/samavaya/packages/database/sqlc"
+    "p9e.in/chetana/packages/database/sqlc"
 )
 
 // Provide database connection via FX
@@ -163,7 +163,7 @@ func NewMyService(db *sql.DB) *MyService {
 
 ```go
 import (
-    "p9e.in/samavaya/packages/p9log"
+    "p9e.in/chetana/packages/p9log"
 )
 
 // Initialize logger
@@ -190,7 +190,7 @@ logger.Error("Failed to process request",
 
 ```go
 import (
-    "p9e.in/samavaya/packages/metrics"
+    "p9e.in/chetana/packages/metrics"
 )
 
 // Define metrics
@@ -219,7 +219,7 @@ requestDuration.Observe(time.Since(start).Seconds())
 
 ```go
 import (
-    "p9e.in/samavaya/packages/tracing"
+    "p9e.in/chetana/packages/tracing"
     "go.opentelemetry.io/otel"
 )
 
@@ -251,7 +251,7 @@ span.SetAttributes(
 db, err := sqlc.NewDatabaseProvider(config.Database{
     Host:     "localhost",
     Port:     5432,
-    Database: "samavaya",
+    Database: "chetana",
     User:     "postgres",
     Password: "password",
 })
@@ -355,7 +355,7 @@ histogram.Observe(0.245) // Record observation
 
 **Define Errors:**
 ```go
-import "p9e.in/samavaya/packages/errors"
+import "p9e.in/chetana/packages/errors"
 
 var (
     ErrUserNotFound = errors.New(
@@ -390,7 +390,7 @@ code := errors.GetCode(err)
 
 **Authentication Middleware:**
 ```go
-import "p9e.in/samavaya/packages/middleware"
+import "p9e.in/chetana/packages/middleware"
 
 // Echo middleware
 e := echo.New()
@@ -422,7 +422,7 @@ e.Use(middleware.CORS(middleware.CORSConfig{
 
 **Redis Cache:**
 ```go
-import "p9e.in/samavaya/packages/cache"
+import "p9e.in/chetana/packages/cache"
 
 // Create cache
 redisCache := cache.NewRedis(cache.RedisConfig{
@@ -446,7 +446,7 @@ err := redisCache.Delete(ctx, "key")
 
 **Publish Events:**
 ```go
-import "p9e.in/samavaya/packages/events"
+import "p9e.in/chetana/packages/events"
 
 bus := events.NewKafkaEventBus(events.KafkaConfig{
     Brokers: []string{"localhost:9092"},
@@ -475,7 +475,7 @@ err := bus.Subscribe(ctx, "user.created", func(event events.Event) error {
 
 **Load Config:**
 ```go
-import "p9e.in/samavaya/packages/config"
+import "p9e.in/chetana/packages/config"
 
 type AppConfig struct {
     Server   ServerConfig   `toml:"server"`
@@ -510,9 +510,9 @@ All application modules depend on the packages module for:
 
 ```go
 import (
-    "p9e.in/samavaya/packages/database/sqlc"
-    "p9e.in/samavaya/packages/p9log"
-    "p9e.in/samavaya/packages/server"
+    "p9e.in/chetana/packages/database/sqlc"
+    "p9e.in/chetana/packages/p9log"
+    "p9e.in/chetana/packages/server"
     "go.uber.org/fx"
 )
 
@@ -598,7 +598,7 @@ LOG_OUTPUT=stdout
 # Database
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=samavaya
+DB_NAME=chetana
 DB_USER=postgres
 DB_PASSWORD=password
 DB_MAX_CONNECTIONS=25
@@ -621,7 +621,7 @@ METRICS_PORT=9090
 
 # Kafka
 KAFKA_BROKERS=localhost:9092
-KAFKA_GROUP_ID=samavaya-consumer-group
+KAFKA_GROUP_ID=chetana-consumer-group
 ```
 
 ## 8. Best Practices

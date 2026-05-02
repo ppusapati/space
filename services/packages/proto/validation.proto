@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package packages.api.v1.validation;
 
-option go_package = "p9e.in/samavaya/packages/api/v1/validation;validation";
+option go_package = "p9e.in/chetana/packages/api/v1/validation;validation";
 
 // =============================================================================
 // VALIDATION RESULT

@@ -10,7 +10,7 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"p9e.in/samavaya/packages/encoding/json"
+	"p9e.in/chetana/packages/encoding/json"
 )
 
 var (

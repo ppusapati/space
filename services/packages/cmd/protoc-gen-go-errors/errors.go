@@ -11,11 +11,11 @@ import (
 	"google.golang.org/protobuf/compiler/protogen"
 	"google.golang.org/protobuf/proto"
 
-	"p9e.in/samavaya/packages/api/v1/errors"
+	"p9e.in/chetana/packages/api/v1/errors"
 )
 
 const (
-	errorsPackage = protogen.GoImportPath("p9e.in/samavaya/packages/errors")
+	errorsPackage = protogen.GoImportPath("p9e.in/chetana/packages/errors")
 	fmtPackage    = protogen.GoImportPath("fmt")
 )
 

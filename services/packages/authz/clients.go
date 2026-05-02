@@ -4,8 +4,8 @@ package authz
 // 	"context"
 // 	"net/http"
 
-// 	pbu "p9e.in/samavaya/identity/api/v2/permission"
-// 	pb "p9e.in/samavaya/identity/api/v2/user/userconnect"
+// 	pbu "p9e.in/chetana/identity/api/v2/permission"
+// 	pb "p9e.in/chetana/identity/api/v2/user/userconnect"
 // )
 
 // // Client holds the gRPC user service client for permission checks

@@ -10,7 +10,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgtype"
 
-	csql "p9e.in/samavaya/packages/convert/sql"
+	csql "p9e.in/chetana/packages/convert/sql"
 )
 
 // PgDateToTimePtr converts a pgtype.Date to *time.Time.

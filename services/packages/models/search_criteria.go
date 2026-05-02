@@ -1,8 +1,8 @@
 package models
 
 import (
-	"p9e.in/samavaya/packages/api/v1/data"
-	"p9e.in/samavaya/packages/api/v1/query" // Assuming you have a common query package
+	"p9e.in/chetana/packages/api/v1/data"
+	"p9e.in/chetana/packages/api/v1/query" // Assuming you have a common query package
 
 	"google.golang.org/protobuf/types/known/fieldmaskpb"
 )

@@ -10,7 +10,7 @@ import type {
   UpdateVendorRequest,
   VendorCategory,
 } from '$lib/masters/types';
-// import type { ListParams, PaginatedResponse } from '@samavāya/api';
+// import type { ListParams, PaginatedResponse } from '@chetana/api';
 
 // ============================================================================
 // VENDOR SERVICE

@@ -175,7 +175,7 @@ const file_packages_proto_field_options_proto_rawDesc = "" +
 	"\x04icon\x18\t \x01(\tR\x04icon\x12\x16\n" +
 	"\x06format\x18\n" +
 	" \x01(\tR\x06format:c\n" +
-	"\bmetadata\x12\x1d.google.protobuf.FieldOptions\x18ц\x03 \x01(\v2&.packages.api.v1.options.FieldMetadataR\bmetadataB1Z/p9e.in/samavaya/packages/api/v1/options;optionsb\x06proto3"
+	"\bmetadata\x12\x1d.google.protobuf.FieldOptions\x18ц\x03 \x01(\v2&.packages.api.v1.options.FieldMetadataR\bmetadataB1Z/p9e.in/chetana/packages/api/v1/options;optionsb\x06proto3"
 
 var (
 	file_packages_proto_field_options_proto_rawDescOnce sync.Once

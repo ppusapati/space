@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package packages.api.v1.geo;
-option go_package = "p9e.in/samavaya/packages/api/v1/geo;geo";
+option go_package = "p9e.in/chetana/packages/api/v1/geo;geo";
 import "google/protobuf/struct.proto";
 message Geo{
 

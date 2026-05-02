@@ -6,11 +6,11 @@ import (
 	"strconv"
 	"time"
 
-	pbr "p9e.in/samavaya/packages/api/v1/response"
-	hu "p9e.in/samavaya/packages/helpers/utils"
-	"p9e.in/samavaya/packages/metrics"
-	"p9e.in/samavaya/packages/models"
-	"p9e.in/samavaya/packages/tracing"
+	pbr "p9e.in/chetana/packages/api/v1/response"
+	hu "p9e.in/chetana/packages/helpers/utils"
+	"p9e.in/chetana/packages/metrics"
+	"p9e.in/chetana/packages/models"
+	"p9e.in/chetana/packages/tracing"
 )
 
 // Generic GetEntity function to fetch an entity by ID, UUID, or any other field

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	conf "p9e.in/samavaya/packages/api/v1/config"
-	"p9e.in/samavaya/packages/p9context"
-	"p9e.in/samavaya/packages/uow"
+	conf "p9e.in/chetana/packages/api/v1/config"
+	"p9e.in/chetana/packages/p9context"
+	"p9e.in/chetana/packages/uow"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )

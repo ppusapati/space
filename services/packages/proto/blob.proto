@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package packages.api.v1.blob;
 
-option go_package = "p9e.in/samavaya/packages/api/v1/blob;blob";
+option go_package = "p9e.in/chetana/packages/api/v1/blob;blob";
 import "google/protobuf/struct.proto";
 import "google/protobuf/wrappers.proto";
 

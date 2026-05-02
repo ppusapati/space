@@ -1,5 +1,5 @@
 // Package config loads gs-mc configuration from a YAML file via
-// p9e.in/samavaya/packages/config, with env-var overlays for secrets.
+// p9e.in/chetana/packages/config, with env-var overlays for secrets.
 package config
 
 import (
@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	pkgconfig "p9e.in/samavaya/packages/config"
-	"p9e.in/samavaya/packages/config/file"
+	pkgconfig "p9e.in/chetana/packages/config"
+	"p9e.in/chetana/packages/config/file"
 
-	_ "p9e.in/samavaya/packages/encoding/yaml"
+	_ "p9e.in/chetana/packages/encoding/yaml"
 )
 
 type Config struct {

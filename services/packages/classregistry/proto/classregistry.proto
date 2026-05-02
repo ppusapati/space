@@ -1,5 +1,5 @@
 // Wire types for the class registry — the shared engine behind every
-// consolidated business domain in Samavāya (see
+// consolidated business domain in Chetana (see
 // docs/GENERIC_INDUSTRY_IMPLEMENTATION.md).
 //
 // Two surfaces are defined here:
@@ -21,7 +21,7 @@ syntax = "proto3";
 
 package packages.classregistry.v1;
 
-option go_package = "p9e.in/samavaya/packages/classregistry/api/v1;classregistryv1";
+option go_package = "p9e.in/chetana/packages/classregistry/api/v1;classregistryv1";
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/duration.proto";

@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
-	"p9e.in/samavaya/packages/loadbalancer"
-	"p9e.in/samavaya/packages/mesh"
+	"p9e.in/chetana/packages/p9log"
+	"p9e.in/chetana/packages/loadbalancer"
+	"p9e.in/chetana/packages/mesh"
 )
 
 // PolicyServer implements HTTP API for mesh policy management.

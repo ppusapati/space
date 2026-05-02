@@ -4,7 +4,7 @@ package compensation
 import (
 	"go.uber.org/fx"
 
-	"p9e.in/samavaya/packages/saga"
+	"p9e.in/chetana/packages/saga"
 )
 
 // CompensationEngineParams defines compensation engine dependencies

@@ -7,22 +7,22 @@ import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
 // Base service descriptors
-import { PayableService } from '@samavāya/proto/gen/business/finance/payable/proto/payable_pb.js';
-import { ReceivableService } from '@samavāya/proto/gen/business/finance/receivable/proto/receivable_pb.js';
-import { JournalEntryService } from '@samavāya/proto/gen/business/finance/journal/proto/journal_pb.js';
-import { BillingService } from '@samavāya/proto/gen/business/finance/billing/proto/billing_pb.js';
-import { CashManagementService } from '@samavāya/proto/gen/business/finance/cashmanagement/proto/cashmanagement_pb.js';
-import { CostCenterService } from '@samavāya/proto/gen/business/finance/costcenter/proto/costcenter_pb.js';
-import { CompliancePostingsService } from '@samavāya/proto/gen/business/finance/compliancepostings/proto/compliancepostings_pb.js';
-import { FinancialCloseService } from '@samavāya/proto/gen/business/finance/financialclose/proto/financialclose_pb.js';
-import { ReconciliationService } from '@samavāya/proto/gen/business/finance/reconciliation/proto/reconciliation_pb.js';
-import { TaxEngineService } from '@samavāya/proto/gen/business/finance/taxengine/proto/taxengine_pb.js';
-import { TransactionService } from '@samavāya/proto/gen/business/finance/transaction/proto/transaction_pb.js';
-import { AccountBalanceService } from '@samavāya/proto/gen/business/finance/ledger/proto/balance_pb.js';
-import { FinancialPeriodService } from '@samavāya/proto/gen/business/finance/ledger/proto/period_pb.js';
-import { TrialBalanceService } from '@samavāya/proto/gen/business/finance/reports/proto/reports_pb.js';
-import { GeneralLedgerService } from '@samavāya/proto/gen/business/finance/reports/proto/reports_pb.js';
-import { LedgerReportService } from '@samavāya/proto/gen/business/finance/reports/proto/reports_pb.js';
+import { PayableService } from '@chetana/proto/gen/business/finance/payable/proto/payable_pb.js';
+import { ReceivableService } from '@chetana/proto/gen/business/finance/receivable/proto/receivable_pb.js';
+import { JournalEntryService } from '@chetana/proto/gen/business/finance/journal/proto/journal_pb.js';
+import { BillingService } from '@chetana/proto/gen/business/finance/billing/proto/billing_pb.js';
+import { CashManagementService } from '@chetana/proto/gen/business/finance/cashmanagement/proto/cashmanagement_pb.js';
+import { CostCenterService } from '@chetana/proto/gen/business/finance/costcenter/proto/costcenter_pb.js';
+import { CompliancePostingsService } from '@chetana/proto/gen/business/finance/compliancepostings/proto/compliancepostings_pb.js';
+import { FinancialCloseService } from '@chetana/proto/gen/business/finance/financialclose/proto/financialclose_pb.js';
+import { ReconciliationService } from '@chetana/proto/gen/business/finance/reconciliation/proto/reconciliation_pb.js';
+import { TaxEngineService } from '@chetana/proto/gen/business/finance/taxengine/proto/taxengine_pb.js';
+import { TransactionService } from '@chetana/proto/gen/business/finance/transaction/proto/transaction_pb.js';
+import { AccountBalanceService } from '@chetana/proto/gen/business/finance/ledger/proto/balance_pb.js';
+import { FinancialPeriodService } from '@chetana/proto/gen/business/finance/ledger/proto/period_pb.js';
+import { TrialBalanceService } from '@chetana/proto/gen/business/finance/reports/proto/reports_pb.js';
+import { GeneralLedgerService } from '@chetana/proto/gen/business/finance/reports/proto/reports_pb.js';
+import { LedgerReportService } from '@chetana/proto/gen/business/finance/reports/proto/reports_pb.js';
 
 // Vertical-specific — Agriculture
 // CashManagement agriculture vertical retired in Phase F.4.4 — see config/class_registry/cashmanagement.yaml.

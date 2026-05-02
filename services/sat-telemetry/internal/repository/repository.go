@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"p9e.in/samavaya/packages/ulid"
+	"p9e.in/chetana/packages/ulid"
 
 	sattlmdb "github.com/ppusapati/space/services/sat-telemetry/db/generated"
 	"github.com/ppusapati/space/services/sat-telemetry/internal/mapper"

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"p9e.in/samavaya/packages/ulid"
+	"p9e.in/chetana/packages/ulid"
 )
 
 // EventType represents the type of domain event
@@ -254,45 +254,45 @@ func (e *DomainEvent) WithMetadata(key, value string) *DomainEvent {
 func (e *DomainEvent) GetTopic() string {
 	switch e.Type {
 	case EventTypeWorkflowTransition, EventTypeWorkflowCreated, EventTypeWorkflowUpdated, EventTypeWorkflowDeleted:
-		return "samavaya.workflow.events"
+		return "chetana.workflow.events"
 	case EventTypeSLABreach, EventTypeSLAWarning, EventTypeSLAEscalation, EventTypeSLACompliance, EventTypeSLACreated, EventTypeSLAUpdated:
-		return "samavaya.sla.events"
+		return "chetana.sla.events"
 	case EventTypeFormSubmission, EventTypeFormApproval, EventTypeFormRejection, EventTypeFormCreated, EventTypeFormUpdated, EventTypeFormDeleted:
-		return "samavaya.form.events"
+		return "chetana.form.events"
 	case EventTypeNotificationSent, EventTypeNotificationDelivered, EventTypeNotificationFailed, EventTypeNotificationRead:
-		return "samavaya.notification.events"
+		return "chetana.notification.events"
 	case EventTypeMetricRecorded, EventTypeAlertTriggered, EventTypeHealthCheckFailed, EventTypePerformanceIssue:
-		return "samavaya.monitoring.events"
+		return "chetana.monitoring.events"
 	case EventTypeUserCreated, EventTypeUserUpdated, EventTypeUserDeactivated, EventTypeRoleAssigned, EventTypeRoleRevoked:
-		return "samavaya.identity.events"
+		return "chetana.identity.events"
 	case EventTypeTenantCreated, EventTypeTenantUpdated, EventTypeTenantDeactivated, EventTypeTenantUserAdded, EventTypeTenantUserRemoved:
-		return "samavaya.tenant.events"
+		return "chetana.tenant.events"
 	case EventTypeSchemaCreated, EventTypeSchemaUpdated, EventTypeSchemaDeleted, EventTypeTableCreated, EventTypeTableUpdated, EventTypeTableDeleted, EventTypeColumnCreated, EventTypeColumnUpdated, EventTypeColumnDeleted:
-		return "samavaya.masters.events"
+		return "chetana.masters.events"
 	case EventTypeMappingCreated, EventTypeMappingUpdated, EventTypeDataImported, EventTypeImportFailed, EventTypeImportJobStarted:
-		return "samavaya.databridge.events"
+		return "chetana.databridge.events"
 	case EventTypeSystemStartup, EventTypeSystemShutdown, EventTypeConfigurationChanged:
-		return "samavaya.system.events"
+		return "chetana.system.events"
 	case EventTypeComplianceViolationReportRequested, EventTypeComplianceViolationReportGenerated:
-		return "samavaya.compliance.events"
+		return "chetana.compliance.events"
 	case EventTypeSalesOrderCreated, EventTypeOrderConfirmed, EventTypeInvoiceGenerated, EventTypeInvoiceCreated, EventTypeCustomerInteractionRecorded, EventTypeLeadCreated, EventTypePricingRuleApplied, EventTypePriceCalculated, EventTypeCommissionCalculated:
-		return "samavaya.sales.events"
+		return "chetana.sales.events"
 	case EventTypeInventoryAdjustment, EventTypeStockAdjustmentRecorded, EventTypeInventoryIssued, EventTypeLotSerialTracked, EventTypeQualityInspectionCompleted, EventTypeQualityCheckRecorded, EventTypeDemandForecastGenerated, EventTypePlanningUpdated, EventTypeWarehouseTaskCreated, EventTypeWMSTaskCompleted:
-		return "samavaya.inventory.events"
+		return "chetana.inventory.events"
 	case EventTypePayrollProcessingStarted, EventTypePayrollProcessed, EventTypeEmployeeExpenseSubmitted, EventTypeExpenseApprovalRequested, EventTypeLeaveRequestApproved, EventTypeLeaveRecorded:
-		return "samavaya.hr.events"
+		return "chetana.hr.events"
 	case EventTypeProgressMilestoneCompleted, EventTypeBillingInvoiceGenerated, EventTypeProjectActivityLogged, EventTypeProjectCostRecorded, EventTypeProjectCostUpdated, EventTypeSubcontractorWorkCompleted, EventTypeSubcontractorPaymentDue, EventTypeSubcontractorPaymentCreated, EventTypeProjectCreated, EventTypeProjectApproved, EventTypeBOQCreated, EventTypeTaskCreated, EventTypeTimesheetSubmitted, EventTypeTimesheetApproved:
-		return "samavaya.projects.events"
+		return "chetana.projects.events"
 	case EventTypeOrderFulfilled, EventTypeReturnProcessed, EventTypeShipmentCreated:
-		return "samavaya.fulfillment.events"
+		return "chetana.fulfillment.events"
 	case EventTypePaymentCreated, EventTypePaymentRecorded:
-		return "samavaya.banking.events"
+		return "chetana.banking.events"
 	case EventTypeAssetAcquisitionApproved, EventTypeAssetRecorded, EventTypeDepreciationRecorded, EventTypeEquipmentRegistered, EventTypeMaintenanceDue, EventTypeMaintenanceCompleted, EventTypeVehicleRegistered:
-		return "samavaya.asset.events"
+		return "chetana.asset.events"
 	case EventTypePurchaseInvoiceReceived, EventTypeAPLiabilityRecorded:
-		return "samavaya.finance.events"
+		return "chetana.finance.events"
 	default:
-		return "samavaya.domain.events"
+		return "chetana.domain.events"
 	}
 }
 

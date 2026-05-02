@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package packages.api.v1.pagination;
 
-option go_package = "p9e.in/samavaya/packages/api/v1/pagination;pagination";
+option go_package = "p9e.in/chetana/packages/api/v1/pagination;pagination";
 
 import "google/protobuf/field_mask.proto";
 

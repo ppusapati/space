@@ -7,9 +7,9 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"p9e.in/samavaya/packages/database/rlssession"
-	"p9e.in/samavaya/packages/errors"
-	"p9e.in/samavaya/packages/p9context"
+	"p9e.in/chetana/packages/database/rlssession"
+	"p9e.in/chetana/packages/errors"
+	"p9e.in/chetana/packages/p9context"
 )
 
 // RLSFactory creates UnitOfWork instances that automatically set RLS session variables.

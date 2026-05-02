@@ -95,7 +95,7 @@ Goal: lay the substrate the rest of the platform plugs into. No domain code in t
 
 **Trace:** REQ-CONST-001, REQ-CONST-008, REQ-CONST-013; design.md §2.1
 **Owner:** Platform
-**Status:** backlog
+**Status:** done
 **Estimate:** 3
 **Depends on:** none
 **Files (create/modify):**

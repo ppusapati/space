@@ -7,8 +7,8 @@ import (
 
 	"connectrpc.com/connect"
 
-	"p9e.in/samavaya/packages/p9context"
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/p9context"
+	"p9e.in/chetana/packages/p9log"
 )
 
 // JWTClaims represents the claims extracted from a JWT token.

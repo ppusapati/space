@@ -1274,7 +1274,7 @@ const file_packages_proto_query_proto_rawDesc = "" +
 	"\x03_ltB\x06\n" +
 	"\x04_lteB\a\n" +
 	"\x05_nullB\b\n" +
-	"\x06_nnullB-Z+p9e.in/samavaya/packages/api/v1/query;queryb\x06proto3"
+	"\x06_nnullB-Z+p9e.in/chetana/packages/api/v1/query;queryb\x06proto3"
 
 var (
 	file_packages_proto_query_proto_rawDescOnce sync.Once

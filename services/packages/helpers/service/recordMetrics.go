@@ -3,7 +3,7 @@ package helpers_service
 import (
 	"time"
 
-	"p9e.in/samavaya/packages/metrics"
+	"p9e.in/chetana/packages/metrics"
 )
 
 // Utility function to record execution time in metrics

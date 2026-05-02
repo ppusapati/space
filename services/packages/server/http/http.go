@@ -7,9 +7,9 @@ import (
 	"strings"
 	"sync"
 
-	"p9e.in/samavaya/packages/api/v1/config"
-	"p9e.in/samavaya/packages/middleware/tenant"
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/api/v1/config"
+	"p9e.in/chetana/packages/middleware/tenant"
+	"p9e.in/chetana/packages/p9log"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/rs/cors"

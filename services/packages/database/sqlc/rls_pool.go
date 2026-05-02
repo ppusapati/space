@@ -8,8 +8,8 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"p9e.in/samavaya/packages/database/rlssession"
-	"p9e.in/samavaya/packages/p9context"
+	"p9e.in/chetana/packages/database/rlssession"
+	"p9e.in/chetana/packages/p9context"
 )
 
 // RLSPool wraps a *pgxpool.Pool and satisfies the sqlc-generated `DBTX`
@@ -19,7 +19,7 @@ import (
 // company/branch if present) so PostgreSQL FORCE RLS policies admit the
 // query.
 //
-// **Why this exists.** Migration 000219 created `samavaya_app` as
+// **Why this exists.** Migration 000219 created `chetana_app` as
 // NOSUPERUSER NOBYPASSRLS. Under that role, every read against a table
 // with FORCE RLS + tenant_isolation policy returns zero rows unless the
 // session variable matching the policy's `current_setting('app.tenant_id')`
@@ -45,7 +45,7 @@ import (
 // jobs, fx OnStart hooks, init paths, Kafka consumers), MustRLSScope
 // returns a zero-value `RLSScope{}`, and we fall back to running the
 // query without a transaction — preserving the previous behavior. Such
-// paths still see zero rows under samavaya_app for tenant-scoped tables;
+// paths still see zero rows under chetana_app for tenant-scoped tables;
 // this matches what they got before this change and avoids breaking
 // startup or background work that happens to run pool queries without
 // auth context.

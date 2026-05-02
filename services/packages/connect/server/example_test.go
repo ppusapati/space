@@ -5,8 +5,8 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"p9e.in/samavaya/packages/connect/interceptors"
-	"p9e.in/samavaya/packages/connect/server"
+	"p9e.in/chetana/packages/connect/interceptors"
+	"p9e.in/chetana/packages/connect/server"
 )
 
 // Example_basicSetup demonstrates basic server setup with all middleware.

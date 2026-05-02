@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/api/v1/config"
-	"p9e.in/samavaya/packages/metrics"
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/api/v1/config"
+	"p9e.in/chetana/packages/metrics"
+	"p9e.in/chetana/packages/p9log"
 )
 
 // Cache interface for standard cache operations

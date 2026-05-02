@@ -2,9 +2,9 @@
 //
 // All Store operations must run with `app.tenant_id` set so the FORCE RLS
 // policy on classregistry.class_entities passes when the application
-// connects as a non-superuser role (samavaya_app, NOSUPERUSER NOBYPASSRLS).
+// connects as a non-superuser role (chetana_app, NOSUPERUSER NOBYPASSRLS).
 //
-// Without this, every read returns 0 rows under samavaya_app — the WHERE
+// Without this, every read returns 0 rows under chetana_app — the WHERE
 // clause `tenant_id = $1` in app code passes, but the policy
 // `tenant_id = current_setting('app.tenant_id', true)::CHAR(26)` fails
 // because the setting is unset.
@@ -31,8 +31,8 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"p9e.in/samavaya/packages/database/rlssession"
-	"p9e.in/samavaya/packages/p9context"
+	"p9e.in/chetana/packages/database/rlssession"
+	"p9e.in/chetana/packages/p9context"
 )
 
 // withTenantTx runs fn inside a transaction with `app.tenant_id` SET LOCAL.

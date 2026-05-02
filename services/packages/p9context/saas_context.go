@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"p9e.in/samavaya/packages/saas"
+	"p9e.in/chetana/packages/saas"
 )
 
 type (

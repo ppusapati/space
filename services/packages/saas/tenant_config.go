@@ -1,6 +1,6 @@
 package saas
 
-import "p9e.in/samavaya/packages/saas/data"
+import "p9e.in/chetana/packages/saas/data"
 
 // TenantType represents the subscription tier of a tenant
 type TenantType string

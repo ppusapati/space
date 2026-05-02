@@ -263,7 +263,7 @@ export function logger(prefix = '[Middleware]'): Middleware {
  * @example
  * ```ts
  * // hooks.server.ts
- * import { toSvelteKitHandle, compose, createAuthGuard } from '@samavāya/core/middleware';
+ * import { toSvelteKitHandle, compose, createAuthGuard } from '@chetana/core/middleware';
  *
  * const middleware = compose(
  *   createAuthGuard(),

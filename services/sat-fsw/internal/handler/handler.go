@@ -8,8 +8,8 @@ import (
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/proto"
 
-	pkgerrors "p9e.in/samavaya/packages/errors"
-	"p9e.in/samavaya/packages/ulid"
+	pkgerrors "p9e.in/chetana/packages/errors"
+	"p9e.in/chetana/packages/ulid"
 
 	pbfsw "github.com/ppusapati/space/services/sat-fsw/api"
 	"github.com/ppusapati/space/services/sat-fsw/api/satfswv1connect"

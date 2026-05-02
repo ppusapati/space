@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/p9log"
 )
 
 // DBCircuitBreaker wraps database operations with circuit breaker protection.

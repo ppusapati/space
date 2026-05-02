@@ -1,5 +1,5 @@
 // Package serviceclient is the shared scaffold for cross-service calls in
-// Samavāya.
+// Chetana.
 //
 // It implements the ports-and-adapters pattern mandated by ADR-0003
 // (docs/adr/0003-service-communication-hybrid.md). Each service exposes a

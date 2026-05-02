@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"p9e.in/samavaya/packages/events/bus"
+	"p9e.in/chetana/packages/events/bus"
 )
 
 // ErrNoHandler is returned when no handler is registered for the requested

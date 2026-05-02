@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"sync"
 
-	"p9e.in/samavaya/packages/saga"
+	"p9e.in/chetana/packages/saga"
 )
 
 // ConnectRPCConnector implements the saga.RpcConnector interface using HTTP clients

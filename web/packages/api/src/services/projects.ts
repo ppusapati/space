@@ -56,13 +56,13 @@
 import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
-import { ProjectService } from '@samavāya/proto/gen/business/projects/project/proto/project_pb.js';
-import { TaskService } from '@samavāya/proto/gen/business/projects/task/proto/task_pb.js';
-import { BOQService } from '@samavāya/proto/gen/business/projects/boq/proto/boq_pb.js';
-import { ProgressBillingService } from '@samavāya/proto/gen/business/projects/progressbilling/proto/progressbilling_pb.js';
-import { ProjectCostingService } from '@samavāya/proto/gen/business/projects/projectcosting/proto/projectcosting_pb.js';
-import { SubContractorService } from '@samavāya/proto/gen/business/projects/subcontractor/proto/subcontractor_pb.js';
-import { TimesheetService } from '@samavāya/proto/gen/business/projects/timesheet/proto/timesheet_pb.js';
+import { ProjectService } from '@chetana/proto/gen/business/projects/project/proto/project_pb.js';
+import { TaskService } from '@chetana/proto/gen/business/projects/task/proto/task_pb.js';
+import { BOQService } from '@chetana/proto/gen/business/projects/boq/proto/boq_pb.js';
+import { ProgressBillingService } from '@chetana/proto/gen/business/projects/progressbilling/proto/progressbilling_pb.js';
+import { ProjectCostingService } from '@chetana/proto/gen/business/projects/projectcosting/proto/projectcosting_pb.js';
+import { SubContractorService } from '@chetana/proto/gen/business/projects/subcontractor/proto/subcontractor_pb.js';
+import { TimesheetService } from '@chetana/proto/gen/business/projects/timesheet/proto/timesheet_pb.js';
 
 // ─────────────────────────────────────────────────────────────────────
 // Base-service factories (the seven host services)

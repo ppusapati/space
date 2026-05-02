@@ -1,7 +1,7 @@
 // packages/shared-configs/uno.config.ts
 import { defineConfig, presetIcons, presetWind3 } from 'unocss'
 import type { Preset } from 'unocss'
-import { designTokensTheme, componentShortcuts } from '@p9e.in/samavaya/uno'
+import { designTokensTheme, componentShortcuts } from '@@chetana/uno'
 import { presetP9E } from './preset-p9e.js'
 
 export const createUnoConfig = (customShortcuts = {}) => defineConfig({

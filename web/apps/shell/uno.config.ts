@@ -1,5 +1,5 @@
 import { defineConfig, presetUno } from 'unocss';
-import { designTokensTheme, componentShortcuts, animations } from '@p9e.in/samavaya/uno';
+import { designTokensTheme, componentShortcuts, animations } from '@@chetana/uno';
 
 export default defineConfig({
   presets: [

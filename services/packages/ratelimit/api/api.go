@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
-	"p9e.in/samavaya/packages/ratelimit/backend"
+	"p9e.in/chetana/packages/p9log"
+	"p9e.in/chetana/packages/ratelimit/backend"
 )
 
 // PolicyServer implements HTTP API for rate limit policy management.

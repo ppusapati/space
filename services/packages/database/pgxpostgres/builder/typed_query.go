@@ -7,7 +7,7 @@ import (
 	"strings"
 	"sync"
 
-	"p9e.in/samavaya/packages/models"
+	"p9e.in/chetana/packages/models"
 )
 
 // TypedQuery provides schema-based column validation for dynamic queries.

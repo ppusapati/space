@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"p9e.in/samavaya/packages/saga"
-	"p9e.in/samavaya/packages/saga/models"
+	"p9e.in/chetana/packages/saga"
+	"p9e.in/chetana/packages/saga/models"
 )
 
 // Mock implementations for testing

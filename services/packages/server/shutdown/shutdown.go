@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/p9log"
 )
 
 func AddShutdownHook(logs p9log.Helper, closers ...io.Closer) {

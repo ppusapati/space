@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
   import { page } from '$app/stores';
-  import { getAuditReadService, type AuditLog } from '@samavāya/api';
+  import { getAuditReadService, type AuditLog } from '@chetana/api';
 
   const moduleId = $derived($page.params.module ?? '');
   const formId = $derived($page.params.formId ?? '');
@@ -76,7 +76,7 @@
 </script>
 
 <svelte:head>
-  <title>{formId} submissions · Samavāya</title>
+  <title>{formId} submissions · Chetana</title>
 </svelte:head>
 
 <div class="submissions">

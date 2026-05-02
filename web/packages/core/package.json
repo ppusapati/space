@@ -1,7 +1,7 @@
 {
-  "name": "@samavāya/core",
+  "name": "@chetana/core",
   "version": "0.0.1",
-  "description": "Core generic types, base components, and composables for samavāya ERP",
+  "description": "Core generic types, base components, and composables for Chetana ERP",
   "type": "module",
   "main": "./src/index.ts",
   "module": "./src/index.ts",

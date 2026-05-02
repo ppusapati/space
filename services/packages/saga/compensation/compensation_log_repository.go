@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/saga/models"
+	"p9e.in/chetana/packages/saga/models"
 )
 
 // CompensationLogRepositoryImpl manages compensation logs in memory

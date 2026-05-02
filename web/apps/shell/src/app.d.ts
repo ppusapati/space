@@ -1,6 +1,6 @@
 /// <reference types="@sveltejs/kit" />
 
-import type { User, Tenant } from '@samavāya/stores';
+import type { User, Tenant } from '@chetana/stores';
 
 declare global {
   namespace App {

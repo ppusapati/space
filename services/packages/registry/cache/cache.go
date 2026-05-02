@@ -5,8 +5,8 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
-	"p9e.in/samavaya/packages/registry"
+	"p9e.in/chetana/packages/p9log"
+	"p9e.in/chetana/packages/registry"
 )
 
 // CacheEntry holds cached data with expiration

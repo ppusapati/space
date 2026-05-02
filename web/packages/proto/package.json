@@ -1,5 +1,5 @@
 {
-  "name": "@samavāya/proto",
+  "name": "@chetana/proto",
   "version": "0.0.1",
   "description": "Generated TypeScript protobuf types and ConnectRPC service descriptors",
   "type": "module",

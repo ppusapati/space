@@ -4,7 +4,7 @@ package models
 import (
 	"time"
 
-	"p9e.in/samavaya/packages/ulid"
+	"p9e.in/chetana/packages/ulid"
 )
 
 // IngestStatus mirrors gsingestv1.IngestStatus.

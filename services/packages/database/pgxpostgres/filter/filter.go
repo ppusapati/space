@@ -25,7 +25,7 @@ import (
 	"reflect"
 	"strings"
 
-	"p9e.in/samavaya/packages/api/v1/query"
+	"p9e.in/chetana/packages/api/v1/query"
 
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/jackc/pgx/v5"

@@ -7,7 +7,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/p9log"
 )
 
 // PrometheusExporter exports metrics in Prometheus format.

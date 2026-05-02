@@ -3,7 +3,7 @@ package env
 import (
 	"context"
 
-	"p9e.in/samavaya/packages/config"
+	"p9e.in/chetana/packages/config"
 )
 
 type watcher struct {

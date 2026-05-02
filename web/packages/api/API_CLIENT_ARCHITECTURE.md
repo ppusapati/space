@@ -1,4 +1,4 @@
-# API Client Architecture - @samavāya/api
+# API Client Architecture - @chetana/api
 
 **Purpose:** Unified HTTP client for both **ConnectRPC (internal)** and **REST API (3rd party integration)**
 
@@ -7,7 +7,7 @@
 ## Overview
 
 The API client provides a single, flexible interface for:
-- ✅ **Internal Communication:** ConnectRPC calls to Samavāya backend
+- ✅ **Internal Communication:** ConnectRPC calls to Chetana backend
 - ✅ **External Integration:** REST API calls to 3rd party services
 - ✅ **Cross-Cutting Concerns:** Authentication, error handling, retry logic, logging
 
@@ -16,7 +16,7 @@ The API client provides a single, flexible interface for:
 ## Architecture
 
 ```
-@samavāya/api
+@chetana/api
 ├── client/           (HTTP transport layer)
 │   ├── client.ts     (ApiClient class for ConnectRPC)
 │   ├── transport.ts  (HTTP transport setup)
@@ -48,11 +48,11 @@ The API client provides a single, flexible interface for:
 
 ### Use Case 1: ConnectRPC (Internal - Recommended)
 
-**For:** Communication with Samavāya backend
+**For:** Communication with Chetana backend
 
 ```typescript
-import { ApiClient } from '@samavāya/api';
-import { UserService } from '@samavāya/backend'; // Generated from proto
+import { ApiClient } from '@chetana/api';
+import { UserService } from '@chetana/backend'; // Generated from proto
 
 const apiClient = new ApiClient();
 const userService = apiClient.getService(UserService);
@@ -74,7 +74,7 @@ const user = await userService.getUser({ id: '123' });
 **For:** Integration with external services (payment, email, etc.)
 
 ```typescript
-import { createTransport, addInterceptor } from '@samavāya/api';
+import { createTransport, addInterceptor } from '@chetana/api';
 
 // Create REST-specific transport
 const restTransport = createTransport({
@@ -263,10 +263,10 @@ Response Flow (Server → Client):
 ### Basic Initialization
 
 ```typescript
-import { initializeApi } from '@samavāya/api';
+import { initializeApi } from '@chetana/api';
 
 initializeApi({
-  baseUrl: 'https://api.samavaya.example.com',
+  baseUrl: 'https://api.chetana.example.com',
   withAuth: true,
   withTenant: true,
   withErrorHandling: true,
@@ -278,11 +278,11 @@ initializeApi({
 ### Advanced Configuration
 
 ```typescript
-import { initializeApi } from '@samavāya/api';
+import { initializeApi } from '@chetana/api';
 
 initializeApi({
   // Base URL for internal ConnectRPC
-  baseUrl: 'https://api.samavaya.example.com',
+  baseUrl: 'https://api.chetana.example.com',
 
   // Protocol configuration
   protocol: 'grpc-web', // or 'connect' for newer versions
@@ -329,8 +329,8 @@ initializeApi({
 ### ConnectRPC (Internal)
 
 ```typescript
-import { ApiClient } from '@samavāya/api';
-import { SalesService } from '@samavāya/backend';
+import { ApiClient } from '@chetana/api';
+import { SalesService } from '@chetana/backend';
 
 const apiClient = new ApiClient();
 const salesService = apiClient.getService(SalesService);
@@ -373,7 +373,7 @@ async function processPayment(chargeData) {
 ### With Error Handling
 
 ```typescript
-import { ApiClient } from '@samavāya/api';
+import { ApiClient } from '@chetana/api';
 
 try {
   const user = await apiClient.call(UserService, 'getUser', { id: '123' });

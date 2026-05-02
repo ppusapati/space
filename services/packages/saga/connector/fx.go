@@ -3,8 +3,8 @@ package connector
 
 import (
 	"go.uber.org/fx"
-	"p9e.in/samavaya/packages/saga"
-	"p9e.in/samavaya/packages/saga/sagas"
+	"p9e.in/chetana/packages/saga"
+	"p9e.in/chetana/packages/saga/sagas"
 )
 
 // ConnectorParams defines dependencies for RPC connector

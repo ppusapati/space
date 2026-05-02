@@ -19,8 +19,8 @@ import (
 
 	"github.com/google/uuid"
 
-	"p9e.in/samavaya/packages/p9log"
-	"p9e.in/samavaya/packages/observability"
+	"p9e.in/chetana/packages/p9log"
+	"p9e.in/chetana/packages/observability"
 )
 
 // Tracer implements distributed tracing. `logger` is a *p9log.Helper so

@@ -3,7 +3,7 @@ package yaml
 import (
 	"gopkg.in/yaml.v3"
 
-	"p9e.in/samavaya/packages/encoding"
+	"p9e.in/chetana/packages/encoding"
 )
 
 // Name is the name registered for the yaml codec.

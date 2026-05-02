@@ -1,7 +1,7 @@
 {
-  "name": "@samavāya/api",
+  "name": "@chetana/api",
   "version": "0.0.1",
-  "description": "ConnectRPC API client for samavāya ERP",
+  "description": "ConnectRPC API client for Chetana ERP",
   "type": "module",
   "main": "./src/index.ts",
   "module": "./src/index.ts",
@@ -25,7 +25,7 @@
     "@bufbuild/protobuf": "^2.0.0",
     "@connectrpc/connect": "^2.0.0",
     "@connectrpc/connect-web": "^2.0.0",
-    "@samavāya/proto": "workspace:*"
+    "@chetana/proto": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.0",
@@ -39,7 +39,7 @@
     "src"
   ],
   "keywords": [
-    "samavāya",
+    "Chetana",
     "erp",
     "api",
     "connectrpc",

@@ -1,6 +1,6 @@
 /**
- * @samavāya/core
- * Core generic types, base components, and composables for samavāya ERP
+ * @chetana/core
+ * Core generic types, base components, and composables for Chetana ERP
  * @packageDocumentation
  */
 

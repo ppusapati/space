@@ -6,15 +6,15 @@
 import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
-import { BOMService } from '@samavāya/proto/gen/business/manufacturing/bom/proto/bom_pb.js';
-import { RoutingService } from '@samavāya/proto/gen/business/manufacturing/routing/proto/routing_pb.js';
-import { ProductionOrderService } from '@samavāya/proto/gen/business/manufacturing/productionorder/proto/productionorder_pb.js';
-import { JobCardService } from '@samavāya/proto/gen/business/manufacturing/jobcard/proto/jobcard_pb.js';
-import { ShopFloorService } from '@samavāya/proto/gen/business/manufacturing/shopfloor/proto/shopfloor_pb.js';
-import { WorkCenterService } from '@samavāya/proto/gen/business/manufacturing/workcenter/proto/workcenter_pb.js';
-import { SubcontractingService } from '@samavāya/proto/gen/business/manufacturing/subcontracting/proto/subcontracting_pb.js';
-import { MfgQualityService } from '@samavāya/proto/gen/business/manufacturing/mfgquality/proto/mfgquality_pb.js';
-import { PlanningService as MfgPlanningService } from '@samavāya/proto/gen/business/manufacturing/planning/proto/planning_pb.js';
+import { BOMService } from '@chetana/proto/gen/business/manufacturing/bom/proto/bom_pb.js';
+import { RoutingService } from '@chetana/proto/gen/business/manufacturing/routing/proto/routing_pb.js';
+import { ProductionOrderService } from '@chetana/proto/gen/business/manufacturing/productionorder/proto/productionorder_pb.js';
+import { JobCardService } from '@chetana/proto/gen/business/manufacturing/jobcard/proto/jobcard_pb.js';
+import { ShopFloorService } from '@chetana/proto/gen/business/manufacturing/shopfloor/proto/shopfloor_pb.js';
+import { WorkCenterService } from '@chetana/proto/gen/business/manufacturing/workcenter/proto/workcenter_pb.js';
+import { SubcontractingService } from '@chetana/proto/gen/business/manufacturing/subcontracting/proto/subcontracting_pb.js';
+import { MfgQualityService } from '@chetana/proto/gen/business/manufacturing/mfgquality/proto/mfgquality_pb.js';
+import { PlanningService as MfgPlanningService } from '@chetana/proto/gen/business/manufacturing/planning/proto/planning_pb.js';
 
 // Vertical-specific — Agriculture
 // AgricultureBOMService retired — Phase F.3.1 consolidation. Use

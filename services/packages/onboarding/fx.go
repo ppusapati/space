@@ -7,8 +7,8 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	"go.uber.org/fx"
 
-	"p9e.in/samavaya/packages/classregistry"
-	"p9e.in/samavaya/packages/classregistry/pgstore"
+	"p9e.in/chetana/packages/classregistry"
+	"p9e.in/chetana/packages/classregistry/pgstore"
 )
 
 // Module wires packages/onboarding into the fx graph. It expects a

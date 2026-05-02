@@ -1,10 +1,10 @@
 package provider
 
 import (
-	"p9e.in/samavaya/packages/events/config"
-	"p9e.in/samavaya/packages/events/consumer"
-	"p9e.in/samavaya/packages/events/handler"
-	"p9e.in/samavaya/packages/events/producer"
+	"p9e.in/chetana/packages/events/config"
+	"p9e.in/chetana/packages/events/consumer"
+	"p9e.in/chetana/packages/events/handler"
+	"p9e.in/chetana/packages/events/producer"
 )
 
 // Kafka constructors for dependency injection.

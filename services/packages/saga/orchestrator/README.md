@@ -13,8 +13,8 @@ The main orchestration engine that manages saga execution from start to finish.
 **Usage:**
 
 ```go
-import "p9e.in/samavaya/packages/saga"
-import "p9e.in/samavaya/packages/saga/orchestrator"
+import "p9e.in/chetana/packages/saga"
+import "p9e.in/chetana/packages/saga/orchestrator"
 
 // Create orchestrator (typically done via FX)
 orch := orchestrator.NewSagaOrchestratorImpl(
@@ -266,7 +266,7 @@ Test coverage includes:
 The orchestrator is integrated into the FX dependency injection framework:
 
 ```go
-import "p9e.in/samavaya/packages/saga/orchestrator"
+import "p9e.in/chetana/packages/saga/orchestrator"
 
 var Module = fx.Module(
     "order",
@@ -292,7 +292,7 @@ The orchestrator requires these components (being implemented in Phase 0 Days 4-
 
 ## Dependencies
 
-- `p9e.in/samavaya/packages/saga` - Interfaces and models
+- `p9e.in/chetana/packages/saga` - Interfaces and models
 - `go.uber.org/fx` - Dependency injection (for module)
 
 ## Package Structure

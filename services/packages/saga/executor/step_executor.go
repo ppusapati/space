@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"time"
 
-	"p9e.in/samavaya/packages/saga"
-	"p9e.in/samavaya/packages/saga/models"
+	"p9e.in/chetana/packages/saga"
+	"p9e.in/chetana/packages/saga/models"
 )
 
 // StepExecutorImpl executes individual saga steps via RPC

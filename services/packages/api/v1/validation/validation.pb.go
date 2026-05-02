@@ -796,7 +796,7 @@ const file_packages_proto_validation_proto_rawDesc = "" +
 	"\x19VALIDATION_RULE_TYPE_ENUM\x10\r\x12\x1f\n" +
 	"\x1bVALIDATION_RULE_TYPE_UNIQUE\x10\x0e\x12\x1f\n" +
 	"\x1bVALIDATION_RULE_TYPE_EXISTS\x10\x0f\x12\x1f\n" +
-	"\x1bVALIDATION_RULE_TYPE_CUSTOM\x10\x10B7Z5p9e.in/samavaya/packages/api/v1/validation;validationb\x06proto3"
+	"\x1bVALIDATION_RULE_TYPE_CUSTOM\x10\x10B7Z5p9e.in/chetana/packages/api/v1/validation;validationb\x06proto3"
 
 var (
 	file_packages_proto_validation_proto_rawDescOnce sync.Once

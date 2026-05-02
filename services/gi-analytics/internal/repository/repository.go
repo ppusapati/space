@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"p9e.in/samavaya/packages/ulid"
+	"p9e.in/chetana/packages/ulid"
 
 	gianadb "github.com/ppusapati/space/services/gi-analytics/db/generated"
 	"github.com/ppusapati/space/services/gi-analytics/internal/mapper"

@@ -4,8 +4,8 @@ import (
 	"context"
 	"runtime"
 
-	"p9e.in/samavaya/packages/errors"
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/errors"
+	"p9e.in/chetana/packages/p9log"
 
 	"google.golang.org/grpc"
 )

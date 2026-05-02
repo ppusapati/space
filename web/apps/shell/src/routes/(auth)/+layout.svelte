@@ -5,7 +5,7 @@
 <div class="grid min-h-screen">
   <div class="flex flex-col justify-center p-xl max-w-[480px] w-full mx-auto">
     <div class="text-center mb-2xl pt-xl">
-      <h1 class="text-[2rem] font-bold text-primary mb-xs">samavāya</h1>
+      <h1 class="text-[2rem] font-bold text-primary mb-xs">Chetana</h1>
       <p class="text-sm text-text-secondary">Enterprise Resource Planning</p>
     </div>
 
@@ -14,7 +14,7 @@
     </div>
 
     <footer class="text-center pt-xl">
-      <p class="text-xs text-text-muted">&copy; {new Date().getFullYear()} samavāya ERP. All rights reserved.</p>
+      <p class="text-xs text-text-muted">&copy; {new Date().getFullYear()} Chetana ERP. All rights reserved.</p>
     </footer>
   </div>
 

@@ -5,7 +5,7 @@ package packages.api.v1.query;
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "p9e.in/samavaya/packages/api/v1/query;query";
+option go_package = "p9e.in/chetana/packages/api/v1/query;query";
 
 message StringFilterOperation{
   optional google.protobuf.StringValue eq =1 [json_name="$eq"];

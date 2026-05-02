@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/status"
 
-	"p9e.in/samavaya/packages/healthcheck"
+	"p9e.in/chetana/packages/healthcheck"
 )
 
 // GRPCCheck implements gRPC health checking using Health proto

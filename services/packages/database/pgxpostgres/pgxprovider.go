@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"p9e.in/samavaya/packages/saas"
-	"p9e.in/samavaya/packages/saas/data"
+	"p9e.in/chetana/packages/saas"
+	"p9e.in/chetana/packages/saas/data"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )

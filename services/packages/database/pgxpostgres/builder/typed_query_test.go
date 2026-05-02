@@ -3,7 +3,7 @@ package builder
 import (
 	"testing"
 
-	"p9e.in/samavaya/packages/models"
+	"p9e.in/chetana/packages/models"
 )
 
 // Test entity with db tags

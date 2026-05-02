@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
-	"p9e.in/samavaya/packages/observability"
-	"p9e.in/samavaya/packages/observability/alerts"
-	"p9e.in/samavaya/packages/observability/graph"
-	"p9e.in/samavaya/packages/observability/metrics"
-	"p9e.in/samavaya/packages/observability/tracing"
+	"p9e.in/chetana/packages/p9log"
+	"p9e.in/chetana/packages/observability"
+	"p9e.in/chetana/packages/observability/alerts"
+	"p9e.in/chetana/packages/observability/graph"
+	"p9e.in/chetana/packages/observability/metrics"
+	"p9e.in/chetana/packages/observability/tracing"
 )
 
 // Server implements HTTP API for observability.

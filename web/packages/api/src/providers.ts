@@ -1,7 +1,7 @@
 /**
  * API Providers
  * Defines interfaces for external dependencies (stores) that the API package needs.
- * Consumers (e.g., @samavāya/stores) inject concrete implementations via configure().
+ * Consumers (e.g., @chetana/stores) inject concrete implementations via configure().
  * This breaks the cyclic dependency: api ↔ stores.
  * @packageDocumentation
  */
@@ -68,7 +68,7 @@ let toastProvider: ToastProvider | null = null;
 
 /**
  * Configures the API providers. Must be called before using interceptors.
- * Typically called once during app initialization from @samavāya/stores.
+ * Typically called once during app initialization from @chetana/stores.
  */
 export function configureProviders(providers: {
   auth?: AuthProvider;

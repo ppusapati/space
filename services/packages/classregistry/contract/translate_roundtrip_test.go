@@ -7,8 +7,8 @@ import (
 	"sort"
 	"testing"
 
-	"p9e.in/samavaya/packages/classregistry"
-	classregistryv1 "p9e.in/samavaya/packages/classregistry/api/v1"
+	"p9e.in/chetana/packages/classregistry"
+	classregistryv1 "p9e.in/chetana/packages/classregistry/api/v1"
 )
 
 // TestTranslate_Roundtrip_AgainstLiveYAML loads a real domain yaml

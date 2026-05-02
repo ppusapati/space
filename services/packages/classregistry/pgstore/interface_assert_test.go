@@ -1,7 +1,7 @@
 package pgstore
 
 import (
-	"p9e.in/samavaya/packages/classregistry"
+	"p9e.in/chetana/packages/classregistry"
 )
 
 // Compile-time assertion: *Store satisfies classregistry.OverrideStore.

@@ -8,7 +8,7 @@ require (
 	connectrpc.com/connect v1.19.1
 	github.com/jackc/pgx/v5 v5.7.6
 	google.golang.org/protobuf v1.36.11
-	p9e.in/samavaya/packages v0.0.0
+	p9e.in/chetana/packages v0.0.0
 )
 
 require (
@@ -35,4 +35,4 @@ require (
 	google.golang.org/grpc v1.71.0 // indirect
 )
 
-replace p9e.in/samavaya/packages => ../packages
+replace p9e.in/chetana/packages => ../packages

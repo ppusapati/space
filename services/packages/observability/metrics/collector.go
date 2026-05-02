@@ -21,8 +21,8 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 
-	"p9e.in/samavaya/packages/p9log"
-	"p9e.in/samavaya/packages/observability"
+	"p9e.in/chetana/packages/p9log"
+	"p9e.in/chetana/packages/observability"
 )
 
 // Collector collects and manages metrics.

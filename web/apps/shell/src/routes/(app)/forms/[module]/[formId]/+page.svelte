@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import { goto } from '$app/navigation';
-  import { FormPage } from '@samavāya/ui';
+  import { FormPage } from '@chetana/ui';
 
   const moduleId = $derived($page.params.module ?? '');
   const formId = $derived($page.params.formId ?? '');

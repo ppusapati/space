@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"p9e.in/samavaya/packages/ulid"
+	"p9e.in/chetana/packages/ulid"
 
 	gsmcdb "github.com/ppusapati/space/services/gs-mc/db/generated"
 	"github.com/ppusapati/space/services/gs-mc/internal/mapper"

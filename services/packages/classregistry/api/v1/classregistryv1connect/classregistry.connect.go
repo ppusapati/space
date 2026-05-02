@@ -1,5 +1,5 @@
 // Wire types for the class registry — the shared engine behind every
-// consolidated business domain in Samavāya (see
+// consolidated business domain in Chetana (see
 // docs/GENERIC_INDUSTRY_IMPLEMENTATION.md).
 //
 // Two surfaces are defined here:
@@ -28,7 +28,7 @@ import (
 	context "context"
 	errors "errors"
 	http "net/http"
-	v1 "p9e.in/samavaya/packages/classregistry/api/v1"
+	v1 "p9e.in/chetana/packages/classregistry/api/v1"
 	strings "strings"
 )
 

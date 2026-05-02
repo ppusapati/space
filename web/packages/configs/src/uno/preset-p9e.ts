@@ -1,4 +1,4 @@
-import { designTokensTheme, componentShortcuts, animations } from '@p9e.in/samavaya/uno'
+import { designTokensTheme, componentShortcuts, animations } from '@@chetana/uno'
 
 /**
  * P9E Enterprise UnoCSS Preset

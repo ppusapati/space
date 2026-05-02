@@ -26,11 +26,11 @@ import (
 	"strings"
 	"time"
 
-	"p9e.in/samavaya/packages/api/v1/query"
-	"p9e.in/samavaya/packages/database/pgxpostgres/filter"
-	"p9e.in/samavaya/packages/database/pgxpostgres/validator"
-	"p9e.in/samavaya/packages/models"
-	"p9e.in/samavaya/packages/p9context"
+	"p9e.in/chetana/packages/api/v1/query"
+	"p9e.in/chetana/packages/database/pgxpostgres/filter"
+	"p9e.in/chetana/packages/database/pgxpostgres/validator"
+	"p9e.in/chetana/packages/models"
+	"p9e.in/chetana/packages/p9context"
 
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )

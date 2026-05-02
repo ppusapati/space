@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package packages.api.v1.options;
-option go_package = "p9e.in/samavaya/packages/api/v1/options;options";
+option go_package = "p9e.in/chetana/packages/api/v1/options;options";
 
 import "google/protobuf/descriptor.proto";
 

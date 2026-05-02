@@ -15,9 +15,9 @@
 import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
-import { ProcurementService } from '@samavāya/proto/gen/business/purchase/procurement/proto/procurement_pb.js';
-import { PurchaseOrderService } from '@samavāya/proto/gen/business/purchase/purchaseorder/proto/purchaseorder_pb.js';
-import { PurchaseInvoiceService } from '@samavāya/proto/gen/business/purchase/purchaseinvoice/proto/purchaseinvoice_pb.js';
+import { ProcurementService } from '@chetana/proto/gen/business/purchase/procurement/proto/procurement_pb.js';
+import { PurchaseOrderService } from '@chetana/proto/gen/business/purchase/purchaseorder/proto/purchaseorder_pb.js';
+import { PurchaseInvoiceService } from '@chetana/proto/gen/business/purchase/purchaseinvoice/proto/purchaseinvoice_pb.js';
 
 // Vertical-specific procurement/PO/PurchaseInvoice service descriptors
 // retired in Phase F.9 — the classregistry taxonomy now carries the

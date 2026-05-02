@@ -6,8 +6,8 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"p9e.in/samavaya/packages/errors"
-	"p9e.in/samavaya/packages/ulid"
+	"p9e.in/chetana/packages/errors"
+	"p9e.in/chetana/packages/ulid"
 )
 
 // PgStateStore is the pgxpool-backed ProvisioningStateStore. It reads

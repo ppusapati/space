@@ -95,9 +95,9 @@ export function t(key: TranslationKey, vars?: InterpolationVars): string {
  * Call once at app startup.
  *
  * @example
- * import { createI18n } from '@samavāya/i18n';
- * import en from '@samavāya/i18n/locales/en.json';
- * import hi from '@samavāya/i18n/locales/hi.json';
+ * import { createI18n } from '@chetana/i18n';
+ * import en from '@chetana/i18n/locales/en.json';
+ * import hi from '@chetana/i18n/locales/hi.json';
  *
  * createI18n({
  *   locale: 'en',

@@ -1,7 +1,7 @@
 package redis
 
 import (
-	"p9e.in/samavaya/packages/api/v1/config"
+	"p9e.in/chetana/packages/api/v1/config"
 
 	"github.com/go-redis/redis/v8"
 )

@@ -6,11 +6,11 @@
 import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
-import { WorkflowService } from '@samavāya/proto/gen/core/workflow/workflow/proto/workflow_pb.js';
+import { WorkflowService } from '@chetana/proto/gen/core/workflow/workflow/proto/workflow_pb.js';
 import {
   ApprovalService,
   ApprovalStatus,
-} from '@samavāya/proto/gen/core/workflow/approval/proto/approval_pb.js';
+} from '@chetana/proto/gen/core/workflow/approval/proto/approval_pb.js';
 import type {
   ApprovalRequest,
   ApprovalStage,
@@ -21,14 +21,14 @@ import type {
   RejectStageRequest,
   GetApprovalHistoryRequest,
   GetApprovalHistoryResponse,
-} from '@samavāya/proto/gen/core/workflow/approval/proto/approval_pb.js';
-import { EscalationService } from '@samavāya/proto/gen/core/workflow/escalation/proto/escalation_pb.js';
-import { FormBuilder } from '@samavāya/proto/gen/core/workflow/formbuilder/proto/formbuilder_pb.js';
-import { formSubmission as FormSubmissionService } from '@samavāya/proto/gen/core/workflow/formbuilder/proto/forminstance_pb.js';
+} from '@chetana/proto/gen/core/workflow/approval/proto/approval_pb.js';
+import { EscalationService } from '@chetana/proto/gen/core/workflow/escalation/proto/escalation_pb.js';
+import { FormBuilder } from '@chetana/proto/gen/core/workflow/formbuilder/proto/formbuilder_pb.js';
+import { formSubmission as FormSubmissionService } from '@chetana/proto/gen/core/workflow/formbuilder/proto/forminstance_pb.js';
 // 2026-04-27 (Phase 5 of engine-unification, backend/docs/BASE_DOMAIN_AUDITS.md):
 // FormStateMachineService removed — the unified workflow.workflow engine
 // owns form lifecycles via templates + ApprovalTaskOrchestrator.
-import { ApprovalService as FormBuilderApprovalService } from '@samavāya/proto/gen/core/workflow/formbuilder/proto/approval_pb.js';
+import { ApprovalService as FormBuilderApprovalService } from '@chetana/proto/gen/core/workflow/formbuilder/proto/approval_pb.js';
 
 export {
   WorkflowService, ApprovalService, ApprovalStatus, EscalationService,

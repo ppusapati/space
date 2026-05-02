@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"p9e.in/samavaya/packages/encoding"
+	"p9e.in/chetana/packages/encoding"
 )
 
 // Decoder is config decoder.

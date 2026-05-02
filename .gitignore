@@ -1,0 +1,8 @@
+.github
+tools
+**\node_modules
+web/.turbo/
+web/apps/**/build/
+web/apps/**/dist/
+web/packages/**/build/
+web/packages/**/dist/

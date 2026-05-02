@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	pkgerrors "p9e.in/samavaya/packages/errors"
-	"p9e.in/samavaya/packages/ulid"
+	pkgerrors "p9e.in/chetana/packages/errors"
+	"p9e.in/chetana/packages/ulid"
 
 	"github.com/ppusapati/space/services/sat-mission/internal/models"
 	"github.com/ppusapati/space/services/sat-mission/internal/services"

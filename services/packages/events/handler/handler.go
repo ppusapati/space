@@ -1,8 +1,8 @@
 package handler
 
 import (
-	msgp "p9e.in/samavaya/packages/api/v1/message"
-	"p9e.in/samavaya/packages/p9log"
+	msgp "p9e.in/chetana/packages/api/v1/message"
+	"p9e.in/chetana/packages/p9log"
 
 	"github.com/IBM/sarama"
 	"google.golang.org/protobuf/proto"

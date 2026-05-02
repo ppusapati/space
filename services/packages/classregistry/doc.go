@@ -1,5 +1,5 @@
 // Package classregistry is the in-memory index of YAML-defined class
-// definitions that back every consolidated business domain in Samavāya.
+// definitions that back every consolidated business domain in Chetana.
 //
 // It is the implementation of Phase F from the BI consolidation roadmap
 // and the design at docs/GENERIC_INDUSTRY_IMPLEMENTATION.md.

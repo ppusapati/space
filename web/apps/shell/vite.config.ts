@@ -72,7 +72,7 @@ export default defineConfig({
   },
 
   optimizeDeps: {
-    // 2026-04-29: handling for `@samavāya/stores`.
+    // 2026-04-29: handling for `@chetana/stores`.
     //
     // Vite's optimizer pre-bundles linked workspace deps via esbuild +
     // the @sveltejs/vite-plugin-svelte module plugin. The module
@@ -88,7 +88,7 @@ export default defineConfig({
     // the file has to keep its `.svelte.ts` extension; it can't be
     // renamed to plain `.ts` (svelte would reject the `$state` rune).
     //
-    // The clean fix: exclude `@samavāya/stores` from pre-bundling.
+    // The clean fix: exclude `@chetana/stores` from pre-bundling.
     // SvelteKit's plugin (loaded via sveltekit() above) processes the
     // package through `ssr.noExternal`, which correctly handles BOTH
     // type annotations AND rune syntax via vitePreprocess. We lose
@@ -97,12 +97,12 @@ export default defineConfig({
     //
     // UI + core remain in `include` because they genuinely benefit
     // from pre-bundling and contain no `.svelte.ts` rune modules.
-    include: ['@samavāya/ui', '@samavāya/core'],
-    exclude: ['@samavāya/stores'],
+    include: ['@chetana/ui', '@chetana/core'],
+    exclude: ['@chetana/stores'],
   },
 
   ssr: {
-    noExternal: [/^@samavāya\//, /^@p9e\.in\//],
+    noExternal: [/^p9e.in/chetana\//, /^@p9e\.in\//],
   },
 
   build: {

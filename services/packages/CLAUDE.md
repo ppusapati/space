@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Kosha** is a shared packages module (`p9e.in/samavaya/packages`) providing infrastructure components, utilities, and cross-cutting concerns for the UGCL microservices platform. It serves as the foundation layer for database access, logging, metrics, tracing, configuration, event messaging, multi-tenancy, and more.
+**Kosha** is a shared packages module (`p9e.in/chetana/packages`) providing infrastructure components, utilities, and cross-cutting concerns for the UGCL microservices platform. It serves as the foundation layer for database access, logging, metrics, tracing, configuration, event messaging, multi-tenancy, and more.
 
 ## Common Development Commands
 
@@ -532,7 +532,7 @@ Deep merge for struct reconciliation (`merger/`):
 ## Module Dependencies
 
 **This module depends on:**
-- `p9e.in/samavaya/identity/user` (user identity service)
+- `p9e.in/chetana/identity/user` (user identity service)
 
 **This module provides to other services:**
 - Database connection management

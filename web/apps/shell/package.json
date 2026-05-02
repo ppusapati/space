@@ -1,8 +1,8 @@
 {
-  "name": "@samavaya/shell",
+  "name": "@chetana/shell",
   "version": "0.0.1",
   "private": true,
-  "description": "samavāya ERP Shell Application",
+  "description": "Chetana ERP Shell Application",
   "type": "module",
   "scripts": {
     "dev": "vite dev",
@@ -14,10 +14,10 @@
     "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
   },
   "dependencies": {
-    "@p9e.in/samavaya": "workspace:*",
-    "@samavāya/core": "workspace:*",
-    "@samavāya/stores": "workspace:*",
-    "@samavāya/ui": "workspace:*"
+    "@p9e.in/chetana": "workspace:*",
+    "@chetana/core": "workspace:*",
+    "@chetana/stores": "workspace:*",
+    "@chetana/ui": "workspace:*"
   },
   "devDependencies": {
     "@sveltejs/adapter-auto": "^3.3.0",

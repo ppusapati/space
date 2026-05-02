@@ -6,7 +6,7 @@ import (
 	"net"
 	"time"
 
-	"p9e.in/samavaya/packages/healthcheck"
+	"p9e.in/chetana/packages/healthcheck"
 )
 
 // TCPCheck implements TCP port health checking

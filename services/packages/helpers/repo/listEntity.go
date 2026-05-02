@@ -4,11 +4,11 @@ import (
 	"context"
 	"strings"
 
-	"p9e.in/samavaya/packages/database/pgxpostgres/builder"
-	"p9e.in/samavaya/packages/database/pgxpostgres/operations"
-	"p9e.in/samavaya/packages/deps"
-	"p9e.in/samavaya/packages/helpers"
-	"p9e.in/samavaya/packages/models"
+	"p9e.in/chetana/packages/database/pgxpostgres/builder"
+	"p9e.in/chetana/packages/database/pgxpostgres/operations"
+	"p9e.in/chetana/packages/deps"
+	"p9e.in/chetana/packages/helpers"
+	"p9e.in/chetana/packages/models"
 )
 
 // ListEntity retrieves a list of entities matching search criteria using the observability middleware.

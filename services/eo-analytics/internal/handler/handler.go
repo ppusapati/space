@@ -8,8 +8,8 @@ import (
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/proto"
 
-	pkgerrors "p9e.in/samavaya/packages/errors"
-	"p9e.in/samavaya/packages/ulid"
+	pkgerrors "p9e.in/chetana/packages/errors"
+	"p9e.in/chetana/packages/ulid"
 
 	pban "github.com/ppusapati/space/services/eo-analytics/api"
 	"github.com/ppusapati/space/services/eo-analytics/api/eoanalyticsv1connect"

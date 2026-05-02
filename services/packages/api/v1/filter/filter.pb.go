@@ -101,7 +101,7 @@ const file_packages_proto_filter_proto_rawDesc = "" +
 	"tenant_ids\x18\x02 \x03(\tR\ttenantIds\x12\x19\n" +
 	"\brole_ids\x18\x03 \x03(\tR\aroleIds\x12\x1f\n" +
 	"\vactive_only\x18\x04 \x01(\bR\n" +
-	"activeOnlyB/Z-p9e.in/samavaya/packages/api/v1/filter;filterb\x06proto3"
+	"activeOnlyB/Z-p9e.in/chetana/packages/api/v1/filter;filterb\x06proto3"
 
 var (
 	file_packages_proto_filter_proto_rawDescOnce sync.Once

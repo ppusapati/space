@@ -8,8 +8,8 @@ import (
 	"connectrpc.com/connect"
 	"google.golang.org/protobuf/proto"
 
-	pkgerrors "p9e.in/samavaya/packages/errors"
-	"p9e.in/samavaya/packages/ulid"
+	pkgerrors "p9e.in/chetana/packages/errors"
+	"p9e.in/chetana/packages/ulid"
 
 	pbing "github.com/ppusapati/space/services/gs-ingest/api"
 	"github.com/ppusapati/space/services/gs-ingest/api/gsingestv1connect"

@@ -5,7 +5,7 @@ import (
 	"context"
 	"time"
 
-	"p9e.in/samavaya/packages/saga/models"
+	"p9e.in/chetana/packages/saga/models"
 )
 
 // Type aliases for the domain model shapes so `saga.StepDefinition` and

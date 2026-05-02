@@ -3,7 +3,7 @@ package schema_test
 import (
 	"testing"
 
-	"p9e.in/samavaya/packages/database/pgxpostgres/schema"
+	"p9e.in/chetana/packages/database/pgxpostgres/schema"
 )
 
 func TestNewTableSchema(t *testing.T) {

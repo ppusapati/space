@@ -10,7 +10,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	structpb "google.golang.org/protobuf/types/known/structpb"
-	query "p9e.in/samavaya/packages/api/v1/query"
+	query "p9e.in/chetana/packages/api/v1/query"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -395,7 +395,7 @@ const file_packages_proto_data_proto_rawDesc = "" +
 	"bool_value\x18\a \x01(\v2-.packages.api.v1.query.BooleanFilterOperatorsH\x00R\tboolValue\x12K\n" +
 	"\n" +
 	"null_value\x18\b \x01(\v2*.packages.api.v1.query.NullFilterOperatorsH\x00R\tnullValueB\b\n" +
-	"\x06filterB+Z)p9e.in/samavaya/packages/api/v1/data;datab\x06proto3"
+	"\x06filterB+Z)p9e.in/chetana/packages/api/v1/data;datab\x06proto3"
 
 var (
 	file_packages_proto_data_proto_rawDescOnce sync.Once

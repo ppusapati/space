@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"p9e.in/samavaya/packages/merger"
+	"p9e.in/chetana/packages/merger"
 
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"

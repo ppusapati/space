@@ -1,6 +1,6 @@
 /**
- * @samavāya/api
- * ConnectRPC API client for samavāya ERP
+ * @chetana/api
+ * ConnectRPC API client for Chetana ERP
  * @packageDocumentation
  */
 

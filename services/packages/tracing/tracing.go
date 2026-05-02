@@ -17,7 +17,7 @@ import (
 	"fmt"
 	"os"
 
-	"p9e.in/samavaya/packages/api/v1/config"
+	"p9e.in/chetana/packages/api/v1/config"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"

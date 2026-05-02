@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/saga/models"
+	"p9e.in/chetana/packages/saga/models"
 )
 
 // IdempotencyImpl provides idempotency checking and result caching

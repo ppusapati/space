@@ -12,7 +12,7 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"p9e.in/samavaya/packages/uow"
+	"p9e.in/chetana/packages/uow"
 )
 
 // ────────────────────────────────────────────────────────────────────────────

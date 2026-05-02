@@ -10,8 +10,8 @@ import (
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 
-	"p9e.in/samavaya/packages/connect/interceptors"
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/connect/interceptors"
+	"p9e.in/chetana/packages/p9log"
 )
 
 // ServerConfig holds configuration for the Connect server.

@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"p9e.in/samavaya/packages/healthcheck"
+	"p9e.in/chetana/packages/healthcheck"
 )
 
 func TestHTTPCheckSuccess(t *testing.T) {

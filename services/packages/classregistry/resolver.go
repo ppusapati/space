@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"p9e.in/samavaya/packages/errors"
+	"p9e.in/chetana/packages/errors"
 )
 
 // LookupResolver answers foreign-key-style existence checks against

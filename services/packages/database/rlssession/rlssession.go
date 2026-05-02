@@ -7,7 +7,7 @@
 // FORCE RLS policies in this codebase use `current_setting('app.tenant_id',
 // true)` (and the analogous company/branch settings). Every policy-protected
 // read and write must run under a connection whose session has those GUCs
-// set, otherwise the policy returns zero rows under `samavaya_app`
+// set, otherwise the policy returns zero rows under `chetana_app`
 // (NOSUPERUSER NOBYPASSRLS) — silent data loss.
 //
 // Setting GUCs has two correctness pitfalls:
@@ -46,7 +46,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgconn"
 
-	"p9e.in/samavaya/packages/p9context"
+	"p9e.in/chetana/packages/p9context"
 )
 
 // Execer is the minimal surface needed to run SET statements. Both

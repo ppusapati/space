@@ -2,7 +2,7 @@
 //
 // onboarding.tenant_provisioning_state has FORCE RLS + tenant_isolation
 // policy (added by migration 000218). Under non-superuser DB role
-// samavaya_app, every UPDATE/INSERT/SELECT on it must run with
+// chetana_app, every UPDATE/INSERT/SELECT on it must run with
 // app.tenant_id set or the policy rejects.
 
 package onboarding
@@ -13,8 +13,8 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"p9e.in/samavaya/packages/database/rlssession"
-	"p9e.in/samavaya/packages/p9context"
+	"p9e.in/chetana/packages/database/rlssession"
+	"p9e.in/chetana/packages/p9context"
 )
 
 // withTenantTx runs fn inside a transaction with `app.tenant_id` SET LOCAL.

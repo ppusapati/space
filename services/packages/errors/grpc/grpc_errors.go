@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"strings"
 
-	"p9e.in/samavaya/packages/constants"
+	"p9e.in/chetana/packages/constants"
 
 	"github.com/pkg/errors"
 	"google.golang.org/grpc/codes"

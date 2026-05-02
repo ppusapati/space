@@ -3,7 +3,7 @@ package helpers_utils
 import (
 	"time"
 
-	"p9e.in/samavaya/packages/models"
+	"p9e.in/chetana/packages/models"
 )
 
 // UpdateRequest represents the data needed for an update operation

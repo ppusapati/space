@@ -5,9 +5,9 @@ import (
 	"errors"
 	"strconv"
 
-	pbr "p9e.in/samavaya/packages/api/v1/response"
-	"p9e.in/samavaya/packages/middleware/localize"
-	"p9e.in/samavaya/packages/models"
+	pbr "p9e.in/chetana/packages/api/v1/response"
+	"p9e.in/chetana/packages/middleware/localize"
+	"p9e.in/chetana/packages/models"
 
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )

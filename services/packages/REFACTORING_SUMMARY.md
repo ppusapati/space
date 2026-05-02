@@ -32,7 +32,7 @@ Successfully removed **4 major dependencies**:
 | `gorm.io/gorm` + `gorm.io/driver/postgres` | Dead code (51 lines), pgx is primary driver | ✅ Removed |
 | `github.com/thoas/go-funk` | Used once, replaced with standard library | ✅ Replaced |
 | `github.com/spf13/afero` | VFS abstraction removed completely | ✅ Removed |
-| `p9e.in/Samavāya/identity/user` | External service dependency made optional | ✅ Removed |
+| `p9e.in/chetana/identity/user` | External service dependency made optional | ✅ Removed |
 
 **Dependencies Kept** (still in use):
 - `github.com/google/wire` - Used in 7 files for DI
@@ -117,8 +117,8 @@ Successfully removed **4 major dependencies**:
 - module kosha
 + module kosha
 
-- require p9e.in/Samavāya/identity/user v0.0.0
-- replace p9e.in/Samavāya/identity/user => ../identity/user
+- require p9e.in/chetana/identity/user v0.0.0
+- replace p9e.in/chetana/identity/user => ../identity/user
 
 - gorm.io/driver/postgres v1.5.11
 - gorm.io/gorm v1.31.0
@@ -210,7 +210,7 @@ type CheckPermissionResponse struct {
 }
 ```
 
-This replaced the external dependency on `p9e.in/Samavāya/identity/user/api/v2/permission`.
+This replaced the external dependency on `p9e.in/chetana/identity/user/api/v2/permission`.
 
 ---
 
@@ -297,7 +297,7 @@ find . -name "*.go" -exec sed -i 's|kosha|kosha|g' {} \;
 If using the `authz` package with identity/user permission types:
 ```go
 // Before
-import pbp "p9e.in/Samavāya/identity/user/api/v2/permission"
+import pbp "p9e.in/chetana/identity/user/api/v2/permission"
 
 // After
 import "kosha/authz"

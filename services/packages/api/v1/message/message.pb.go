@@ -273,7 +273,7 @@ const file_packages_proto_message_proto_rawDesc = "" +
 	"\x04NONE\x10\x00\x12\n" +
 	"\n" +
 	"\x06LEADER\x10\x01\x12\a\n" +
-	"\x03ALL\x10\x02B1Z/p9e.in/samavaya/packages/api/v1/message;messageb\x06proto3"
+	"\x03ALL\x10\x02B1Z/p9e.in/chetana/packages/api/v1/message;messageb\x06proto3"
 
 var (
 	file_packages_proto_message_proto_rawDescOnce sync.Once

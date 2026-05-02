@@ -1,5 +1,5 @@
 // Package config loads sat-simulation configuration from a YAML file via
-// p9e.in/samavaya/packages/config, with environment-variable overlays for
+// p9e.in/chetana/packages/config, with environment-variable overlays for
 // secrets (DATABASE_URL).
 package config
 
@@ -10,10 +10,10 @@ import (
 	"strings"
 	"time"
 
-	pkgconfig "p9e.in/samavaya/packages/config"
-	"p9e.in/samavaya/packages/config/file"
+	pkgconfig "p9e.in/chetana/packages/config"
+	"p9e.in/chetana/packages/config/file"
 
-	_ "p9e.in/samavaya/packages/encoding/yaml"
+	_ "p9e.in/chetana/packages/encoding/yaml"
 )
 
 // Config is the sat-simulation configuration.

@@ -108,7 +108,7 @@ const file_packages_proto_context_proto_rawDesc = "" +
 	"company_id\x18\x02 \x01(\tR\tcompanyId\x12\x1b\n" +
 	"\tbranch_id\x18\x03 \x01(\tR\bbranchId\x12\x17\n" +
 	"\auser_id\x18\x04 \x01(\tR\x06userId\x12\x17\n" +
-	"\arole_id\x18\x05 \x01(\tR\x06roleIdB7Z5p9e.in/samavaya/packages/api/v1/pagination;paginationb\x06proto3"
+	"\arole_id\x18\x05 \x01(\tR\x06roleIdB7Z5p9e.in/chetana/packages/api/v1/pagination;paginationb\x06proto3"
 
 var (
 	file_packages_proto_context_proto_rawDescOnce sync.Once

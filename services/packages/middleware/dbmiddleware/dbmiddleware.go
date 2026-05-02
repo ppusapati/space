@@ -7,10 +7,10 @@ import (
 	"sync"
 	"unicode"
 
-	"p9e.in/samavaya/packages/api/v1/config"
-	"p9e.in/samavaya/packages/database/pgxpostgres"
-	"p9e.in/samavaya/packages/p9context"
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/api/v1/config"
+	"p9e.in/chetana/packages/database/pgxpostgres"
+	"p9e.in/chetana/packages/p9context"
+	"p9e.in/chetana/packages/p9log"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"golang.org/x/net/context"

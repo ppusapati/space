@@ -27,7 +27,7 @@ packages/expression/evaluator_test.go     → Comprehensive test coverage
 **Old:**
 ```go
 import (
-    "p9e.in/samavaya/packages/models"
+    "p9e.in/chetana/packages/models"
     // custom RuleEvaluator in module
 )
 
@@ -37,7 +37,7 @@ evaluator := NewRuleEvaluator()
 
 **New:**
 ```go
-import "p9e.in/samavaya/packages/expression"
+import "p9e.in/chetana/packages/expression"
 
 criteria := &expression.SearchCriteria{...}
 evaluator := expression.NewEvaluator()
@@ -123,7 +123,7 @@ Both SQL filters and rule expressions support these operators:
 
 ### FormBuilder
 ```go
-import "p9e.in/samavaya/packages/expression"
+import "p9e.in/chetana/packages/expression"
 
 evaluator := expression.NewEvaluator()
 
@@ -139,7 +139,7 @@ readonly, err := evaluator.EvaluateConditionalReadonly(field.ReadonlyWhen, rowDa
 
 ### MetaSearch
 ```go
-import "p9e.in/samavaya/packages/expression"
+import "p9e.in/chetana/packages/expression"
 
 // Parse search criteria
 criteria := &expression.SearchCriteria{
@@ -154,7 +154,7 @@ criteria := &expression.SearchCriteria{
 
 ### ReportBuilder
 ```go
-import "p9e.in/samavaya/packages/expression"
+import "p9e.in/chetana/packages/expression"
 
 evaluator := expression.NewEvaluator()
 
@@ -167,7 +167,7 @@ result, err := evaluator.EvaluateRule(
 
 ### Authorization (Future)
 ```go
-import "p9e.in/samavaya/packages/expression"
+import "p9e.in/chetana/packages/expression"
 
 evaluator := expression.NewEvaluator()
 

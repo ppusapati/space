@@ -8,8 +8,8 @@ import (
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"p9e.in/samavaya/packages/p9log"
-	"p9e.in/samavaya/packages/registry"
+	"p9e.in/chetana/packages/p9log"
+	"p9e.in/chetana/packages/registry"
 )
 
 // PostgresRegistry implements registry.RegistryBackend using PostgreSQL.

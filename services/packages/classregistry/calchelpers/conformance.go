@@ -5,7 +5,7 @@ import (
 	"sort"
 	"strings"
 
-	"p9e.in/samavaya/packages/classregistry"
+	"p9e.in/chetana/packages/classregistry"
 )
 
 // DispatcherInfo is the narrow interface test helpers need from any

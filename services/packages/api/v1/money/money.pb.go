@@ -290,7 +290,7 @@ const file_packages_proto_money_proto_rawDesc = "" +
 	"\x0fallocation_type\x18\x03 \x01(\tR\x0eallocationType\x12\x1e\n" +
 	"\n" +
 	"percentage\x18\x04 \x01(\tR\n" +
-	"percentageB-Z+p9e.in/samavaya/packages/api/v1/money;moneyb\x06proto3"
+	"percentageB-Z+p9e.in/chetana/packages/api/v1/money;moneyb\x06proto3"
 
 var (
 	file_packages_proto_money_proto_rawDescOnce sync.Once

@@ -1,7 +1,7 @@
 package models
 
 import (
-	pb "p9e.in/samavaya/packages/api/v1/identifier"
+	pb "p9e.in/chetana/packages/api/v1/identifier"
 )
 
 type Identifier struct {

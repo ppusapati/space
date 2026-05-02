@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/p9log"
 )
 
 // RepositoryCircuitBreaker provides a simple interface for repositories

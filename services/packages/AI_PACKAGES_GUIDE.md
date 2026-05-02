@@ -423,10 +423,10 @@ event := domain.NewEventBuilder(domain.EventTypeUserCreated, userID, "User").
 ```
 
 **Topic Routing:** Events are automatically routed to Kafka topics based on type:
-- `Samavāya.workflow.events`
-- `Samavāya.identity.events`
-- `Samavāya.tenant.events`
-- `Samavāya.masters.events`
+- `Chetana.workflow.events`
+- `Chetana.identity.events`
+- `Chetana.tenant.events`
+- `Chetana.masters.events`
 - etc.
 
 #### 11.2 producer
@@ -1028,7 +1028,7 @@ LOG_FORMAT=json
 # Database
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=Samavāya
+DB_NAME=Chetana
 DB_USER=postgres
 DB_PASSWORD=password
 
@@ -1050,7 +1050,7 @@ CACHE_MAX_ENTRIES=10000
 
 # Kafka
 KAFKA_BROKERS=localhost:9092
-KAFKA_GROUP_ID=Samavāya-consumer
+KAFKA_GROUP_ID=Chetana-consumer
 
 # Service
 SERVICE_NAME=my-service

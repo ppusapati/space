@@ -4,7 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"p9e.in/samavaya/packages/classregistry"
+	"p9e.in/chetana/packages/classregistry"
 )
 
 // TestLoader_LoadsShippedProfile verifies the committed smoke-test

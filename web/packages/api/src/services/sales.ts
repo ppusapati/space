@@ -6,77 +6,77 @@
 import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
-import { CRMService } from '@samavāya/proto/gen/business/sales/crm/proto/crm_pb.js';
-import { SalesOrderService } from '@samavāya/proto/gen/business/sales/salesorder/proto/salesorder_pb.js';
-import { SalesInvoiceService } from '@samavāya/proto/gen/business/sales/salesinvoice/proto/salesinvoice_pb.js';
-import { PricingService } from '@samavāya/proto/gen/business/sales/pricing/proto/pricing_pb.js';
-import { TerritoryService } from '@samavāya/proto/gen/business/sales/territory/proto/territory_pb.js';
-import { CommissionService } from '@samavāya/proto/gen/business/sales/commission/proto/commission_pb.js';
-import { DealerService } from '@samavāya/proto/gen/business/sales/dealer/proto/dealer_pb.js';
-import { FieldSalesService } from '@samavāya/proto/gen/business/sales/fieldsales/proto/fieldsales_pb.js';
-import { RoutePlanningService } from '@samavāya/proto/gen/business/sales/routeplanning/proto/routeplanning_pb.js';
-import { SalesAnalyticsService } from '@samavāya/proto/gen/business/sales/salesanalytics/proto/salesanalytics_pb.js';
+import { CRMService } from '@chetana/proto/gen/business/sales/crm/proto/crm_pb.js';
+import { SalesOrderService } from '@chetana/proto/gen/business/sales/salesorder/proto/salesorder_pb.js';
+import { SalesInvoiceService } from '@chetana/proto/gen/business/sales/salesinvoice/proto/salesinvoice_pb.js';
+import { PricingService } from '@chetana/proto/gen/business/sales/pricing/proto/pricing_pb.js';
+import { TerritoryService } from '@chetana/proto/gen/business/sales/territory/proto/territory_pb.js';
+import { CommissionService } from '@chetana/proto/gen/business/sales/commission/proto/commission_pb.js';
+import { DealerService } from '@chetana/proto/gen/business/sales/dealer/proto/dealer_pb.js';
+import { FieldSalesService } from '@chetana/proto/gen/business/sales/fieldsales/proto/fieldsales_pb.js';
+import { RoutePlanningService } from '@chetana/proto/gen/business/sales/routeplanning/proto/routeplanning_pb.js';
+import { SalesAnalyticsService } from '@chetana/proto/gen/business/sales/salesanalytics/proto/salesanalytics_pb.js';
 
 // Vertical-specific — Agriculture
-import { AgricultureCommissionService } from '@samavāya/proto/gen/business/sales/commission/proto/agriculture/commission_agriculture_pb.js';
-import { AgricultureCRMService } from '@samavāya/proto/gen/business/sales/crm/proto/agriculture/crm_agriculture_pb.js';
-import { AgricultureDealerService } from '@samavāya/proto/gen/business/sales/dealer/proto/agriculture/dealer_agriculture_pb.js';
-import { AgricultureFieldSalesService } from '@samavāya/proto/gen/business/sales/fieldsales/proto/agriculture/fieldsales_agriculture_pb.js';
-import { AgriculturePricingService } from '@samavāya/proto/gen/business/sales/pricing/proto/agriculture/pricing_agriculture_pb.js';
-import { AgricultureRoutePlanningService } from '@samavāya/proto/gen/business/sales/routeplanning/proto/agriculture/routeplanning_agriculture_pb.js';
-import { AgricultureSalesAnalyticsService } from '@samavāya/proto/gen/business/sales/salesanalytics/proto/agriculture/salesanalytics_agriculture_pb.js';
-import { AgricultureSalesOrderService } from '@samavāya/proto/gen/business/sales/salesorder/proto/agriculture/salesorder_agriculture_pb.js';
+import { AgricultureCommissionService } from '@chetana/proto/gen/business/sales/commission/proto/agriculture/commission_agriculture_pb.js';
+import { AgricultureCRMService } from '@chetana/proto/gen/business/sales/crm/proto/agriculture/crm_agriculture_pb.js';
+import { AgricultureDealerService } from '@chetana/proto/gen/business/sales/dealer/proto/agriculture/dealer_agriculture_pb.js';
+import { AgricultureFieldSalesService } from '@chetana/proto/gen/business/sales/fieldsales/proto/agriculture/fieldsales_agriculture_pb.js';
+import { AgriculturePricingService } from '@chetana/proto/gen/business/sales/pricing/proto/agriculture/pricing_agriculture_pb.js';
+import { AgricultureRoutePlanningService } from '@chetana/proto/gen/business/sales/routeplanning/proto/agriculture/routeplanning_agriculture_pb.js';
+import { AgricultureSalesAnalyticsService } from '@chetana/proto/gen/business/sales/salesanalytics/proto/agriculture/salesanalytics_agriculture_pb.js';
+import { AgricultureSalesOrderService } from '@chetana/proto/gen/business/sales/salesorder/proto/agriculture/salesorder_agriculture_pb.js';
 // Phase F.8.10 (2026-04-21): AgricultureTerritoryService retired — use
 // TerritoryService + class="agri_mandi_catchment" via config/class_registry/territory.yaml.
 // Vertical-specific — Construction
-import { ConstructionCommissionService } from '@samavāya/proto/gen/business/sales/commission/proto/construction/commission_construction_pb.js';
-import { ConstructionCRMService } from '@samavāya/proto/gen/business/sales/crm/proto/construction/crm_construction_pb.js';
-import { ConstructionDealerService } from '@samavāya/proto/gen/business/sales/dealer/proto/construction/dealer_construction_pb.js';
-import { ConstructionFieldSalesService } from '@samavāya/proto/gen/business/sales/fieldsales/proto/construction/fieldsales_construction_pb.js';
-import { ConstructionPricingService } from '@samavāya/proto/gen/business/sales/pricing/proto/construction/pricing_construction_pb.js';
-import { ConstructionRoutePlanningService } from '@samavāya/proto/gen/business/sales/routeplanning/proto/construction/routeplanning_construction_pb.js';
-import { ConstructionSalesAnalyticsService } from '@samavāya/proto/gen/business/sales/salesanalytics/proto/construction/salesanalytics_construction_pb.js';
-import { ConstructionSalesInvoiceService } from '@samavāya/proto/gen/business/sales/salesinvoice/proto/construction/salesinvoice_construction_pb.js';
+import { ConstructionCommissionService } from '@chetana/proto/gen/business/sales/commission/proto/construction/commission_construction_pb.js';
+import { ConstructionCRMService } from '@chetana/proto/gen/business/sales/crm/proto/construction/crm_construction_pb.js';
+import { ConstructionDealerService } from '@chetana/proto/gen/business/sales/dealer/proto/construction/dealer_construction_pb.js';
+import { ConstructionFieldSalesService } from '@chetana/proto/gen/business/sales/fieldsales/proto/construction/fieldsales_construction_pb.js';
+import { ConstructionPricingService } from '@chetana/proto/gen/business/sales/pricing/proto/construction/pricing_construction_pb.js';
+import { ConstructionRoutePlanningService } from '@chetana/proto/gen/business/sales/routeplanning/proto/construction/routeplanning_construction_pb.js';
+import { ConstructionSalesAnalyticsService } from '@chetana/proto/gen/business/sales/salesanalytics/proto/construction/salesanalytics_construction_pb.js';
+import { ConstructionSalesInvoiceService } from '@chetana/proto/gen/business/sales/salesinvoice/proto/construction/salesinvoice_construction_pb.js';
 // Phase F.8.10 (2026-04-21): ConstructionTerritoryService retired — use
 // TerritoryService + class="construction_project_zone" via config/class_registry/territory.yaml.
 // Vertical-specific — Construction Vertical
-import { ConstructionVerticalSalesOrderService } from '@samavāya/proto/gen/business/sales/salesorder/proto/constructionvertical/salesorder_constructionvertical_pb.js';
+import { ConstructionVerticalSalesOrderService } from '@chetana/proto/gen/business/sales/salesorder/proto/constructionvertical/salesorder_constructionvertical_pb.js';
 // Vertical-specific — MfgVertical (Manufacturing)
-import { MfgVerticalCommissionService } from '@samavāya/proto/gen/business/sales/commission/proto/mfgvertical/commission_mfgvertical_pb.js';
-import { MfgVerticalCRMService } from '@samavāya/proto/gen/business/sales/crm/proto/mfgvertical/crm_mfgvertical_pb.js';
-import { MfgVerticalDealerService } from '@samavāya/proto/gen/business/sales/dealer/proto/mfgvertical/dealer_mfgvertical_pb.js';
-import { MfgVerticalFieldSalesService } from '@samavāya/proto/gen/business/sales/fieldsales/proto/mfgvertical/fieldsales_mfgvertical_pb.js';
-import { MfgVerticalPricingService } from '@samavāya/proto/gen/business/sales/pricing/proto/mfgvertical/pricing_mfgvertical_pb.js';
-import { MfgVerticalRoutePlanningService } from '@samavāya/proto/gen/business/sales/routeplanning/proto/mfgvertical/routeplanning_mfgvertical_pb.js';
-import { MfgVerticalSalesAnalyticsService } from '@samavāya/proto/gen/business/sales/salesanalytics/proto/mfgvertical/salesanalytics_mfgvertical_pb.js';
-import { MfgVerticalSalesOrderService } from '@samavāya/proto/gen/business/sales/salesorder/proto/mfgvertical/salesorder_mfgvertical_pb.js';
+import { MfgVerticalCommissionService } from '@chetana/proto/gen/business/sales/commission/proto/mfgvertical/commission_mfgvertical_pb.js';
+import { MfgVerticalCRMService } from '@chetana/proto/gen/business/sales/crm/proto/mfgvertical/crm_mfgvertical_pb.js';
+import { MfgVerticalDealerService } from '@chetana/proto/gen/business/sales/dealer/proto/mfgvertical/dealer_mfgvertical_pb.js';
+import { MfgVerticalFieldSalesService } from '@chetana/proto/gen/business/sales/fieldsales/proto/mfgvertical/fieldsales_mfgvertical_pb.js';
+import { MfgVerticalPricingService } from '@chetana/proto/gen/business/sales/pricing/proto/mfgvertical/pricing_mfgvertical_pb.js';
+import { MfgVerticalRoutePlanningService } from '@chetana/proto/gen/business/sales/routeplanning/proto/mfgvertical/routeplanning_mfgvertical_pb.js';
+import { MfgVerticalSalesAnalyticsService } from '@chetana/proto/gen/business/sales/salesanalytics/proto/mfgvertical/salesanalytics_mfgvertical_pb.js';
+import { MfgVerticalSalesOrderService } from '@chetana/proto/gen/business/sales/salesorder/proto/mfgvertical/salesorder_mfgvertical_pb.js';
 // Phase F.8.10 (2026-04-21): MfgVerticalTerritoryService retired — use
 // TerritoryService + class="mfg_plant_service_area" via config/class_registry/territory.yaml.
 // Vertical-specific — Solar
-import { solarCommissionService } from '@samavāya/proto/gen/business/sales/commission/proto/solar/commission_solar_pb.js';
-import { solarCRMService } from '@samavāya/proto/gen/business/sales/crm/proto/solar/crm_solar_pb.js';
-import { solarDealerService } from '@samavāya/proto/gen/business/sales/dealer/proto/solar/dealer_solar_pb.js';
-import { solarFieldSalesService } from '@samavāya/proto/gen/business/sales/fieldsales/proto/solar/fieldsales_solar_pb.js';
-import { solarPricingService } from '@samavāya/proto/gen/business/sales/pricing/proto/solar/pricing_solar_pb.js';
-import { solarRoutePlanningService } from '@samavāya/proto/gen/business/sales/routeplanning/proto/solar/routeplanning_solar_pb.js';
-import { solarSalesAnalyticsService } from '@samavāya/proto/gen/business/sales/salesanalytics/proto/solar/salesanalytics_solar_pb.js';
-import { solarSalesOrderService } from '@samavāya/proto/gen/business/sales/salesorder/proto/solar/salesorder_solar_pb.js';
+import { solarCommissionService } from '@chetana/proto/gen/business/sales/commission/proto/solar/commission_solar_pb.js';
+import { solarCRMService } from '@chetana/proto/gen/business/sales/crm/proto/solar/crm_solar_pb.js';
+import { solarDealerService } from '@chetana/proto/gen/business/sales/dealer/proto/solar/dealer_solar_pb.js';
+import { solarFieldSalesService } from '@chetana/proto/gen/business/sales/fieldsales/proto/solar/fieldsales_solar_pb.js';
+import { solarPricingService } from '@chetana/proto/gen/business/sales/pricing/proto/solar/pricing_solar_pb.js';
+import { solarRoutePlanningService } from '@chetana/proto/gen/business/sales/routeplanning/proto/solar/routeplanning_solar_pb.js';
+import { solarSalesAnalyticsService } from '@chetana/proto/gen/business/sales/salesanalytics/proto/solar/salesanalytics_solar_pb.js';
+import { solarSalesOrderService } from '@chetana/proto/gen/business/sales/salesorder/proto/solar/salesorder_solar_pb.js';
 // Phase F.8.10 (2026-04-21): solarTerritoryService retired — use
 // TerritoryService + class="solar_discom_area" via config/class_registry/territory.yaml.
 // Vertical-specific — Water
-import { WaterCommissionService } from '@samavāya/proto/gen/business/sales/commission/proto/water/commission_water_pb.js';
-import { WaterCRMService } from '@samavāya/proto/gen/business/sales/crm/proto/water/crm_water_pb.js';
-import { WaterDealerService } from '@samavāya/proto/gen/business/sales/dealer/proto/water/dealer_water_pb.js';
-import { WaterFieldSalesService } from '@samavāya/proto/gen/business/sales/fieldsales/proto/water/fieldsales_water_pb.js';
-import { WaterPricingService } from '@samavāya/proto/gen/business/sales/pricing/proto/water/pricing_water_pb.js';
-import { WaterRoutePlanningService } from '@samavāya/proto/gen/business/sales/routeplanning/proto/water/routeplanning_water_pb.js';
-import { WaterSalesAnalyticsService } from '@samavāya/proto/gen/business/sales/salesanalytics/proto/water/salesanalytics_water_pb.js';
-import { WaterSalesInvoiceService } from '@samavāya/proto/gen/business/sales/salesinvoice/proto/water/salesinvoice_water_pb.js';
-import { WaterSalesOrderService } from '@samavāya/proto/gen/business/sales/salesorder/proto/water/salesorder_water_pb.js';
+import { WaterCommissionService } from '@chetana/proto/gen/business/sales/commission/proto/water/commission_water_pb.js';
+import { WaterCRMService } from '@chetana/proto/gen/business/sales/crm/proto/water/crm_water_pb.js';
+import { WaterDealerService } from '@chetana/proto/gen/business/sales/dealer/proto/water/dealer_water_pb.js';
+import { WaterFieldSalesService } from '@chetana/proto/gen/business/sales/fieldsales/proto/water/fieldsales_water_pb.js';
+import { WaterPricingService } from '@chetana/proto/gen/business/sales/pricing/proto/water/pricing_water_pb.js';
+import { WaterRoutePlanningService } from '@chetana/proto/gen/business/sales/routeplanning/proto/water/routeplanning_water_pb.js';
+import { WaterSalesAnalyticsService } from '@chetana/proto/gen/business/sales/salesanalytics/proto/water/salesanalytics_water_pb.js';
+import { WaterSalesInvoiceService } from '@chetana/proto/gen/business/sales/salesinvoice/proto/water/salesinvoice_water_pb.js';
+import { WaterSalesOrderService } from '@chetana/proto/gen/business/sales/salesorder/proto/water/salesorder_water_pb.js';
 // Phase F.8.10 (2026-04-21): WaterTerritoryService retired — use
 // TerritoryService + class="water_utility_zone" via config/class_registry/territory.yaml.
 // Vertical-specific — Work Vertical
-import { WorkVerticalSalesOrderService } from '@samavāya/proto/gen/business/sales/salesorder/proto/workvertical/salesorder_workvertical_pb.js';
+import { WorkVerticalSalesOrderService } from '@chetana/proto/gen/business/sales/salesorder/proto/workvertical/salesorder_workvertical_pb.js';
 
 export {
   CRMService, SalesOrderService, SalesInvoiceService, PricingService,

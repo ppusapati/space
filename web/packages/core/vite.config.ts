@@ -15,7 +15,7 @@ export default defineConfig({
       fileName: 'index'
     },
     rollupOptions: {
-      external: ['svelte', 'svelte/internal', 'svelte/store', '@samavāya/ui', '@p9e.in/utils']
+      external: ['svelte', 'svelte/internal', 'svelte/store', '@chetana/ui', '@p9e.in/utils']
     }
   }
 });

@@ -3,7 +3,7 @@ package serviceclient
 import (
 	"sync"
 
-	"p9e.in/samavaya/packages/events/bus"
+	"p9e.in/chetana/packages/events/bus"
 )
 
 // Registry holds named bus instances. Most services use the default bus

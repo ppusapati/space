@@ -8,9 +8,9 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 
-	"p9e.in/samavaya/packages/api/v1/fields"
-	"p9e.in/samavaya/packages/api/v1/pagination"
-	"p9e.in/samavaya/packages/ulid"
+	"p9e.in/chetana/packages/api/v1/fields"
+	"p9e.in/chetana/packages/api/v1/pagination"
+	"p9e.in/chetana/packages/ulid"
 
 	pbpipe "github.com/ppusapati/space/services/eo-pipeline/api"
 	eopipelinedb "github.com/ppusapati/space/services/eo-pipeline/db/generated"

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"p9e.in/samavaya/packages/models"
+	"p9e.in/chetana/packages/models"
 )
 
 // Fetch entity by ID or UUID

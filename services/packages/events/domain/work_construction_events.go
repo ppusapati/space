@@ -51,16 +51,16 @@ func TopicForEvent(eventType string) string {
 		EventTypeServicePartsConsumed, EventTypeFieldInventoryUpdated, EventTypeWorkerPaymentProcessed,
 		EventTypeServiceCostAllocated, EventTypeWorkOrderCostAllocated, EventTypeFieldServiceExpenseRecorded,
 		EventTypeWorkerPaymentScheduleCreated:
-		return "samavaya.work.events"
+		return "chetana.work.events"
 	case EventTypeConstructionProjectCreated, EventTypeConstructionProjectPhaseChanged, EventTypeConstructionBoQCreated,
 		EventTypeConstructionEquipmentAllocated, EventTypeConstructionEquipmentDeployed, EventTypeConstructionMaterialAllocated,
 		EventTypeConstructionMaterialConsumed, EventTypeConstructionMaterialReceived, EventTypeSafetyIncidentReported,
 		EventTypeSafetyInspectionCompleted, EventTypeConstructionSiteCreated, EventTypeConstructionSiteClosed,
 		EventTypeProgressPaymentGenerated, EventTypeConstructionProjectCostRecorded, EventTypeSubcontractorInvoiceCreated,
 		EventTypeProjectGLCreated, EventTypeCostVarianceDetected, EventTypeBudgetExceeded:
-		return "samavaya.construction.events"
+		return "chetana.construction.events"
 	default:
-		return "samavaya.events"
+		return "chetana.events"
 	}
 }
 

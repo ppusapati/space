@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"p9e.in/samavaya/packages/api/v1/config"
+	"p9e.in/chetana/packages/api/v1/config"
 
 	"google.golang.org/protobuf/types/known/durationpb"
 )

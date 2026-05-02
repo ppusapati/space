@@ -7,8 +7,8 @@ import (
 	"sync/atomic"
 	"time"
 
-	"p9e.in/samavaya/packages/loadbalancer"
-	"p9e.in/samavaya/packages/registry"
+	"p9e.in/chetana/packages/loadbalancer"
+	"p9e.in/chetana/packages/registry"
 )
 
 // RoundRobinBalancer implements round-robin load balancing

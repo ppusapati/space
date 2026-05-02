@@ -4,7 +4,7 @@ package money
 import (
 	"github.com/shopspring/decimal"
 
-	pb "p9e.in/samavaya/packages/api/v1/money"
+	pb "p9e.in/chetana/packages/api/v1/money"
 )
 
 // DefaultDecimalPlaces is the number of decimal places for minor units (paise/cents).

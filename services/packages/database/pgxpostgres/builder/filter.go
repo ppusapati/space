@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"p9e.in/samavaya/packages/api/v1/query"
-	"p9e.in/samavaya/packages/models"
+	"p9e.in/chetana/packages/api/v1/query"
+	"p9e.in/chetana/packages/models"
 )
 
 // Helper function to handle a filter and append it to the query

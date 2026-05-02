@@ -9,8 +9,8 @@ The rate limiter package provides multiple algorithms for controlling request fl
 ### 1. Service Mesh Integration
 
 ```go
-import "p9e.in/samavaya/packages/packages/mesh"
-import "p9e.in/samavaya/packages/packages/ratelimit/backend"
+import "p9e.in/chetana/packages/packages/mesh"
+import "p9e.in/chetana/packages/packages/ratelimit/backend"
 
 // In mesh initialization
 limiter := backend.NewPostgresRateLimiter(pool, logger)
@@ -31,8 +31,8 @@ if err != nil {
 ### 2. Load Balancer Integration
 
 ```go
-import "p9e.in/samavaya/packages/packages/loadbalancer"
-import "p9e.in/samavaya/packages/packages/ratelimit/algorithms"
+import "p9e.in/chetana/packages/packages/loadbalancer"
+import "p9e.in/chetana/packages/packages/ratelimit/algorithms"
 
 // Create load balancer
 lb := algorithms.NewRoundRobinBalancer()
@@ -45,8 +45,8 @@ lb.RecordMetrics(endpoint.Instance.ID, latency, success)
 ### 3. Circuit Breaker Integration
 
 ```go
-import "p9e.in/samavaya/packages/packages/circuitbreaker"
-import "p9e.in/samavaya/packages/packages/ratelimit"
+import "p9e.in/chetana/packages/packages/circuitbreaker"
+import "p9e.in/chetana/packages/packages/ratelimit"
 
 // When circuit breaker is OPEN
 result, _ := breaker.Check(ctx, "service:op")
@@ -59,7 +59,7 @@ if !result.Allowed {
 ### 4. HTTP Middleware Integration
 
 ```go
-import "p9e.in/samavaya/packages/packages/ratelimit/api"
+import "p9e.in/chetana/packages/packages/ratelimit/api"
 
 // Create API handler
 limiterAPI := api.New(limiter, logger)

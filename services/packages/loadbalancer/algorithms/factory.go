@@ -3,7 +3,7 @@ package algorithms
 import (
 	"fmt"
 
-	"p9e.in/samavaya/packages/loadbalancer"
+	"p9e.in/chetana/packages/loadbalancer"
 )
 
 // New creates a new load balancer based on the algorithm type

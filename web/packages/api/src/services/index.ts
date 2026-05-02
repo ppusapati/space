@@ -2,12 +2,12 @@
  * Service Factories — Typed ConnectRPC clients for all backend modules
  *
  * Usage:
- *   import { getItemService } from '@samavāya/api/services';
+ *   import { getItemService } from '@chetana/api/services';
  *   const items = getItemService();
  *   const response = await items.listItems({ ... });
  *
  * Or import from specific module:
- *   import { getItemService } from '@samavāya/api/services/masters';
+ *   import { getItemService } from '@chetana/api/services/masters';
  */
 
 // Identity (auth, users, tenants, roles, access)
@@ -59,7 +59,7 @@ export * from './insights.js';
 // We selectively re-export only the new core/bi/* factories (BI-prefixed
 // to avoid legacy collisions) so consumers can import them via the
 // package root. Full legacy surface still reachable via explicit
-// '@samavāya/api/services/bi' import.
+// '@chetana/api/services/bi' import.
 export {
   BIDatasetService,
   BIQueryService,

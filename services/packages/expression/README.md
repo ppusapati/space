@@ -4,7 +4,7 @@
 
 ### Import
 ```go
-import "p9e.in/samavaya/packages/expression"
+import "p9e.in/chetana/packages/expression"
 ```
 
 ### Create Evaluator

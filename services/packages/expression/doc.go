@@ -1,5 +1,5 @@
 // Package expression provides unified expression evaluation and filtering capabilities
-// across the samavaya ERP backend.
+// across the chetana ERP backend.
 //
 // The package consolidates three key concerns:
 //

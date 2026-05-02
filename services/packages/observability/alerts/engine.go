@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
-	"p9e.in/samavaya/packages/observability"
-	"p9e.in/samavaya/packages/observability/metrics"
+	"p9e.in/chetana/packages/p9log"
+	"p9e.in/chetana/packages/observability"
+	"p9e.in/chetana/packages/observability/metrics"
 )
 
 // Engine manages alert rules and firing

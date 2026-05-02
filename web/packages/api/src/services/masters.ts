@@ -17,12 +17,12 @@ import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
 // Base service descriptors
-import { ItemService } from '@samavāya/proto/gen/business/masters/item/proto/item_pb.js';
-import { EntityService } from '@samavāya/proto/gen/business/masters/party/proto/party_pb.js';
-import { LocationService } from '@samavāya/proto/gen/business/masters/location/proto/location_pb.js';
-import { UOMService } from '@samavāya/proto/gen/business/masters/UOM/proto/uom_pb.js';
-import { ChartOfAccountsService } from '@samavāya/proto/gen/business/masters/chartofaccounts/proto/chartofaccounts_pb.js';
-import { TaxCodeService } from '@samavāya/proto/gen/business/masters/taxcode/proto/taxcode_pb.js';
+import { ItemService } from '@chetana/proto/gen/business/masters/item/proto/item_pb.js';
+import { EntityService } from '@chetana/proto/gen/business/masters/party/proto/party_pb.js';
+import { LocationService } from '@chetana/proto/gen/business/masters/location/proto/location_pb.js';
+import { UOMService } from '@chetana/proto/gen/business/masters/UOM/proto/uom_pb.js';
+import { ChartOfAccountsService } from '@chetana/proto/gen/business/masters/chartofaccounts/proto/chartofaccounts_pb.js';
+import { TaxCodeService } from '@chetana/proto/gen/business/masters/taxcode/proto/taxcode_pb.js';
 
 // Phase F.11.1 — Agriculture*Item/Party/Location/UOM/CoA/TaxCode retired.
 //   Replaced by the generic services above with `class=agri_*` filters

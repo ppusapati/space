@@ -21,7 +21,7 @@
 // generic shape (domain, table, rows).
 package onboarding
 
-import "p9e.in/samavaya/packages/classregistry"
+import "p9e.in/chetana/packages/classregistry"
 
 // Profile is the declarative bundle an industry ships. Loaded from
 // `config/industry_profiles/<industry>.yaml` by Loader.Load.

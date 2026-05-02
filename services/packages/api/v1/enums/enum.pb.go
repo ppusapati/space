@@ -1320,7 +1320,7 @@ const file_packages_proto_enum_proto_rawDesc = "" +
 	"\x1aCOMPARISON_OPERATOR_NOT_IN\x10\f\x12\x1f\n" +
 	"\x1bCOMPARISON_OPERATOR_BETWEEN\x10\r\x12\x1f\n" +
 	"\x1bCOMPARISON_OPERATOR_IS_NULL\x10\x0e\x12#\n" +
-	"\x1fCOMPARISON_OPERATOR_IS_NOT_NULL\x10\x0fB-Z+p9e.in/samavaya/packages/api/v1/enums;enumsb\x06proto3"
+	"\x1fCOMPARISON_OPERATOR_IS_NOT_NULL\x10\x0fB-Z+p9e.in/chetana/packages/api/v1/enums;enumsb\x06proto3"
 
 var (
 	file_packages_proto_enum_proto_rawDescOnce sync.Once

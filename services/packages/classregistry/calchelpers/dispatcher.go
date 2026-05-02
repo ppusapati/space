@@ -6,7 +6,7 @@ import (
 	"sort"
 	"sync"
 
-	"p9e.in/samavaya/packages/errors"
+	"p9e.in/chetana/packages/errors"
 )
 
 // ClassDispatcher is the class-aware branching primitive for Layer 3

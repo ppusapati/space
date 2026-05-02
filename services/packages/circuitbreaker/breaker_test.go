@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/p9log"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

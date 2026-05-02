@@ -36,7 +36,7 @@ go 1.26.1
 
 ### 1.4 Handle External Dependency
 ```go
-// Current: p9e.in/Samavāya/identity/user
+// Current: p9e.in/chetana/identity/user
 // Option 1: Remove dependency entirely (make optional)
 // Option 2: Create interface in kosha, let consumers implement
 // Option 3: Move user identity into kosha as subpackage
@@ -630,7 +630,7 @@ golangci-lint run --fix
    - `github.com/yourusername/kosha`
    - Other?
 
-2. How should we handle `p9e.in/Samavāya/identity/user` dependency?
+2. How should we handle `p9e.in/chetana/identity/user` dependency?
    - Remove and make optional
    - Create interface in kosha
    - Move into kosha as subpackage

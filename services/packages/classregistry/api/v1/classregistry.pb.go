@@ -30,7 +30,7 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	durationpb "google.golang.org/protobuf/types/known/durationpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
-	pagination "p9e.in/samavaya/packages/api/v1/pagination"
+	pagination "p9e.in/chetana/packages/api/v1/pagination"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -1832,7 +1832,7 @@ const file_packages_classregistry_proto_classregistry_proto_rawDesc = "" +
 	"\x14ClassRegistryService\x12l\n" +
 	"\vListClasses\x12-.packages.classregistry.v1.ListClassesRequest\x1a..packages.classregistry.v1.ListClassesResponse\x12u\n" +
 	"\x0eGetClassSchema\x120.packages.classregistry.v1.GetClassSchemaRequest\x1a1.packages.classregistry.v1.GetClassSchemaResponse\x12l\n" +
-	"\vListDomains\x12-.packages.classregistry.v1.ListDomainsRequest\x1a..packages.classregistry.v1.ListDomainsResponseB?Z=p9e.in/samavaya/packages/classregistry/api/v1;classregistryv1b\x06proto3"
+	"\vListDomains\x12-.packages.classregistry.v1.ListDomainsRequest\x1a..packages.classregistry.v1.ListDomainsResponseB?Z=p9e.in/chetana/packages/classregistry/api/v1;classregistryv1b\x06proto3"
 
 var (
 	file_packages_classregistry_proto_classregistry_proto_rawDescOnce sync.Once

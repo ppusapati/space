@@ -3,7 +3,7 @@ package calchelpers
 import (
 	"testing"
 
-	"p9e.in/samavaya/packages/classregistry"
+	"p9e.in/chetana/packages/classregistry"
 )
 
 // fakeDisp implements DispatcherInfo without depending on

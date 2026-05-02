@@ -10,7 +10,7 @@ import type {
   UpdateCustomerRequest,
   CustomerCategory,
 } from '$lib/masters/types';
-// import type { ListParams, PaginatedResponse } from '@samavāya/api';
+// import type { ListParams, PaginatedResponse } from '@chetana/api';
 
 // ============================================================================
 // CUSTOMER SERVICE

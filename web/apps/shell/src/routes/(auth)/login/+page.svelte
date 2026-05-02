@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { authStore } from '@samavāya/stores';
+  import { authStore } from '@chetana/stores';
   import { goto } from '$app/navigation';
 
   let email = $state('');
@@ -46,7 +46,7 @@
 </script>
 
 <svelte:head>
-  <title>Login - samavāya ERP</title>
+  <title>Login - Chetana ERP</title>
 </svelte:head>
 
 <div class="w-full">

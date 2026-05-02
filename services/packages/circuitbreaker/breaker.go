@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/p9log"
 )
 
 // CircuitBreaker manages circuit breaker state for multiple circuits.

@@ -6,8 +6,8 @@ import (
 
 	"go.uber.org/fx"
 
-	"p9e.in/samavaya/packages/events"
-	"p9e.in/samavaya/packages/events/bus"
+	"p9e.in/chetana/packages/events"
+	"p9e.in/chetana/packages/events/bus"
 )
 
 // EventBusModule provides the event bus and related components to all modules

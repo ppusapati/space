@@ -3,7 +3,7 @@ package p9context
 import (
 	"context"
 
-	"p9e.in/samavaya/packages/database/pgxpostgres/validator"
+	"p9e.in/chetana/packages/database/pgxpostgres/validator"
 )
 
 type securityContextKey struct{}

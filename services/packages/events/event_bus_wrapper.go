@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/events/bus"
-	"p9e.in/samavaya/packages/events/domain"
+	"p9e.in/chetana/packages/events/bus"
+	"p9e.in/chetana/packages/events/domain"
 )
 
 // EventPublisher is a simple interface for publishing events.

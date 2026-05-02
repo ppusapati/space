@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sort"
 
-	"p9e.in/samavaya/packages/errors"
+	"p9e.in/chetana/packages/errors"
 )
 
 // OverrideStore is the narrow port the overlay depends on. An SQL-backed

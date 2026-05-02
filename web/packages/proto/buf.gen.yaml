@@ -8,7 +8,7 @@ plugins:
       - target=ts
       - import_extension=.js
 inputs:
-  # Point buf at the backend root so buf.yaml (module "brahma/samavaya") is discovered
+  # Point buf at the backend root so buf.yaml (module "brahma/chetana") is discovered
   # and cross-proto imports like "packages/proto/query.proto" resolve correctly.
   #
   # extension/land/** was previously excluded "pending dependency cleanup"

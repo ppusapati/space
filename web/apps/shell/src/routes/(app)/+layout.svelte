@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { ErpShell } from '@samavāya/ui';
+  import { ErpShell } from '@chetana/ui';
   import { page } from '$app/stores';
   import { onMount } from 'svelte';
-  import { moduleStore } from '@samavāya/stores';
+  import { moduleStore } from '@chetana/stores';
 
   let { children } = $props();
 

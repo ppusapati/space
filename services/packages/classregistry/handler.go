@@ -6,9 +6,9 @@ import (
 	"connectrpc.com/connect"
 	"go.uber.org/fx"
 
-	classregistryv1 "p9e.in/samavaya/packages/classregistry/api/v1"
-	"p9e.in/samavaya/packages/classregistry/api/v1/classregistryv1connect"
-	"p9e.in/samavaya/packages/errors"
+	classregistryv1 "p9e.in/chetana/packages/classregistry/api/v1"
+	"p9e.in/chetana/packages/classregistry/api/v1/classregistryv1connect"
+	"p9e.in/chetana/packages/errors"
 )
 
 // Handler implements the ClassRegistryServiceHandler generated from

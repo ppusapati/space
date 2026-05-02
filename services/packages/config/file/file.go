@@ -7,8 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	"p9e.in/samavaya/packages/config"
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/config"
+	"p9e.in/chetana/packages/p9log"
 )
 
 var _ config.Source = (*file)(nil)

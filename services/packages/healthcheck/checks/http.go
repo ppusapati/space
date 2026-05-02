@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"p9e.in/samavaya/packages/healthcheck"
+	"p9e.in/chetana/packages/healthcheck"
 )
 
 // HTTPCheck implements HTTP health checking

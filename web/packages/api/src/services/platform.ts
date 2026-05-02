@@ -7,62 +7,62 @@ import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
 // Notifications
-import { NotificationService } from '@samavāya/proto/gen/core/notifications/notification/proto/notifcation_pb.js';
-import { TemplateService } from '@samavāya/proto/gen/core/notifications/template/proto/template_pb.js';
+import { NotificationService } from '@chetana/proto/gen/core/notifications/notification/proto/notifcation_pb.js';
+import { TemplateService } from '@chetana/proto/gen/core/notifications/template/proto/template_pb.js';
 
 // Communication
-import { ChatService } from '@samavāya/proto/gen/core/communication/chat/proto/chat_pb.js';
-import { CurrencyService } from '@samavāya/proto/gen/core/communication/currency/proto/currency_pb.js';
-import { LocalizationService as I18nService } from '@samavāya/proto/gen/core/communication/i18n/proto/i18n_pb.js';
+import { ChatService } from '@chetana/proto/gen/core/communication/chat/proto/chat_pb.js';
+import { CurrencyService } from '@chetana/proto/gen/core/communication/currency/proto/currency_pb.js';
+import { LocalizationService as I18nService } from '@chetana/proto/gen/core/communication/i18n/proto/i18n_pb.js';
 
 // Banking
-import { BankingService } from '@samavāya/proto/gen/core/banking/banking/proto/banking_pb.js';
-import { EInvoiceService } from '@samavāya/proto/gen/core/banking/einvoice/proto/einvoice_pb.js';
-import { EWayBillService } from '@samavāya/proto/gen/core/banking/ewaybill/proto/ewaybill_pb.js';
-import { GSTService } from '@samavāya/proto/gen/core/banking/gst/proto/gst_pb.js';
-import { TDSService } from '@samavāya/proto/gen/core/banking/tds/proto/tds_pb.js';
+import { BankingService } from '@chetana/proto/gen/core/banking/banking/proto/banking_pb.js';
+import { EInvoiceService } from '@chetana/proto/gen/core/banking/einvoice/proto/einvoice_pb.js';
+import { EWayBillService } from '@chetana/proto/gen/core/banking/ewaybill/proto/ewaybill_pb.js';
+import { GSTService } from '@chetana/proto/gen/core/banking/gst/proto/gst_pb.js';
+import { TDSService } from '@chetana/proto/gen/core/banking/tds/proto/tds_pb.js';
 
 // Budget
-import { BudgetService } from '@samavāya/proto/gen/core/budget/budget/proto/budget_pb.js';
-import { BudgetVarianceService } from '@samavāya/proto/gen/core/budget/budgetvariance/proto/budgetvariance_pb.js';
-import { CAPEXService } from '@samavāya/proto/gen/core/budget/capex/proto/capex_pb.js';
-import { ForecastingService } from '@samavāya/proto/gen/core/budget/forecasting/proto/forecasting_pb.js';
+import { BudgetService } from '@chetana/proto/gen/core/budget/budget/proto/budget_pb.js';
+import { BudgetVarianceService } from '@chetana/proto/gen/core/budget/budgetvariance/proto/budgetvariance_pb.js';
+import { CAPEXService } from '@chetana/proto/gen/core/budget/capex/proto/capex_pb.js';
+import { ForecastingService } from '@chetana/proto/gen/core/budget/forecasting/proto/forecasting_pb.js';
 
 // Audit
-import { AuditReadService, AuditWriteService, AuditExportService } from '@samavāya/proto/gen/core/audit/audit/proto/audit_pb.js';
+import { AuditReadService, AuditWriteService, AuditExportService } from '@chetana/proto/gen/core/audit/audit/proto/audit_pb.js';
 import type {
   AuditLog,
   GetEntityAuditLogsRequest,
   GetEntityAuditLogsResponse,
-} from '@samavāya/proto/gen/core/audit/audit/proto/audit_pb.js';
+} from '@chetana/proto/gen/core/audit/audit/proto/audit_pb.js';
 
 export type {
   AuditLog,
   GetEntityAuditLogsRequest,
   GetEntityAuditLogsResponse,
 };
-import { ChangelogService } from '@samavāya/proto/gen/core/audit/changelog/proto/versioning_pb.js';
-import { ComplianceService } from '@samavāya/proto/gen/core/audit/compliance/proto/compliance_pb.js';
-import { GDPRService } from '@samavāya/proto/gen/core/audit/gdpr/proto/gdpr_pb.js';
-import { RetentionService } from '@samavāya/proto/gen/core/audit/retention/proto/retention_pb.js';
+import { ChangelogService } from '@chetana/proto/gen/core/audit/changelog/proto/versioning_pb.js';
+import { ComplianceService } from '@chetana/proto/gen/core/audit/compliance/proto/compliance_pb.js';
+import { GDPRService } from '@chetana/proto/gen/core/audit/gdpr/proto/gdpr_pb.js';
+import { RetentionService } from '@chetana/proto/gen/core/audit/retention/proto/retention_pb.js';
 
 // Data
-import { BackupDRService } from '@samavāya/proto/gen/core/data/backupdr/proto/backupdr_pb.js';
-import { DataArchiveService } from '@samavāya/proto/gen/core/data/dataarchive/proto/dataarchive_pb.js';
-import { DataBridgeService } from '@samavāya/proto/gen/core/data/databridge/proto/databridge_pb.js';
+import { BackupDRService } from '@chetana/proto/gen/core/data/backupdr/proto/backupdr_pb.js';
+import { DataArchiveService } from '@chetana/proto/gen/core/data/dataarchive/proto/dataarchive_pb.js';
+import { DataBridgeService } from '@chetana/proto/gen/core/data/databridge/proto/databridge_pb.js';
 
 // Platform
-import { SchedulerService } from '@samavāya/proto/gen/core/platform/scheduler/proto/scheduler_pb.js';
-import { SLAService } from '@samavāya/proto/gen/core/platform/sla/proto/sla_pb.js';
-import { FileStorageService } from '@samavāya/proto/gen/core/platform/filestorage/proto/filestorage_pb.js';
-import { BarcodeQRService } from '@samavāya/proto/gen/core/platform/barcodeqr/proto/barcodeqr_pb.js';
-import { IntegrationService } from '@samavāya/proto/gen/core/platform/integration/proto/integration_pb.js';
-import { BatchService } from '@samavāya/proto/gen/core/platform/batch/proto/batch_pb.js';
-import { PrintService } from '@samavāya/proto/gen/core/platform/print/proto/printservice_pb.js';
-import { QueueService } from '@samavāya/proto/gen/core/platform/queue/proto/queue_pb.js';
-import { WebhookService } from '@samavāya/proto/gen/core/platform/webhook/proto/webhook_pb.js';
-import { SystemSettingsService } from '@samavāya/proto/gen/core/platform/systemsettings/proto/systemsettings_pb.js';
-import { APIGatewayService } from '@samavāya/proto/gen/core/platform/apigateway/proto/apigateway_pb.js';
+import { SchedulerService } from '@chetana/proto/gen/core/platform/scheduler/proto/scheduler_pb.js';
+import { SLAService } from '@chetana/proto/gen/core/platform/sla/proto/sla_pb.js';
+import { FileStorageService } from '@chetana/proto/gen/core/platform/filestorage/proto/filestorage_pb.js';
+import { BarcodeQRService } from '@chetana/proto/gen/core/platform/barcodeqr/proto/barcodeqr_pb.js';
+import { IntegrationService } from '@chetana/proto/gen/core/platform/integration/proto/integration_pb.js';
+import { BatchService } from '@chetana/proto/gen/core/platform/batch/proto/batch_pb.js';
+import { PrintService } from '@chetana/proto/gen/core/platform/print/proto/printservice_pb.js';
+import { QueueService } from '@chetana/proto/gen/core/platform/queue/proto/queue_pb.js';
+import { WebhookService } from '@chetana/proto/gen/core/platform/webhook/proto/webhook_pb.js';
+import { SystemSettingsService } from '@chetana/proto/gen/core/platform/systemsettings/proto/systemsettings_pb.js';
+import { APIGatewayService } from '@chetana/proto/gen/core/platform/apigateway/proto/apigateway_pb.js';
 
 export {
   NotificationService, TemplateService, ChatService, CurrencyService, I18nService,

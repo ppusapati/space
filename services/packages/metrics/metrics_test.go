@@ -2,7 +2,7 @@ package metrics
 
 import (
 	"context"
-	"p9e.in/samavaya/packages/api/v1/config"
+	"p9e.in/chetana/packages/api/v1/config"
 	"testing"
 	"time"
 

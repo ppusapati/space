@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"p9e.in/samavaya/packages/ulid"
+	"p9e.in/chetana/packages/ulid"
 
 	eocatalogdb "github.com/ppusapati/space/services/eo-catalog/db/generated"
 	"github.com/ppusapati/space/services/eo-catalog/internal/mapper"

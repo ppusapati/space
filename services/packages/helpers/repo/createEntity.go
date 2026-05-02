@@ -3,10 +3,10 @@ package helpers_repo
 import (
 	"context"
 
-	"p9e.in/samavaya/packages/database/pgxpostgres/operations"
-	"p9e.in/samavaya/packages/deps"
-	"p9e.in/samavaya/packages/helpers"
-	"p9e.in/samavaya/packages/models"
+	"p9e.in/chetana/packages/database/pgxpostgres/operations"
+	"p9e.in/chetana/packages/deps"
+	"p9e.in/chetana/packages/helpers"
+	"p9e.in/chetana/packages/models"
 )
 
 // CreateEntity creates a new entity in the database using the observability middleware.

@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/p9log"
 )
 
 func TestCollectorCounter(t *testing.T) {

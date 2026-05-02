@@ -3,7 +3,7 @@ package xml
 import (
 	"encoding/xml"
 
-	"p9e.in/samavaya/packages/encoding"
+	"p9e.in/chetana/packages/encoding"
 )
 
 // Name is the name registered for the xml codec.

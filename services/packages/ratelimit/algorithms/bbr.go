@@ -7,7 +7,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"p9e.in/samavaya/packages/ratelimit"
+	"p9e.in/chetana/packages/ratelimit"
 )
 
 // BBRLimiter implements Google's BBR (Bottleneck Bandwidth and RTT) congestion control

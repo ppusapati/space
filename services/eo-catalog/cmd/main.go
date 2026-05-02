@@ -12,7 +12,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	pkgserver "p9e.in/samavaya/packages/connect/server"
+	pkgserver "p9e.in/chetana/packages/connect/server"
 
 	"github.com/ppusapati/space/services/eo-catalog/api/eocatalogv1connect"
 	"github.com/ppusapati/space/services/eo-catalog/internal/config"

@@ -151,7 +151,7 @@ const file_packages_proto_fields_proto_rawDesc = "" +
 	"\n" +
 	"deleted_by\x18\x0f \x01(\v2\x1c.google.protobuf.StringValueR\tdeletedBy\x129\n" +
 	"\n" +
-	"deleted_at\x18\x10 \x01(\v2\x1a.google.protobuf.TimestampR\tdeletedAtB/Z-p9e.in/samavaya/packages/api/v1/fields;fieldsb\x06proto3"
+	"deleted_at\x18\x10 \x01(\v2\x1a.google.protobuf.TimestampR\tdeletedAtB/Z-p9e.in/chetana/packages/api/v1/fields;fieldsb\x06proto3"
 
 var (
 	file_packages_proto_fields_proto_rawDescOnce sync.Once

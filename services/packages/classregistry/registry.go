@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"p9e.in/samavaya/packages/errors"
+	"p9e.in/chetana/packages/errors"
 )
 
 // domainIndex holds a single domain's parsed classes (both base and

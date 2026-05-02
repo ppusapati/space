@@ -6,11 +6,11 @@
 import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
-import { AssetService } from '@samavāya/proto/gen/business/asset/asset/proto/asset_pb.js';
-import { DepreciationService } from '@samavāya/proto/gen/business/asset/depreciation/proto/depreciation_pb.js';
-import { EquipmentService } from '@samavāya/proto/gen/business/asset/equipment/proto/equipment_pb.js';
-import { MaintenanceService } from '@samavāya/proto/gen/business/asset/maintenance/proto/maintenance_pb.js';
-import { VehicleService } from '@samavāya/proto/gen/business/asset/vehicle/proto/vehicle_pb.js';
+import { AssetService } from '@chetana/proto/gen/business/asset/asset/proto/asset_pb.js';
+import { DepreciationService } from '@chetana/proto/gen/business/asset/depreciation/proto/depreciation_pb.js';
+import { EquipmentService } from '@chetana/proto/gen/business/asset/equipment/proto/equipment_pb.js';
+import { MaintenanceService } from '@chetana/proto/gen/business/asset/maintenance/proto/maintenance_pb.js';
+import { VehicleService } from '@chetana/proto/gen/business/asset/vehicle/proto/vehicle_pb.js';
 
 // Vertical-specific — Agriculture
 // AgricultureAssetService retired — Phase F.2.3 consolidation. Use

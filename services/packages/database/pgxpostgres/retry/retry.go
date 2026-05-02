@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/p9log"
 
 	"github.com/cenkalti/backoff/v4"
 	"github.com/jackc/pgx/v5"

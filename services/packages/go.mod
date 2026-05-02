@@ -1,4 +1,4 @@
-module p9e.in/samavaya/packages
+module p9e.in/chetana/packages
 
 go 1.26.1
 

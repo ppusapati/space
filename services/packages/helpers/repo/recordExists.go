@@ -3,11 +3,11 @@ package helpers_repo
 import (
 	"context"
 
-	"p9e.in/samavaya/packages/database/pgxpostgres/builder"
-	"p9e.in/samavaya/packages/database/pgxpostgres/operations"
-	"p9e.in/samavaya/packages/deps"
-	"p9e.in/samavaya/packages/models"
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/database/pgxpostgres/builder"
+	"p9e.in/chetana/packages/database/pgxpostgres/operations"
+	"p9e.in/chetana/packages/deps"
+	"p9e.in/chetana/packages/models"
+	"p9e.in/chetana/packages/p9log"
 )
 
 func RecordExists[T any](ctx context.Context, deps deps.ServiceDeps,

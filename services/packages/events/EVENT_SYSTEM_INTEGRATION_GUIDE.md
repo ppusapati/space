@@ -8,7 +8,7 @@
 
 ## 📋 OVERVIEW
 
-The event system provides in-memory event-driven communication for the samavaya monolithic application. It enables loose coupling between modules through event publishing and handling.
+The event system provides in-memory event-driven communication for the chetana monolithic application. It enables loose coupling between modules through event publishing and handling.
 
 **Components:**
 1. EventBusWrapper - Event publishing & subscription
@@ -28,7 +28,7 @@ package main
 
 import (
     "go.uber.org/fx"
-    "p9e.in/samavaya/packages/events/provider"
+    "p9e.in/chetana/packages/events/provider"
 )
 
 func main() {
@@ -55,9 +55,9 @@ import (
     "context"
     "go.uber.org/fx"
 
-    "p9e.in/samavaya/packages/events"
-    "p9e.in/samavaya/packages/events/domain"
-    "p9e.in/samavaya/packages/events/handler"
+    "p9e.in/chetana/packages/events"
+    "p9e.in/chetana/packages/events/domain"
+    "p9e.in/chetana/packages/events/handler"
 )
 
 // SalesOrderCreatedHandler handles sales order created events

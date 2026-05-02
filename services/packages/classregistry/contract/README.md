@@ -54,7 +54,7 @@ package client
 import (
     "testing"
 
-    "p9e.in/samavaya/packages/classregistry/contract"
+    "p9e.in/chetana/packages/classregistry/contract"
     // plus your port's service + registry wiring
 )
 

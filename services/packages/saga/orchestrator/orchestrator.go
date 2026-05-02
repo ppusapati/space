@@ -8,8 +8,8 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/saga"
-	"p9e.in/samavaya/packages/saga/models"
+	"p9e.in/chetana/packages/saga"
+	"p9e.in/chetana/packages/saga/models"
 )
 
 // SagaOrchestratorImpl orchestrates saga execution with step coordination

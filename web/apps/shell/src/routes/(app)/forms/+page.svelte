@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { listModules, type ModuleSummary } from '@samavāya/api';
+  import { listModules, type ModuleSummary } from '@chetana/api';
 
   let modules = $state<ModuleSummary[]>([]);
   let isLoading = $state(true);
@@ -27,7 +27,7 @@
 </script>
 
 <svelte:head>
-  <title>Forms · Samavāya</title>
+  <title>Forms · Chetana</title>
 </svelte:head>
 
 <div class="module-directory">

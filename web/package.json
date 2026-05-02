@@ -1,5 +1,5 @@
 {
-  "name": "@samavāya/web-monorepo",
+  "name": "@chetana/web-monorepo",
   "private": true,
   "version": "0.1.0",
   "packageManager": "pnpm@10.13.0",
@@ -7,20 +7,20 @@
     "postinstall": "pnpm --filter @p9e.in/configs build",
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "dev:shell": "turbo run dev --filter=@samavaya/shell",
+    "dev:shell": "turbo run dev --filter=@chetana/shell",
     "dev:proxy": "tsx proxy/dev-proxy.ts",
-    "dev:all": "turbo run dev --filter=@samavāya/shell --filter=@samavāya/identity --filter=@samavāya/masters --filter=@samavāya/finance",
+    "dev:all": "turbo run dev --filter=@chetana/shell --filter=@chetana/identity --filter=@chetana/masters --filter=@chetana/finance",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "clean": "turbo run clean && rimraf node_modules",
     "format": "prettier --write \"**/*.{js,ts,svelte,json,css,md}\"",
     "format:check": "prettier --check \"**/*.{js,ts,svelte,json,css,md}\"",
-    "wasm:build": "turbo run wasm:build --filter=@samavāya/wasm",
-    "wasm:build:dev": "turbo run wasm:build:dev --filter=@samavāya/wasm",
+    "wasm:build": "turbo run wasm:build --filter=@chetana/wasm",
+    "wasm:build:dev": "turbo run wasm:build:dev --filter=@chetana/wasm",
     "wasm:clean": "rimraf packages/wasm/pkg packages/wasm/target",
-    "proto:generate": "turbo run generate --filter=@samavāya/proto",
-    "proto:clean": "turbo run generate:clean --filter=@samavāya/proto"
+    "proto:generate": "turbo run generate --filter=@chetana/proto",
+    "proto:clean": "turbo run generate:clean --filter=@chetana/proto"
   },
   "devDependencies": {
     "@bufbuild/buf": "^1.66.0",

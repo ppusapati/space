@@ -7,7 +7,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"p9e.in/samavaya/packages/healthcheck"
+	"p9e.in/chetana/packages/healthcheck"
 )
 
 // DatabaseCheck implements database health checking

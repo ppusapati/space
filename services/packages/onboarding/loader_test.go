@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"p9e.in/samavaya/packages/classregistry"
+	"p9e.in/chetana/packages/classregistry"
 )
 
 // tinyRegistry returns a class registry with one domain + class for

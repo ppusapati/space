@@ -1,8 +1,8 @@
 <script lang="ts">
   import 'virtual:uno.css';
-  import '@p9e.in/samavaya/css';
+  import '@@chetana/css';
   import '../app.css';
-  import { ErpRootLayout } from '@samavāya/ui';
+  import { ErpRootLayout } from '@chetana/ui';
 
   let { children } = $props();
 </script>

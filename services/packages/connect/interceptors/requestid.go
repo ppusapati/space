@@ -5,8 +5,8 @@ import (
 
 	"connectrpc.com/connect"
 
-	ulid "p9e.in/samavaya/packages/ulid"
-	"p9e.in/samavaya/packages/p9context"
+	ulid "p9e.in/chetana/packages/ulid"
+	"p9e.in/chetana/packages/p9context"
 )
 
 const (

@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"p9e.in/samavaya/packages/registry"
+	"p9e.in/chetana/packages/registry"
 )
 
 // Algorithm represents a load balancing algorithm type

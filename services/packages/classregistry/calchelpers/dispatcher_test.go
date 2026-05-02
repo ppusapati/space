@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	p9errors "p9e.in/samavaya/packages/errors"
+	p9errors "p9e.in/chetana/packages/errors"
 )
 
 // A realistic calculation shape — input + result types. Kept trivial

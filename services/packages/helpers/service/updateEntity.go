@@ -4,12 +4,12 @@ import (
 	"context"
 	"time"
 
-	pbr "p9e.in/samavaya/packages/api/v1/response"
-	hu "p9e.in/samavaya/packages/helpers/utils"
-	"p9e.in/samavaya/packages/metrics"
-	"p9e.in/samavaya/packages/models"
-	"p9e.in/samavaya/packages/p9context"
-	"p9e.in/samavaya/packages/tracing"
+	pbr "p9e.in/chetana/packages/api/v1/response"
+	hu "p9e.in/chetana/packages/helpers/utils"
+	"p9e.in/chetana/packages/metrics"
+	"p9e.in/chetana/packages/models"
+	"p9e.in/chetana/packages/p9context"
+	"p9e.in/chetana/packages/tracing"
 
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/fieldmaskpb"

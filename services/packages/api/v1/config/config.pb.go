@@ -2277,7 +2277,7 @@ const file_packages_proto_config_proto_rawDesc = "" +
 	"\x05DEBUG\x10\x00\x12\b\n" +
 	"\x04INFO\x10\x01\x12\b\n" +
 	"\x04WARN\x10\x02\x12\t\n" +
-	"\x05ERROR\x10\x03B/Z-p9e.in/samavaya/packages/api/v1/config;configb\x06proto3"
+	"\x05ERROR\x10\x03B/Z-p9e.in/chetana/packages/api/v1/config;configb\x06proto3"
 
 var (
 	file_packages_proto_config_proto_rawDescOnce sync.Once

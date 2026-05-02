@@ -6,7 +6,7 @@ import (
 	"google.golang.org/protobuf/types/known/durationpb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 
-	classregistryv1 "p9e.in/samavaya/packages/classregistry/api/v1"
+	classregistryv1 "p9e.in/chetana/packages/classregistry/api/v1"
 )
 
 // ClassDef ↔ proto translation lives here so handlers and adapters

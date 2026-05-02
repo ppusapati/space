@@ -12,7 +12,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	pkgserver "p9e.in/samavaya/packages/connect/server"
+	pkgserver "p9e.in/chetana/packages/connect/server"
 
 	"github.com/ppusapati/space/services/gi-predict/api/gipredictv1connect"
 	"github.com/ppusapati/space/services/gi-predict/internal/config"

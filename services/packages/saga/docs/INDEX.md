@@ -2,7 +2,7 @@
 
 ## Overview
 
-This documentation covers the samavaya ERP distributed saga transaction engine, with complete implementation guides for Phase 4 (24 advanced sagas across Finance, Manufacturing, HR, and Projects).
+This documentation covers the chetana ERP distributed saga transaction engine, with complete implementation guides for Phase 4 (24 advanced sagas across Finance, Manufacturing, HR, and Projects).
 
 ## Documentation Files
 

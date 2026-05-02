@@ -103,4 +103,4 @@ message MyMessage {
 
 ## Package Information
 - **Package**: `packages.api.v1.enums`
-- **Go Package**: `p9e.in/samavaya/packages/api/v1/enums;enums`
+- **Go Package**: `p9e.in/chetana/packages/api/v1/enums;enums`

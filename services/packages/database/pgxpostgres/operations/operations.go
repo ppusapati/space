@@ -31,9 +31,9 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"p9e.in/samavaya/packages/database/pgxpostgres/builder"
-	"p9e.in/samavaya/packages/database/pgxpostgres/retry"
-	"p9e.in/samavaya/packages/models"
+	"p9e.in/chetana/packages/database/pgxpostgres/builder"
+	"p9e.in/chetana/packages/database/pgxpostgres/retry"
+	"p9e.in/chetana/packages/models"
 )
 
 // QueryType defines the type of database operation

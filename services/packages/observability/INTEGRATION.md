@@ -8,11 +8,11 @@ The observability package provides comprehensive monitoring for microservices wi
 
 ```go
 import (
-    "p9e.in/samavaya/packages/packages/observability/metrics"
-    "p9e.in/samavaya/packages/packages/observability/tracing"
-    "p9e.in/samavaya/packages/packages/observability/graph"
-    "p9e.in/samavaya/packages/packages/observability/alerts"
-    "p9e.in/samavaya/packages/packages/observability/api"
+    "p9e.in/chetana/packages/packages/observability/metrics"
+    "p9e.in/chetana/packages/packages/observability/tracing"
+    "p9e.in/chetana/packages/packages/observability/graph"
+    "p9e.in/chetana/packages/packages/observability/alerts"
+    "p9e.in/chetana/packages/packages/observability/api"
 )
 
 // Create components

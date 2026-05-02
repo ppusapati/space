@@ -18,11 +18,11 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"p9e.in/samavaya/packages/classregistry"
-	"p9e.in/samavaya/packages/database/rlssession"
-	"p9e.in/samavaya/packages/errors"
-	"p9e.in/samavaya/packages/p9context"
-	"p9e.in/samavaya/packages/ulid"
+	"p9e.in/chetana/packages/classregistry"
+	"p9e.in/chetana/packages/database/rlssession"
+	"p9e.in/chetana/packages/errors"
+	"p9e.in/chetana/packages/p9context"
+	"p9e.in/chetana/packages/ulid"
 )
 
 // Store is the pgxpool-backed override store. Satisfies
@@ -188,7 +188,7 @@ func (s *Store) UpsertOverride(ctx context.Context, in UpsertInput) (string, err
 	defer func() { _ = tx.Rollback(ctx) }()
 
 	// SET LOCAL app.tenant_id so FORCE RLS policies pass under
-	// non-superuser DB role (samavaya_app).
+	// non-superuser DB role (chetana_app).
 	if err := rlssession.SetLocal(ctx, tx, p9context.RLSScope{TenantID: in.TenantID}); err != nil {
 		return "", fmt.Errorf("upsert override: %w", err)
 	}

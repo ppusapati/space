@@ -7,16 +7,16 @@ import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
 // Service descriptors
-import { TenantService, TenantInternalService } from '@samavāya/proto/gen/core/identity/tenant/proto/tenant_pb.js';
-import { UserService } from '@samavāya/proto/gen/core/identity/user/proto/user_pb.js';
-import { RoleService } from '@samavāya/proto/gen/core/identity/user/proto/role_pb.js';
-import { UserTenantService } from '@samavāya/proto/gen/core/identity/user/proto/user_tenant_pb.js';
-import { AccessService } from '@samavāya/proto/gen/core/identity/access/proto/access_pb.js';
-import { PDPService } from '@samavāya/proto/gen/core/identity/pdp/proto/pdp_pb.js';
-import { AuthService } from '@samavāya/proto/gen/core/identity/auth/proto/auth_pb.js';
-import { EntityService as IdentityEntityService } from '@samavāya/proto/gen/core/identity/entity/proto/entity_pb.js';
-import { PermissionService } from '@samavāya/proto/gen/core/identity/user/proto/permission_pb.js';
-import { PermissionDefService } from '@samavāya/proto/gen/core/identity/user/proto/permissiondef_pb.js';
+import { TenantService, TenantInternalService } from '@chetana/proto/gen/core/identity/tenant/proto/tenant_pb.js';
+import { UserService } from '@chetana/proto/gen/core/identity/user/proto/user_pb.js';
+import { RoleService } from '@chetana/proto/gen/core/identity/user/proto/role_pb.js';
+import { UserTenantService } from '@chetana/proto/gen/core/identity/user/proto/user_tenant_pb.js';
+import { AccessService } from '@chetana/proto/gen/core/identity/access/proto/access_pb.js';
+import { PDPService } from '@chetana/proto/gen/core/identity/pdp/proto/pdp_pb.js';
+import { AuthService } from '@chetana/proto/gen/core/identity/auth/proto/auth_pb.js';
+import { EntityService as IdentityEntityService } from '@chetana/proto/gen/core/identity/entity/proto/entity_pb.js';
+import { PermissionService } from '@chetana/proto/gen/core/identity/user/proto/permission_pb.js';
+import { PermissionDefService } from '@chetana/proto/gen/core/identity/user/proto/permissiondef_pb.js';
 
 // Re-export service descriptors for direct use
 export {

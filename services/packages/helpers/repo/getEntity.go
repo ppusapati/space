@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 
-	"p9e.in/samavaya/packages/database/pgxpostgres/operations"
-	"p9e.in/samavaya/packages/deps"
-	"p9e.in/samavaya/packages/helpers"
-	ph "p9e.in/samavaya/packages/helpers/utils"
-	"p9e.in/samavaya/packages/models"
+	"p9e.in/chetana/packages/database/pgxpostgres/operations"
+	"p9e.in/chetana/packages/deps"
+	"p9e.in/chetana/packages/helpers"
+	ph "p9e.in/chetana/packages/helpers/utils"
+	"p9e.in/chetana/packages/models"
 )
 
 // GetByID retrieves an entity by its ID using the observability middleware.

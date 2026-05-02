@@ -8,7 +8,7 @@ import (
 
 	"github.com/jackc/pgx/v5/pgconn"
 
-	"p9e.in/samavaya/packages/p9context"
+	"p9e.in/chetana/packages/p9context"
 )
 
 // fakeExecer captures every SQL statement passed to Exec so tests can

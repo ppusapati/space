@@ -5,7 +5,7 @@ package file
 // 	"os"
 // 	"path/filepath"
 
-// 	"p9e.in/samavaya/packages/config"
+// 	"p9e.in/chetana/packages/config"
 
 // 	"github.com/fsnotify/fsnotify"
 // )

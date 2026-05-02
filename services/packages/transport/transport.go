@@ -5,12 +5,12 @@ import (
 	"net/url"
 
 	// init encoding
-	_ "p9e.in/samavaya/packages/encoding/form"
-	_ "p9e.in/samavaya/packages/encoding/json"
+	_ "p9e.in/chetana/packages/encoding/form"
+	_ "p9e.in/chetana/packages/encoding/json"
 
-	_ "p9e.in/samavaya/packages/encoding/proto"
-	_ "p9e.in/samavaya/packages/encoding/xml"
-	_ "p9e.in/samavaya/packages/encoding/yaml"
+	_ "p9e.in/chetana/packages/encoding/proto"
+	_ "p9e.in/chetana/packages/encoding/xml"
+	_ "p9e.in/chetana/packages/encoding/yaml"
 )
 
 // Server is transport server.

@@ -16,9 +16,9 @@
 import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
-import { FulfillmentService } from '@samavāya/proto/gen/business/fulfillment/fulfillment/proto/fulfillment_pb.js';
-import { ReturnsService } from '@samavāya/proto/gen/business/fulfillment/returns/proto/returns_pb.js';
-import { ShippingService } from '@samavāya/proto/gen/business/fulfillment/shipping/proto/shipping_pb.js';
+import { FulfillmentService } from '@chetana/proto/gen/business/fulfillment/fulfillment/proto/fulfillment_pb.js';
+import { ReturnsService } from '@chetana/proto/gen/business/fulfillment/returns/proto/returns_pb.js';
+import { ShippingService } from '@chetana/proto/gen/business/fulfillment/shipping/proto/shipping_pb.js';
 
 // Vertical-specific fulfillment/returns/shipping service descriptors
 // retired in Phase F.7 — the classregistry taxonomy now carries the

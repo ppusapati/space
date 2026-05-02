@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"p9e.in/samavaya/packages/errors"
+	"p9e.in/chetana/packages/errors"
 )
 
 // TimeIntelligence generates PostgreSQL SQL expressions for time-based analytics.

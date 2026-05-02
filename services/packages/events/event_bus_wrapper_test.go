@@ -5,8 +5,8 @@ import (
 	"errors"
 	"testing"
 
-	"p9e.in/samavaya/packages/events/bus"
-	"p9e.in/samavaya/packages/events/domain"
+	"p9e.in/chetana/packages/events/bus"
+	"p9e.in/chetana/packages/events/domain"
 )
 
 func TestNewEventBusWrapper(t *testing.T) {

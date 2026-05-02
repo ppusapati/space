@@ -1,7 +1,7 @@
 {
-  "name": "@samavāya/i18n",
+  "name": "@chetana/i18n",
   "version": "1.0.0",
-  "description": "Internationalization for Samavāya ERP — multi-language support for 4 verticals (agriculture, manufacturing, water, construction)",
+  "description": "Internationalization for Chetana ERP — multi-language support for 4 verticals (agriculture, manufacturing, water, construction)",
   "type": "module",
   "exports": {
     ".": {
@@ -26,5 +26,5 @@
     "svelte": "^5.0.0",
     "typescript": "^5.8.3"
   },
-  "keywords": ["i18n", "internationalization", "svelte", "samavāya", "erp", "multilingual"]
+  "keywords": ["i18n", "internationalization", "svelte", "Chetana", "erp", "multilingual"]
 }

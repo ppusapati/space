@@ -148,7 +148,7 @@ High-level summary of consolidation effort
 **File**: `workflow/formbuilder/internal/service/grid_data_service.go`
 
 **Changes:**
-1. Added import: `"p9e.in/samavaya/packages/expression"`
+1. Added import: `"p9e.in/chetana/packages/expression"`
 2. Changed field type: `RuleEvaluator` → `expression.Evaluator`
 3. Updated constructor: `NewRuleEvaluator()` → `expression.NewEvaluator()`
 4. All method calls remain identical (100% API compatible)
@@ -288,7 +288,7 @@ packages/models/search_criteria.go
 
 For MetaSearch, ReportBuilder, and Authorization modules to adopt:
 
-- [ ] Update imports: `p9e.in/samavaya/packages/models` → `p9e.in/samavaya/packages/expression`
+- [ ] Update imports: `p9e.in/chetana/packages/models` → `p9e.in/chetana/packages/expression`
 - [ ] Update type references: `models.SearchCriteria` → `expression.SearchCriteria`
 - [ ] Update evaluator usage: `NewRuleEvaluator()` → `expression.NewEvaluator()`
 - [ ] Run tests to verify compatibility
@@ -341,4 +341,4 @@ The consolidation of filtering, rule evaluation, and search criteria into `packa
 ✅ **Well-Documented** - README, MIGRATION guide, inline comments, examples
 ✅ **Extensible** - Easy to add new operators or capabilities
 
-This package is now ready for deployment and integration across all samavaya ERP modules.
+This package is now ready for deployment and integration across all chetana ERP modules.

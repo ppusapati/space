@@ -11,7 +11,7 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	descriptorpb "google.golang.org/protobuf/types/descriptorpb"
 	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
-	pagination "p9e.in/samavaya/packages/api/v1/pagination"
+	pagination "p9e.in/chetana/packages/api/v1/pagination"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -425,7 +425,7 @@ const file_packages_proto_response_proto_rawDesc = "" +
 	"\x14DELETED_SUCCESSFULLY\x10\x12\x1a\x04\xa8E\xc8\x01\x12\x1c\n" +
 	"\x12FOUND_SUCCESSFULLY\x10\x13\x1a\x04\xa8E\xc8\x01:@\n" +
 	"\fdefault_code\x12\x1c.google.protobuf.EnumOptions\x18\xd4\b \x01(\x05R\vdefaultCode:6\n" +
-	"\x04code\x12!.google.protobuf.EnumValueOptions\x18\xd5\b \x01(\x05R\x04codeB3Z1p9e.in/samavaya/packages/api/v1/response;responseb\x06proto3"
+	"\x04code\x12!.google.protobuf.EnumValueOptions\x18\xd5\b \x01(\x05R\x04codeB3Z1p9e.in/chetana/packages/api/v1/response;responseb\x06proto3"
 
 var (
 	file_packages_proto_response_proto_rawDescOnce sync.Once

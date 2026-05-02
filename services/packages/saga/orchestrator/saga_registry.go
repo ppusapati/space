@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"sync"
 
-	"p9e.in/samavaya/packages/saga"
+	"p9e.in/chetana/packages/saga"
 )
 
 // SagaRegistry manages registration and retrieval of saga handlers

@@ -13,7 +13,7 @@ import type {
   PriceList,
   PriceListItem,
 } from '$lib/masters/types';
-// import type { ListParams, PaginatedResponse } from '@samavāya/api';
+// import type { ListParams, PaginatedResponse } from '@chetana/api';
 
 // ============================================================================
 // ITEM SERVICE

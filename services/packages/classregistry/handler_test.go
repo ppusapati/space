@@ -7,7 +7,7 @@ import (
 
 	"connectrpc.com/connect"
 
-	classregistryv1 "p9e.in/samavaya/packages/classregistry/api/v1"
+	classregistryv1 "p9e.in/chetana/packages/classregistry/api/v1"
 )
 
 // ===========================================================================

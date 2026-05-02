@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"p9e.in/samavaya/packages/metrics"
+	"p9e.in/chetana/packages/metrics"
 )
 
 // QueryMetrics provides per-table query performance tracking.

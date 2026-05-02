@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package packages.api.v1.context;
-option go_package = "p9e.in/samavaya/packages/api/v1/pagination;pagination";
+option go_package = "p9e.in/chetana/packages/api/v1/pagination;pagination";
 message TenantContext {
   string tenant_id = 1;
   string company_id = 2;

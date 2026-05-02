@@ -3,7 +3,7 @@ package serviceclient
 import (
 	"go.uber.org/fx"
 
-	"p9e.in/samavaya/packages/events/bus"
+	"p9e.in/chetana/packages/events/bus"
 )
 
 // Module is the default fx wiring for serviceclient.

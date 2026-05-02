@@ -1,12 +1,12 @@
 /**
- * @samavāya/i18n
- * Internationalization for Samavāya ERP
+ * @chetana/i18n
+ * Internationalization for Chetana ERP
  *
  * Supports multiple languages across 4 verticals:
  *   - agriculture, manufacturing, water, construction
  *
  * @example
- * import { t, setLocale, getLocale, createI18n } from '@samavāya/i18n';
+ * import { t, setLocale, getLocale, createI18n } from '@chetana/i18n';
  *
  * @packageDocumentation
  */

@@ -19,7 +19,7 @@ set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 # Hardcode backend path to avoid Unicode cd issues
-BACKEND_DIR="/e/Brahma/Samavāya/backend"
+BACKEND_DIR="/e/Brahma/Chetana/backend"
 FINAL_OUT="$SCRIPT_DIR/src/gen"
 
 # Temp dirs (non-Unicode paths to avoid protoc issues)
@@ -43,7 +43,7 @@ if [ -n "$LOCALAPPDATA" ]; then
 fi
 
 echo "============================================"
-echo "Proto Codegen for @samavāya/proto"
+echo "Proto Codegen for @chetana/proto"
 echo "============================================"
 echo "Backend:     $BACKEND_DIR"
 echo "Temp source: $TEMP_SRC"

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { authStore, tenantStore } from '@samavāya/stores';
+  import { authStore, tenantStore } from '@chetana/stores';
   import { onMount } from 'svelte';
 
   // Mock data for dashboard widgets
@@ -25,7 +25,7 @@
 </script>
 
 <svelte:head>
-  <title>Dashboard - samavāya ERP</title>
+  <title>Dashboard - Chetana ERP</title>
 </svelte:head>
 
 <div class="dashboard">

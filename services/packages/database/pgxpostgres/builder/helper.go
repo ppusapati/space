@@ -4,9 +4,9 @@ import (
 	"context"
 	"strings"
 
-	"p9e.in/samavaya/packages/database/pgxpostgres/validator"
-	"p9e.in/samavaya/packages/models"
-	"p9e.in/samavaya/packages/p9context"
+	"p9e.in/chetana/packages/database/pgxpostgres/validator"
+	"p9e.in/chetana/packages/models"
+	"p9e.in/chetana/packages/p9context"
 )
 
 const (

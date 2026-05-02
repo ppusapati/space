@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/saga/models"
+	"p9e.in/chetana/packages/saga/models"
 )
 
 // EventPublisherImpl publishes saga events to event bus (Kafka)

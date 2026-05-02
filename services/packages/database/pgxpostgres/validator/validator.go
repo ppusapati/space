@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"p9e.in/samavaya/packages/models"
+	"p9e.in/chetana/packages/models"
 )
 
 // Security context structure

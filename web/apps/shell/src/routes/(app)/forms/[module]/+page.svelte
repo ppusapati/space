@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount, untrack } from 'svelte';
   import { page } from '$app/stores';
-  import { listForms, type FormSummary } from '@samavāya/api';
+  import { listForms, type FormSummary } from '@chetana/api';
 
   const moduleId = $derived($page.params.module ?? '');
 
@@ -51,7 +51,7 @@
 </script>
 
 <svelte:head>
-  <title>{moduleId ? `${moduleId} forms` : 'Forms'} · Samavāya</title>
+  <title>{moduleId ? `${moduleId} forms` : 'Forms'} · Chetana</title>
 </svelte:head>
 
 <div class="form-catalog">

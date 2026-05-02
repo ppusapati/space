@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	pkgconfig "p9e.in/samavaya/packages/config"
-	"p9e.in/samavaya/packages/config/file"
+	pkgconfig "p9e.in/chetana/packages/config"
+	"p9e.in/chetana/packages/config/file"
 
-	_ "p9e.in/samavaya/packages/encoding/yaml"
+	_ "p9e.in/chetana/packages/encoding/yaml"
 )
 
 type Config struct {

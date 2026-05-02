@@ -7,9 +7,9 @@ import (
 	"context"
 	"log"
 
-	"p9e.in/samavaya/packages/database/pgxpostgres/operations"
-	"p9e.in/samavaya/packages/database/pgxpostgres/schema"
-	"p9e.in/samavaya/packages/models"
+	"p9e.in/chetana/packages/database/pgxpostgres/operations"
+	"p9e.in/chetana/packages/database/pgxpostgres/schema"
+	"p9e.in/chetana/packages/models"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )

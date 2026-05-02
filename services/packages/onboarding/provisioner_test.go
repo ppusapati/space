@@ -7,8 +7,8 @@ import (
 	"sync"
 	"testing"
 
-	"p9e.in/samavaya/packages/classregistry"
-	"p9e.in/samavaya/packages/classregistry/pgstore"
+	"p9e.in/chetana/packages/classregistry"
+	"p9e.in/chetana/packages/classregistry/pgstore"
 )
 
 // ----------------------------------------------------------------------------

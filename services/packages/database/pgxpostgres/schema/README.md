@@ -9,7 +9,7 @@ Runtime column validation for dynamic query construction. Catches typos and inva
 ### 1. Register Schema (at startup)
 
 ```go
-import "p9e.in/samavaya/packages/database/pgxpostgres/schema"
+import "p9e.in/chetana/packages/database/pgxpostgres/schema"
 
 func init() {
     userSchema := schema.NewTableSchema("users", []string{

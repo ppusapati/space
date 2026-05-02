@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"connectrpc.com/connect"
-	erro "p9e.in/samavaya/packages/api/v1/errors"
+	erro "p9e.in/chetana/packages/api/v1/errors"
 
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/status"

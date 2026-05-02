@@ -8,8 +8,8 @@ The health check package provides continuous health monitoring for services with
 
 ```go
 import (
-    "p9e.in/samavaya/packages/packages/healthcheck/checks"
-    "p9e.in/samavaya/packages/packages/healthcheck/coordinator"
+    "p9e.in/chetana/packages/packages/healthcheck/checks"
+    "p9e.in/chetana/packages/packages/healthcheck/coordinator"
 )
 
 // Create coordinator

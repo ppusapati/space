@@ -9,10 +9,10 @@ import (
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
-	msgp "p9e.in/samavaya/packages/api/v1/message"
-	"p9e.in/samavaya/packages/events/bus"
-	"p9e.in/samavaya/packages/events/producer"
-	"p9e.in/samavaya/packages/p9log"
+	msgp "p9e.in/chetana/packages/api/v1/message"
+	"p9e.in/chetana/packages/events/bus"
+	"p9e.in/chetana/packages/events/producer"
+	"p9e.in/chetana/packages/p9log"
 )
 
 // DomainEventPublisher handles publishing domain events to both local event bus and Kafka

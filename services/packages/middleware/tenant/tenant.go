@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"strings"
 
-	"p9e.in/samavaya/packages/models"
-	"p9e.in/samavaya/packages/p9context"
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/models"
+	"p9e.in/chetana/packages/p9context"
+	"p9e.in/chetana/packages/p9log"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

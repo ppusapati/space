@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/loadbalancer"
-	"p9e.in/samavaya/packages/registry"
+	"p9e.in/chetana/packages/loadbalancer"
+	"p9e.in/chetana/packages/registry"
 )
 
 // LeastConnectionsBalancer selects endpoints with the fewest active connections

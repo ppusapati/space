@@ -4,7 +4,7 @@ package orchestrator
 import (
 	"go.uber.org/fx"
 
-	"p9e.in/samavaya/packages/saga"
+	"p9e.in/chetana/packages/saga"
 )
 
 // OrchestratorParams defines orchestrator component dependencies

@@ -349,7 +349,7 @@ const file_packages_proto_blob_proto_rawDesc = "" +
 	"\x04mime\x18\x03 \x01(\tR\x04mime\x12\x12\n" +
 	"\x04size\x18\x04 \x01(\x03R\x04size\x12\x10\n" +
 	"\x03url\x18\x05 \x01(\tR\x03url\x123\n" +
-	"\bmetadata\x18\x06 \x01(\v2\x17.google.protobuf.StructR\bmetadataB+Z)p9e.in/samavaya/packages/api/v1/blob;blobb\x06proto3"
+	"\bmetadata\x18\x06 \x01(\v2\x17.google.protobuf.StructR\bmetadataB+Z)p9e.in/chetana/packages/api/v1/blob;blobb\x06proto3"
 
 var (
 	file_packages_proto_blob_proto_rawDescOnce sync.Once

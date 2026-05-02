@@ -6,14 +6,14 @@
 import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
-import { InventoryCoreService } from '@samavāya/proto/gen/business/inventory/core/proto/inventorycore_pb.js';
-import { BarcodeService } from '@samavāya/proto/gen/business/inventory/barcode/proto/barcode_pb.js';
-import { CycleCountService } from '@samavāya/proto/gen/business/inventory/cycle-count/proto/cyclecount_pb.js';
-import { LotSerialService } from '@samavāya/proto/gen/business/inventory/lot-serial/proto/lotserial_pb.js';
-import { PlanningService } from '@samavāya/proto/gen/business/inventory/planning/proto/planning_pb.js';
-import { QualityService } from '@samavāya/proto/gen/business/inventory/quality/proto/quality_pb.js';
-import { StockTransferService } from '@samavāya/proto/gen/business/inventory/stock-transfer/proto/stocktransfer_pb.js';
-import { WMSService } from '@samavāya/proto/gen/business/inventory/wms/proto/wms_pb.js';
+import { InventoryCoreService } from '@chetana/proto/gen/business/inventory/core/proto/inventorycore_pb.js';
+import { BarcodeService } from '@chetana/proto/gen/business/inventory/barcode/proto/barcode_pb.js';
+import { CycleCountService } from '@chetana/proto/gen/business/inventory/cycle-count/proto/cyclecount_pb.js';
+import { LotSerialService } from '@chetana/proto/gen/business/inventory/lot-serial/proto/lotserial_pb.js';
+import { PlanningService } from '@chetana/proto/gen/business/inventory/planning/proto/planning_pb.js';
+import { QualityService } from '@chetana/proto/gen/business/inventory/quality/proto/quality_pb.js';
+import { StockTransferService } from '@chetana/proto/gen/business/inventory/stock-transfer/proto/stocktransfer_pb.js';
+import { WMSService } from '@chetana/proto/gen/business/inventory/wms/proto/wms_pb.js';
 
 // Vertical-specific — Agriculture
 // AgricultureInventoryCoreService retired in Phase F.6.1 — callers use

@@ -4,7 +4,7 @@ package models
 import (
 	"time"
 
-	"p9e.in/samavaya/packages/ulid"
+	"p9e.in/chetana/packages/ulid"
 )
 
 // FusionMethod mirrors gifusionv1.FusionMethod.

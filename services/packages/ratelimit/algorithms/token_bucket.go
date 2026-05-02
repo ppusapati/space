@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/ratelimit"
+	"p9e.in/chetana/packages/ratelimit"
 )
 
 // TokenBucketLimiter implements classic token bucket rate limiting

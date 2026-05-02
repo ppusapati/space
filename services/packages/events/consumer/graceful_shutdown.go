@@ -9,8 +9,8 @@ import (
 	"syscall"
 	"time"
 
-	"p9e.in/samavaya/packages/errors"
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/errors"
+	"p9e.in/chetana/packages/p9log"
 
 	"github.com/IBM/sarama"
 )
@@ -120,7 +120,7 @@ func (gs *GracefulShutdown) closeConsumers() {
 
 	gs.wg.Wait()
 
-	// Log accumulated errors using p9e.in/samavaya/packages/errors package
+	// Log accumulated errors using p9e.in/chetana/packages/errors package
 	if len(consumerErrors) > 0 {
 		gs.log.Errorf("Shutdown errors: %v", consumerErrors)
 	}

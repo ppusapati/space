@@ -3,7 +3,7 @@ package mesh
 import (
 	"time"
 
-	"p9e.in/samavaya/packages/loadbalancer"
+	"p9e.in/chetana/packages/loadbalancer"
 )
 
 // RoutingPolicy defines how to route requests to a service

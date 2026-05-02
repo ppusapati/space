@@ -32,7 +32,7 @@ import (
 	"strings"
 	"sync"
 
-	"p9e.in/samavaya/packages/database/pgxpostgres/validator"
+	"p9e.in/chetana/packages/database/pgxpostgres/validator"
 )
 
 func init() {

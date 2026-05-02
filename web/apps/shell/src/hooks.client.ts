@@ -3,7 +3,7 @@
  *
  * Order matters:
  *   1. initApiProviders()  — wire concrete AuthProvider/SessionProvider/ToastProvider
- *                            into @samavāya/api's provider registry. The interceptors
+ *                            into @chetana/api's provider registry. The interceptors
  *                            registered by initializeApi() call getAuthProvider()
  *                            and getSessionProvider() on the very first request, so
  *                            providers MUST be configured before initializeApi.
@@ -18,8 +18,8 @@
  * whatever) when pointing at a non-default backend.
  */
 
-import { initializeApi } from '@samavāya/api';
-import { authStore, initApiProviders } from '@samavāya/stores';
+import { initializeApi } from '@chetana/api';
+import { authStore, initApiProviders } from '@chetana/stores';
 
 // 1. Wire stores → api providers. Idempotent.
 initApiProviders();

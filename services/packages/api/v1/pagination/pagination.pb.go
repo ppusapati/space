@@ -281,7 +281,7 @@ const file_packages_proto_pagination_proto_rawDesc = "" +
 	"\vpage_offset\x18\x02 \x01(\x05R\n" +
 	"pageOffset\x12\x1b\n" +
 	"\tpage_size\x18\x03 \x01(\x05R\bpageSize\x12\x19\n" +
-	"\bhas_next\x18\x04 \x01(\bR\ahasNextB7Z5p9e.in/samavaya/packages/api/v1/pagination;paginationb\x06proto3"
+	"\bhas_next\x18\x04 \x01(\bR\ahasNextB7Z5p9e.in/chetana/packages/api/v1/pagination;paginationb\x06proto3"
 
 var (
 	file_packages_proto_pagination_proto_rawDescOnce sync.Once

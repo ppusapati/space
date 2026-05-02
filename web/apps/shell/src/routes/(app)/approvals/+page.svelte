@@ -1,13 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { authStore } from '@samavāya/stores';
+  import { authStore } from '@chetana/stores';
   import {
     getApprovalService,
     ApprovalStatus,
     type ApprovalRequest,
     type ApprovalStage,
     type ListPendingApprovalsResponse,
-  } from '@samavāya/api';
+  } from '@chetana/api';
 
   let pending = $state<ApprovalRequest[]>([]);
   let isLoading = $state(true);
@@ -143,7 +143,7 @@
 </script>
 
 <svelte:head>
-  <title>Approvals · Samavāya</title>
+  <title>Approvals · Chetana</title>
 </svelte:head>
 
 <div class="approvals">

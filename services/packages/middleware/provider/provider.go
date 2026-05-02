@@ -1,7 +1,7 @@
 package provider
 
 import (
-	"p9e.in/samavaya/packages/middleware/dbmiddleware"
+	"p9e.in/chetana/packages/middleware/dbmiddleware"
 )
 
 // Middleware constructors for dependency injection.

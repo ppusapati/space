@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"p9e.in/samavaya/packages/ulid"
+	"p9e.in/chetana/packages/ulid"
 
 	satmissiondb "github.com/ppusapati/space/services/sat-mission/db/generated"
 	"github.com/ppusapati/space/services/sat-mission/internal/mapper"

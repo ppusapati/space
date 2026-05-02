@@ -4,10 +4,10 @@ import (
 	"context"
 	"sync/atomic"
 
-	"p9e.in/samavaya/packages/api/v1/message"
-	"p9e.in/samavaya/packages/events/config"
-	"p9e.in/samavaya/packages/events/handler"
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/api/v1/message"
+	"p9e.in/chetana/packages/events/config"
+	"p9e.in/chetana/packages/events/handler"
+	"p9e.in/chetana/packages/p9log"
 
 	"github.com/IBM/sarama"
 )

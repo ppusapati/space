@@ -3,7 +3,7 @@ package saas
 import (
 	"context"
 
-	"p9e.in/samavaya/packages/saas/data"
+	"p9e.in/chetana/packages/saas/data"
 )
 
 type (

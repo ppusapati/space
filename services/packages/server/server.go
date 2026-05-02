@@ -7,7 +7,7 @@ import (
 	"sync"
 	"syscall"
 
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/p9log"
 )
 
 // Server represents the generic server framework.

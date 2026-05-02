@@ -6,16 +6,16 @@
 import type { Client } from '@connectrpc/connect';
 import { getApiClient } from '../client/client.js';
 
-import { EmployeeService } from '@samavāya/proto/gen/business/hr/employee/proto/employee_pb.js';
-import { PayrollService } from '@samavāya/proto/gen/business/hr/payroll/proto/payroll_pb.js';
-import { LeaveService } from '@samavāya/proto/gen/business/hr/leave/proto/leave_pb.js';
-import { AttendanceService } from '@samavāya/proto/gen/business/hr/attendance/proto/attendance_pb.js';
-import { AppraisalService } from '@samavāya/proto/gen/business/hr/appraisal/proto/appraisal_pb.js';
-import { ExpenseService } from '@samavāya/proto/gen/business/hr/expense/proto/expense_pb.js';
-import { ExitService } from '@samavāya/proto/gen/business/hr/exit/proto/exit_pb.js';
-import { RecruitmentService } from '@samavāya/proto/gen/business/hr/recruitment/proto/recruitment_pb.js';
-import { SalaryStructureService } from '@samavāya/proto/gen/business/hr/salarystructure/proto/salarystructure_pb.js';
-import { TrainingService } from '@samavāya/proto/gen/business/hr/training/proto/training_pb.js';
+import { EmployeeService } from '@chetana/proto/gen/business/hr/employee/proto/employee_pb.js';
+import { PayrollService } from '@chetana/proto/gen/business/hr/payroll/proto/payroll_pb.js';
+import { LeaveService } from '@chetana/proto/gen/business/hr/leave/proto/leave_pb.js';
+import { AttendanceService } from '@chetana/proto/gen/business/hr/attendance/proto/attendance_pb.js';
+import { AppraisalService } from '@chetana/proto/gen/business/hr/appraisal/proto/appraisal_pb.js';
+import { ExpenseService } from '@chetana/proto/gen/business/hr/expense/proto/expense_pb.js';
+import { ExitService } from '@chetana/proto/gen/business/hr/exit/proto/exit_pb.js';
+import { RecruitmentService } from '@chetana/proto/gen/business/hr/recruitment/proto/recruitment_pb.js';
+import { SalaryStructureService } from '@chetana/proto/gen/business/hr/salarystructure/proto/salarystructure_pb.js';
+import { TrainingService } from '@chetana/proto/gen/business/hr/training/proto/training_pb.js';
 
 // Vertical-specific — Agriculture
 // Appraisal agriculture vertical retired in Phase F.5.8 — see config/class_registry/appraisal.yaml.

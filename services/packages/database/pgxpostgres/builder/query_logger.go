@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
+	"p9e.in/chetana/packages/p9log"
 )
 
 // QueryLogger provides optional SQL query logging for debugging.

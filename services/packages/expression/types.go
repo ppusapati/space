@@ -1,8 +1,8 @@
 package expression
 
 import (
-	"p9e.in/samavaya/packages/api/v1/data"
-	"p9e.in/samavaya/packages/api/v1/query"
+	"p9e.in/chetana/packages/api/v1/data"
+	"p9e.in/chetana/packages/api/v1/query"
 
 	"google.golang.org/protobuf/types/known/fieldmaskpb"
 )

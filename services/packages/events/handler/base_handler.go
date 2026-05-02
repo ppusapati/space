@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"p9e.in/samavaya/packages/events"
-	"p9e.in/samavaya/packages/events/domain"
+	"p9e.in/chetana/packages/events"
+	"p9e.in/chetana/packages/events/domain"
 )
 
 // IEventHandler defines the interface for event handlers

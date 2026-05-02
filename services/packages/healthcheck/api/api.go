@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"p9e.in/samavaya/packages/p9log"
-	"p9e.in/samavaya/packages/healthcheck/coordinator"
+	"p9e.in/chetana/packages/p9log"
+	"p9e.in/chetana/packages/healthcheck/coordinator"
 )
 
 // HealthServer implements HTTP API for health status.

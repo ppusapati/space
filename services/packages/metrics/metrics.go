@@ -124,7 +124,7 @@ import (
 	"strconv"
 	"time"
 
-	"p9e.in/samavaya/packages/api/v1/config"
+	"p9e.in/chetana/packages/api/v1/config"
 
 	"github.com/DataDog/datadog-go/v5/statsd"
 	"github.com/prometheus/client_golang/prometheus"

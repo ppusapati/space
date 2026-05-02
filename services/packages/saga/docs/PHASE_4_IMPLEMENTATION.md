@@ -26,7 +26,7 @@
 
 ## Executive Summary
 
-Phase 4 extends the samavaya ERP saga engine with **24 advanced distributed sagas** across **4 enterprise modules** (Finance, Manufacturing, HR, Projects). These sagas coordinate complex multi-service workflows with eventual consistency, automatic compensation, and fault tolerance.
+Phase 4 extends the chetana ERP saga engine with **24 advanced distributed sagas** across **4 enterprise modules** (Finance, Manufacturing, HR, Projects). These sagas coordinate complex multi-service workflows with eventual consistency, automatic compensation, and fault tolerance.
 
 ### Phase 4 Overview
 
@@ -1754,7 +1754,7 @@ All saga handlers follow this pattern:
 ```go
 package mymodule
 
-import "p9e.in/samavaya/packages/saga"
+import "p9e.in/chetana/packages/saga"
 
 // MySaga implements SAGA-MOD-## business workflow
 // Business Flow: Step 1 -> Step 2 -> ... -> Step N
@@ -2010,7 +2010,7 @@ package mymodule
 
 import (
     "testing"
-    "p9e.in/samavaya/packages/saga"
+    "p9e.in/chetana/packages/saga"
 )
 
 // Test categories
@@ -2164,8 +2164,8 @@ package mymodule
 
 import (
     "go.uber.org/fx"
-    "p9e.in/samavaya/packages/saga"
-    "p9e.in/samavaya/packages/saga/orchestrator"
+    "p9e.in/chetana/packages/saga"
+    "p9e.in/chetana/packages/saga/orchestrator"
 )
 
 // MyModuleSagasModule provides all saga handlers for the module
@@ -2214,7 +2214,7 @@ In `packages/saga/fx.go`, import and use module:
 
 ```go
 import (
-    "p9e.in/samavaya/packages/saga/sagas/mymodule"
+    "p9e.in/chetana/packages/saga/sagas/mymodule"
 )
 
 var SagaEngineModule = fx.Module(
@@ -2286,7 +2286,7 @@ package mymodule
 
 import (
     "errors"
-    "p9e.in/samavaya/packages/saga"
+    "p9e.in/chetana/packages/saga"
 )
 
 // MySaga implements SAGA-MOD-## workflow
@@ -2563,7 +2563,7 @@ InputMapping: map[string]string{
 
 ```go
 // In your service's main.go
-import "p9e.in/samavaya/packages/saga"
+import "p9e.in/chetana/packages/saga"
 
 func main() {
     var app *fx.App

@@ -1768,7 +1768,7 @@ import {
   SchemaValidator,
   createZodFormValidator,
   createYupFormValidator
-} from '@samavāya/utility/validation';
+} from '@chetana/utility/validation';
 
 // Create validator from Zod schema
 const validator = SchemaValidator.fromZod(myZodSchema);
@@ -1816,7 +1816,7 @@ interface SchemaValidationResult<T> {
 **Column Resize Action:**
 ```svelte
 <script>
-  import { columnResize } from '@samavāya/ui';
+  import { columnResize } from '@chetana/ui';
 
   let columnWidths = { name: 200, email: 250, status: 100 };
 
@@ -1863,7 +1863,7 @@ interface SchemaValidationResult<T> {
 **Column Reorder Action:**
 ```svelte
 <script>
-  import { columnReorder, reorderColumns } from '@samavāya/ui';
+  import { columnReorder, reorderColumns } from '@chetana/ui';
 
   let columns = [
     { key: 'name', header: 'Name' },
@@ -1932,7 +1932,7 @@ import {
   closeModal,
   closeTopModal,
   closeAllModals
-} from '@samavāya/ui';
+} from '@chetana/ui';
 
 // Open a simple modal
 const result = await openModal({
@@ -1982,7 +1982,7 @@ modalStack.cancelTop();       // Cancel and close top
 ```svelte
 <!-- Place once at app root (e.g., +layout.svelte) -->
 <script>
-  import { ModalStackRenderer } from '@samavāya/ui';
+  import { ModalStackRenderer } from '@chetana/ui';
 </script>
 
 <slot />
@@ -2034,7 +2034,7 @@ const result = await openModal({
 
 **Reactive Stores:**
 ```typescript
-import { modalStack } from '@samavāya/ui';
+import { modalStack } from '@chetana/ui';
 
 // Subscribe to stack changes
 $: items = $modalStack.stack;

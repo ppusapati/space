@@ -7,11 +7,11 @@ import (
 
 	"github.com/jackc/pgx/v5"
 
-	"p9e.in/samavaya/packages/classregistry"
-	"p9e.in/samavaya/packages/database/rlssession"
-	"p9e.in/samavaya/packages/errors"
-	"p9e.in/samavaya/packages/p9context"
-	"p9e.in/samavaya/packages/ulid"
+	"p9e.in/chetana/packages/classregistry"
+	"p9e.in/chetana/packages/database/rlssession"
+	"p9e.in/chetana/packages/errors"
+	"p9e.in/chetana/packages/p9context"
+	"p9e.in/chetana/packages/ulid"
 )
 
 // Compile-time check: Store implements EntityStore.
@@ -235,7 +235,7 @@ func (s *Store) Upsert(
 	defer func() { _ = tx.Rollback(ctx) }()
 
 	// Set RLS session variable so FORCE RLS policies pass under
-	// non-superuser DB role (samavaya_app). See pgstore/rls_session.go.
+	// non-superuser DB role (chetana_app). See pgstore/rls_session.go.
 	if err := rlssession.SetLocal(ctx, tx, p9context.RLSScope{TenantID: entity.TenantID}); err != nil {
 		return "", fmt.Errorf("upsert: %w", err)
 	}

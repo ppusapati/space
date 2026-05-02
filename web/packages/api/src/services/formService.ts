@@ -3,7 +3,7 @@
  * Provides typed access to the FormService RPCs for module discovery,
  * form schema retrieval, and form submission.
  *
- * Uses the generated ConnectRPC client from @samavāya/proto. The service
+ * Uses the generated ConnectRPC client from @chetana/proto. The service
  * descriptor lives at core/platform/formservice/proto/formservice_pb.ts
  * and is regenerated via packages/proto/generate-formservice.sh.
  */
@@ -18,7 +18,7 @@ import {
   type SubmitFormResponse as PbSubmitFormResponse,
   type ModuleSummary as PbModuleSummary,
   type FormSummary as PbFormSummary,
-} from '@samavāya/proto/gen/core/platform/formservice/proto/formservice_pb.js';
+} from '@chetana/proto/gen/core/platform/formservice/proto/formservice_pb.js';
 import type {
   ModuleSummary,
   FormSummary,

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"p9e.in/samavaya/packages/authz"
+	"p9e.in/chetana/packages/authz"
 )
 
 // AuthzJWTValidator implements JWTValidator using the authz package.

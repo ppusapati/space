@@ -146,7 +146,7 @@ const file_packages_proto_geo_proto_rawDesc = "" +
 	"\x05line1\x18\x06 \x01(\tR\x05line1\x12\x14\n" +
 	"\x05line2\x18\a \x01(\tR\x05line2\x12\x14\n" +
 	"\x05line3\x18\b \x01(\tR\x05line3\x12)\n" +
-	"\x03geo\x18d \x01(\v2\x17.google.protobuf.StructR\x03geoB)Z'p9e.in/samavaya/packages/api/v1/geo;geob\x06proto3"
+	"\x03geo\x18d \x01(\v2\x17.google.protobuf.StructR\x03geoB)Z'p9e.in/chetana/packages/api/v1/geo;geob\x06proto3"
 
 var (
 	file_packages_proto_geo_proto_rawDescOnce sync.Once

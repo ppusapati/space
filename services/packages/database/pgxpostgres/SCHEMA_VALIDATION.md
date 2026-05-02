@@ -90,7 +90,7 @@ Our solution provides:
 Register your table schemas during application initialization (e.g., in `main.go` or package `init()`):
 
 ```go
-import "p9e.in/samavaya/packages/database/pgxpostgres/schema"
+import "p9e.in/chetana/packages/database/pgxpostgres/schema"
 
 func init() {
     // Register user table schema

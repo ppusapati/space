@@ -5,7 +5,7 @@ subsystems**, **Ground Station software**, and **Geospatial Intelligence**.
 Compute is Rust (host-side workspace + a separate embedded-flight workspace),
 ML is Python (ONNX Runtime + FastAPI), and the control-plane is **17
 ConnectRPC services in Go**, all built from a single shared infrastructure
-package (`p9e.in/samavaya/packages`).
+package (`p9e.in/chetana/packages`).
 
 ## Repository layout
 
@@ -38,7 +38,7 @@ space/
 ├── services/                 # Go ConnectRPC services (this is the control plane)
 │   ├── go.work
 │   ├── buf.yaml              # v2 workspace listing all proto modules
-│   ├── packages/             # p9e.in/samavaya/packages — shared infra layer
+│   ├── packages/             # p9e.in/chetana/packages — shared infra layer
 │   ├── eo-catalog/           ┐
 │   ├── eo-pipeline/          │  Earth Observation
 │   ├── eo-analytics/         ┘
@@ -115,7 +115,7 @@ pagination + status state-machines + ULID identifiers.
   `services/<svc>/db/schema/`.
 - **Configuration:** `services/<svc>/config/config.yaml` (non-secret
   defaults) + env-var overlay for secrets (`DATABASE_URL`,
-  `ALLOWED_ORIGINS`). Loaded via `p9e.in/samavaya/packages/config`.
+  `ALLOWED_ORIGINS`). Loaded via `p9e.in/chetana/packages/config`.
 - **Container build:** distroless static images, each ~10–15 MB.
 - **Per-service layout:**
 
