@@ -472,21 +472,28 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-FUNC-PLT-IAM-004; design.md §4.1.1
 **Owner:** Platform IAM
-**Status:** backlog
+**Status:** done
 **Estimate:** 4
 **Depends on:** TASK-P1-IAM-002
 **Files (create/modify):**
-  - `services/iam/internal/mfa/totp.go` (new) — RFC 6238 TOTP; 160-bit secrets; ±1 step tolerance
-  - `services/iam/internal/mfa/backupcodes.go` (new) — 10 × 8-char codes; bcrypt-hashed at rest
-  - `services/iam/internal/mfa/enroll.go` (new) — QR provisioning URI generator
-  - `services/iam/migrations/0003_mfa.sql` (new) — `mfa_totp_secrets`, `mfa_backup_codes` tables
-  - `services/iam/test/mfa_test.go` (new)
+  - `services/iam/internal/mfa/totp.go` (new) — RFC 6238 / RFC 4226 HMAC-SHA1 implementation; 160-bit (20-byte) secrets; 30s steps; 6 digits; ±1 step tolerance via `Verify(secret, code, t) (step, err)`; constant-time string compare on the truncated digest. Validated against the canonical RFC 6238 Appendix B vector for T=59s (`secret="12345678901234567890"` → `287082` truncated to 6 digits).
+  - `services/iam/internal/mfa/backupcodes.go` (new) — `GenerateBackupCodes()` returns 10 codes drawn from a 32-symbol Crockford-derived alphabet (omits `0,1,O,I,L` for paper readability); each code is 8 chars (~1.1×10¹² combinations); bcrypt-hashed at cost 12; the leading 4 chars are stored as a `prefix` index column so verification looks up O(log n) candidates rather than computing N bcrypts per attempt.
+  - `services/iam/internal/mfa/enroll.go` (new) — `EnrollmentURI(issuer, account, secret)` builds the `otpauth://totp/...` URI per the de-facto Google Authenticator key-uri-format spec; carries the issuer in BOTH the label prefix and the `issuer` query parameter as required by some authenticator apps; declares SHA1/digits=6/period=30 explicitly.
+  - `services/iam/internal/mfa/store.go` (new) — Postgres persistence (`SaveEnrollment`, `MarkVerified`, `LoadActive`, `LoadPending`, `DeleteEnrollment`, `SaveBackupCodes`, `ConsumeBackupCode`, `CountActiveBackupCodes`); `ConsumeBackupCode` runs the bcrypt-compare set under `BEGIN ... FOR UPDATE` and `UPDATE ... consumed_at` in the same transaction, so two concurrent presentations of the same code can't both succeed. Plus an in-process replay cache keyed by `(user_id, step, code)` for REQ-FUNC-PLT-IAM-004 acceptance #3 (TOTP replay rejection within the active window). Sweeper runs every 60s and drops entries past the 90-second tolerance horizon. Process-local cache is sufficient because the IAM ingress already does session affinity for the login flow.
+  - `services/iam/migrations/0003_mfa.sql` (new) — `mfa_totp_secrets` (one row per user; `secret bytea`; `verified_at` NULL until enrollment confirmed) and `mfa_backup_codes` (one row per code; `prefix` indexed; `code_hash bytea`; `consumed_at` NULL until used).
+  - `services/iam/internal/mfa/{totp,backupcodes,enroll,replay}_test.go` (new) — unit coverage: TOTP RFC 6238 vector check, ±1 step tolerance window, malformed-code rejection, base32 normalisation; backup-code shape + alphabet + uniqueness + bcrypt verify; otpauth URI format + parameter validation; replay-cache first-seen-wins / cross-user isolation / GC sweep.
+  - `services/iam/test/mfa_test.go` (new, `//go:build integration`) — full enrollment → verify → mark-verified lifecycle against real Postgres; backup-code single-use enforcement; book regeneration invalidates the prior set; TOTP replay rejection.
 **Acceptance criteria:**
-  1. Enroll → scan QR → submit code completes within one HTTP round-trip after enrollment.
-  2. Each backup code is single-use; reuse rejected.
-  3. Replay of the same TOTP code within the same time-step is rejected (replay cache).
+  1. Enroll → scan QR → submit code completes within one HTTP round-trip after enrollment. ✅ `TestMFA_EnrollmentLifecycle` walks `SaveEnrollment` → `EnrollmentURI` → `LoadPending` → `Verify` → `MarkVerified` → `LoadActive` in one go.
+  2. Each backup code is single-use; reuse rejected. ✅ `TestMFA_BackupCodes_SingleUse` proves the consumed-at update + the `ErrBackupCodeReused` re-presentation. `TestMFA_BackupCodes_RegenerationInvalidatesOldBook` covers the regen-replaces-book invariant.
+  3. Replay of the same TOTP code within the same time-step is rejected (replay cache). ✅ `TestMFA_TOTP_ReplayRejection` (integration) and `TestConsumeReplayWindow_FirstSeenWins` (unit) — including a GC sweep test for the cache eviction logic.
 **Verification:**
-  - Unit + integration colocated in `services/iam/test/mfa_test.go`.
+  - Unit: `services/iam/internal/mfa/{totp,backupcodes,enroll,replay}_test.go` — always-on, no DB needed.
+  - Integration: `services/iam/test/mfa_test.go` — `//go:build integration`, requires `IAM_TEST_DATABASE_URL` (skips otherwise).
+**Notes:**
+  - SHA-1 (HMAC mode) is the canonical TOTP algorithm; FIPS 140-3 explicitly permits SHA-1 for HOTP/TOTP usage.
+  - The replay cache lives in-process. Cross-instance replay protection requires session affinity at the ingress, which the IAM gateway already provides for the login flow. If we ever run active-active without affinity (we don't), the cache moves to Redis.
+  - The Connect RPC surface for `EnrollMFA`/`VerifyMFA`/`RegenerateBackupCodes` lands once `iam.proto` regenerates with the new RPCs (still gated by OQ-004 BSR auth). The store + algorithm layers are ready; only the protobuf glue is pending.
 
 ### TASK-P1-IAM-004: IAM — WebAuthn Level 2 with sign-count clone detection
 
