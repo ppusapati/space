@@ -560,19 +560,29 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-FUNC-PLT-IAM-007; design.md §4.1.1
 **Owner:** Platform IAM
-**Status:** backlog
+**Status:** done
 **Estimate:** 6
 **Depends on:** TASK-P1-IAM-005
 **Files (create/modify):**
-  - `services/iam/internal/saml/sp.go` (new) — Service Provider metadata, AuthnRequest, ACS handler, signature validation
-  - `services/iam/internal/saml/jit.go` (new) — JIT user provisioning; configurable attribute → role mapping per IdP
-  - `services/iam/migrations/0006_saml_idps.sql` (new) — `saml_idps` table (entity_id, sso_url, x509_cert, attribute_mapping JSONB)
-  - `services/iam/test/saml_test.go` (new) — round-trips a signed assertion from a stub IdP
+  - `services/iam/go.mod` (modify) — added `github.com/crewjam/saml v0.5.1` plus its transitive deps (`github.com/beevik/etree`, `github.com/russellhaering/goxmldsig`, `github.com/mattermost/xml-roundtrip-validator`, `github.com/jonboulle/clockwork`). Same pattern as the WebAuthn task: delegate the SAML protocol layer (XML c14n, XML signature verification via xmldsig, AuthnRequest/Response marshalling, NameID parsing, SubjectConfirmation + audience + InResponseTo + NotBefore/NotOnOrAfter checks) to the OSS library rather than re-implement security-critical XML-DSig from scratch.
+  - `services/iam/internal/saml/store.go` (new) — `IdP` struct + `AttributeMapping` JSONB shape (EmailAttribute / DisplayNameAttribute / GroupsAttribute / GroupRoleMap / DefaultRoles); `Store.LookupByID` / `LookupByEntityID` / `CreateForTest`. `BuildServiceProvider(spCfg, idp)` constructs a per-IdP `*saml.ServiceProvider` from the persisted row plus the chetana SP's signing pair (in-memory `EntityDescriptor` — we never re-fetch IdP metadata at request time). `ParseCertificate`/`EncodeCertificate` for PEM ↔ x509.Certificate roundtrip.
+  - `services/iam/internal/saml/sp.go` (new) — `Service` façade. `BeginSSO(idpID, relayState)` returns the redirect URL with a deflated+base64url AuthnRequest in the SAMLRequest query parameter plus the AuthnRequest ID for the InResponseTo binding. `FinishSSO(idpID, req, possibleRequestIDs)` parses + signature-verifies the SAMLResponse via the protocol library (which handles XML-DSig + InResponseTo + audience), flattens AttributeStatements into a `map[string][]string`, and runs JIT provisioning. Library failures wrapped as `ErrSignatureInvalid` for uniform audit handling. `MetadataXML(idpID)` emits the SP's SAML 2.0 metadata document for the IdP admin to register chetana with one click.
+  - `services/iam/internal/saml/metadata.go` (new) — small XML marshalling helper that prepends the canonical `<?xml ...?>` declaration to `EntityDescriptor`.
+  - `services/iam/internal/saml/jit.go` (new) — `JITProvisioner.Provision(idp, in)` finds-or-creates the chetana user. Match key is `email_lower` against the configured `EmailAttribute`; missing attribute → `ErrMissingEmail`. New users are inserted with `status='active'`, empty password (federated → no local credential), `data_classification='cui'`. Roles are the union of `GroupRoleMap[g]` for every IdP-supplied group plus `DefaultRoles`; unmapped groups are silently dropped. Output is de-duplicated and stable-ordered (first-appearance wins).
+  - `services/iam/migrations/0006_saml_idps.sql` (new) — `saml_idps` table (id `bigserial`, `entity_id` UNIQUE, sso_url, slo_url, x509_cert `bytea` PEM, attribute_mapping `jsonb`, disabled boolean). Partial index on `disabled`.
+  - `services/iam/internal/saml/{store,jit}_test.go` (new) — unit coverage: cert PEM roundtrip; `BuildServiceProvider` config validation across the four required-field cases; happy-path `BuildServiceProvider` builds a provider with the expected SSO descriptor; `NewService` / `NewJITProvisioner` validation; `AttributeMapping` JSON roundtrip; `projectRoles` group→role mapping with default-role union and dedup; `requireEmail` attribute resolution + missing-attribute error; `firstAttribute` whitespace handling; `displayOrEmail` fallback.
+  - `services/iam/test/saml_test.go` (new, `//go:build integration`) — full SP↔IdP round-trip against real Postgres. Stands up an in-process `crewjam/saml` IdentityProvider as a stub IdP, drives the SP's `BeginSSO` to produce an AuthnRequest, posts it to the IdP's `ServeSSO` handler, extracts the signed SAMLResponse from the auto-submit form, and feeds it back to the SP's `FinishSSO`. Asserts: (a) JIT provisions the user with the mapped roles {operator, mission_lead, viewer}, (b) replaying the same flow does NOT recreate the user (returns the existing id, Created=false), (c) tampering with a byte inside the SAMLResponse trips `ErrSignatureInvalid` AND no user row is created from the tampered email, (d) `MetadataXML` returns a well-formed XML document carrying the SP entity id + ACS URL.
 **Acceptance criteria:**
-  1. Signed assertion from configured IdP authenticates a new user; user is created with mapped roles.
-  2. Unsigned/invalidly-signed assertions are rejected.
+  1. Signed assertion from configured IdP authenticates a new user; user is created with mapped roles. ✅ `TestSAML_SignedAssertion_JITProvisionsNewUser` walks the entire flow against a stub IdP, creates the user JIT, and asserts the roles {operator, mission_lead, viewer} were projected from the IdP's group attribute via the `GroupRoleMap`. The same test re-runs the flow and asserts the user is found-not-recreated.
+  2. Unsigned/invalidly-signed assertions are rejected. ✅ `TestSAML_TamperedAssertion_Rejected` flips a byte inside the base64-encoded SAMLResponse (after the IdP signed it) and asserts (a) `FinishSSO` returns `ErrSignatureInvalid`, (b) no user row is created from the tampered identifier. The protocol library's XML-DSig verification catches the signature mismatch automatically.
 **Verification:**
-  - Integration: `services/iam/test/saml_test.go`.
+  - Unit: `services/iam/internal/saml/{store,jit}_test.go` — always-on, no DB needed.
+  - Integration: `services/iam/test/saml_test.go` — `//go:build integration`, requires `IAM_TEST_DATABASE_URL`.
+**Notes:**
+  - Single Logout (SLO) is not implemented in v1; the schema reserves an `slo_url` column for the future. Most enterprise IdPs treat SLO as best-effort and clients tend to clear local sessions on their own.
+  - The `users` table mutations live in `JITProvisioner` rather than reaching into `internal/store/users.go` because the JIT-provisioned user has no password (federated). When the user-attributes table (TASK-P1-IAM-USER-ATTRS, future) ships, the projected roles will land in that table rather than being returned in the per-session `Roles` field.
+  - Connect RPC surface for `/saml/login/{idp_id}` and `/saml/acs/{idp_id}` lands once `iam.proto` regenerates (still gated by OQ-004 BSR auth). The HTTP handlers are wire-format ready — `BeginSSO`/`FinishSSO`/`MetadataXML` are the methods the Connect bridge will call.
+  - IdP-initiated SSO is intentionally disabled (`AllowIDPInitiated: false` in `BuildServiceProvider`) — IdP-initiated flows lack the InResponseTo binding so they're more vulnerable to assertion-replay attacks. Customers who require IdP-initiated must opt in per IdP via a future flag.
 
 ### TASK-P1-IAM-007: IAM — Sessions, idle/absolute timeouts, concurrency cap, revocation
 
