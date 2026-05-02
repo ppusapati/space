@@ -4,6 +4,7 @@ use (
 	./packages
 	./iam
 	./platform
+	./audit
 	./eo-catalog
 	./eo-pipeline
 	./eo-analytics

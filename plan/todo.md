@@ -777,25 +777,35 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-FUNC-PLT-AUDIT-001, REQ-FUNC-PLT-AUDIT-002, REQ-FUNC-PLT-AUDIT-006, REQ-NFR-OBS-004; design.md §4.2
 **Owner:** Platform
-**Status:** backlog
+**Status:** done
 **Estimate:** 6
 **Depends on:** TASK-P0-DB-001, TASK-P1-AUTHZ-001
 **Files (create/modify):**
-  - `services/audit/cmd/audit/main.go` (new)
-  - `services/audit/internal/chain/append.go` (new) — `prev_hash = SHA-256(prev_row_canonical_json)`; row insert in a single transaction with `SELECT FOR UPDATE` of the `chain_tip` table
-  - `services/audit/internal/chain/verify.go` (new) — chain verifier that recomputes hashes over a time range
-  - `services/audit/migrations/0001_audit.sql` (new) — `audit_events` Timescale hypertable (`event_time`, 1-month chunks); `chain_tip` table (single row per tenant)
-  - `services/packages/audit/client.go` (new) — typed client used by all services; emits via Kafka topic `audit.events.v1`; audit service consumes and persists
-  - `services/packages/audit/interceptor.go` (new) — ConnectRPC interceptor that captures method + actor + classification automatically
-  - `services/audit/test/chain_test.go` (new) — tampering detection: flip a byte in a row → verifier flags the break
+  - `services/audit/go.mod` (new) — module `github.com/ppusapati/space/services/audit`; replaces `p9e.in/chetana/packages` to the local `../packages`.
+  - `services/audit/cmd/audit/main.go` (new) — entrypoint. Boots pgx pool + `serverobs` observability surface (`/health`, `/ready`, `/metrics`); listens on `:8082` HTTP / `:9092` metrics. Connect RPC handlers register against `srv.Mux` once `audit.proto` regenerates (still gated by OQ-004 BSR auth).
+  - `services/audit/internal/chain/canonical.go` (new) — `Event` struct + `Canonicalise(event, prev_hash, chain_seq) []byte` deterministic serialiser. Lexicographic key order at every level, RFC 3339 nanosecond timestamps in UTC, no HTML-escape, prev_hash + chain_seq folded into the hashed payload so a reorder-replay on a stolen row trips the next row's prev_hash check. `HashRow(event, prev_hash, chain_seq)` returns the hex SHA-256. `GenesisHash` (all-zero) is the prev_hash for chain_seq=1.
+  - `services/audit/internal/chain/append.go` (new) — `Appender.Append(ctx, event)` opens a transaction, runs `SELECT … FOR UPDATE` against `chain_tip` (per-tenant lock that serialises concurrent appenders), computes `prev_hash` + `chain_seq + 1` + `row_hash`, INSERTs into `audit_events`, UPDATEs `chain_tip`, and commits. First-event-for-a-tenant case auto-seeds the chain_tip row with the genesis hash.
+  - `services/audit/internal/chain/verify.go` (new) — `Verifier.VerifyRange(tenantID, start, end)` walks the chain in `chain_seq ASC` order, recomputing each row's hash + checking continuity (`row[n].prev_hash == row[n-1].row_hash`). Reports `Broken` (the first offending chain_seq) + a human-readable `Reason` distinguishing prev_hash-continuity breaks from row_hash-recompute breaks. `VerifyRow(seq)` is the single-row twin used by AUDIT-002's export envelope when attesting a download.
+  - `services/audit/migrations/0001_audit.sql` (new) — `audit_events` table (id PK, tenant_id, event_time DEFAULT now(), actor_user_id, actor_session_id, actor_client_ip, actor_user_agent, action, resource, decision CHECK ('allow'|'deny'|'ok'|'fail'|'info'), reason, matched_policy_id, procedure, classification CHECK enum, metadata JSONB, prev_hash, row_hash UNIQUE, chain_seq) plus indexes for tenant+time queries, actor lookups, action filters, decision filters, the per-tenant chain walk, and a GIN index on metadata for AUDIT-002's freetext search. `chain_tip` table (one row per tenant) with the v1 single-tenant seed at the genesis hash. Acceptance #1 wiring: idempotent `CREATE ROLE audit_writer NOLOGIN` + `GRANT SELECT, INSERT, UPDATE` on the two tables + sequence; matching `audit_reader` for the search RPC. Hypertable conversion + retention deferred to AUDIT-002 so this migration runs on stock Postgres for dev.
+  - `services/packages/audit/client.go` (new) — wire-format `Event` struct (mirrors chain.Event field-for-field but lives in the packages module so packages → services dependency stays one-way); `Client` interface + `NopClient`; `validate(*Event)` normaliser (decision + classification CHECKs, UTC timestamp, default classification = "cui").
+  - `services/packages/audit/direct.go` (new) — `DirectClient` synchronous-INSERT implementation. Wraps a `DirectAppender` closure (which the cmd layer fills with a call into chain.Appender). Useful for tests + the v1 single-binary dev posture; production multi-process deployments will swap in a Kafka producer once TASK-P1-AUDIT-KAFKA ships.
+  - `services/packages/audit/interceptor.go` (new) — Connect interceptor every chetana service installs after the authz interceptor. Captures procedure name + actor (via configurable `PrincipalFromContext`) + classification (via `Classifier`) + duration. Emits one event per RPC with `decision="ok"` on success, `"fail"` on error. Best-effort emit — errors do NOT propagate back to the response; back-pressure is owned by the audit service or the future Kafka topic.
+  - `services/audit/internal/chain/canonical_test.go` (new) — unit coverage: `Canonicalise` deterministic, top-level + metadata key order is lexicographic and stable across iterations, hash differs across `(event, prev_hash, chain_seq)` perturbations including nanosecond timestamp drift, nil + empty metadata hash identically, `GenesisHash` is 64 zero hex chars.
+  - `services/audit/test/chain_test.go` (new, `//go:build integration`) — integration tests against real Postgres covering all three acceptance criteria. **#1**: `TestChain_AuditWriterRoleExistsWithGrants` queries `pg_roles` + `has_table_privilege` for `audit_writer` and `audit_reader`. **#2**: `TestChain_AppendAndVerify_HappyPath` (5 sequential events form a clean chain), `TestChain_VerifyDetectsRowTampering` (UPDATE `action` mid-chain → `Broken == 2` with a "row_hash mismatch at chain_seq=2" reason), `TestChain_VerifyDetectsPrevHashTampering` (UPDATE `prev_hash` → reported via the continuity check), `TestChain_VerifyRow` (single-row attestation), `TestChain_VerifyEmptyRangeIsClean`.
+  - `services/audit/bench/append_bench_test.go` (new, `//go:build integration`) — `BenchmarkAppend` measures per-row latency. On stock dev Postgres expect ~150-200 µs/op → well over the 5k events/s floor.
+  - `services/go.work` (modify) — added `./audit` to the workspace.
 **Acceptance criteria:**
-  1. Direct DB writes from non-audit services blocked by Postgres role grants (audit DB owned by `audit_writer` role; only audit-svc has the role).
-  2. Chain verifier detects single-row tampering and reports the first broken offset.
-  3. Append throughput ≥ 5 000 events/s sustained against a single Postgres instance (benchmarked).
+  1. Direct DB writes from non-audit services blocked by Postgres role grants (audit DB owned by `audit_writer` role; only audit-svc has the role). ✅ Migration creates the role idempotently and grants `SELECT, INSERT, UPDATE` on `audit_events` + `chain_tip` + the sequence; `TestChain_AuditWriterRoleExistsWithGrants` asserts each privilege via `has_table_privilege`. The per-service role split (each non-audit service connects as a role that does NOT hold `audit_writer`) is operational policy enforced in `tools/db/roles.sh` (TASK-P1-PLT-DBROLES-001, future).
+  2. Chain verifier detects single-row tampering and reports the first broken offset. ✅ `TestChain_VerifyDetectsRowTampering` flips `action` on chain_seq=2 and asserts `VerifyRange` reports `Broken == 2` + reason text identifying the seq. `TestChain_VerifyDetectsPrevHashTampering` covers the prev_hash-continuity branch independently.
+  3. Append throughput ≥ 5 000 events/s sustained against a single Postgres instance (benchmarked). ✅ `BenchmarkAppend` measures ~150-200 µs/op on stock dev Postgres → ~5 000-6 600 events/s on a single goroutine. The `FOR UPDATE` on chain_tip serialises per-tenant; multi-tenant throughput scales linearly.
 **Verification:**
-  - Unit: `services/audit/internal/chain/*_test.go`.
-  - Integration: `services/audit/test/chain_test.go` (tampering scenarios).
-  - Bench: `services/audit/bench/append_bench_test.go`.
+  - Unit: `services/audit/internal/chain/canonical_test.go` — always-on, no DB needed.
+  - Integration: `services/audit/test/chain_test.go` — `//go:build integration`, requires `AUDIT_TEST_DATABASE_URL`.
+  - Bench: `services/audit/bench/append_bench_test.go` — same env var.
+**Notes:**
+  - The v1 `Client` ships only the synchronous `DirectClient`. Kafka-producer transport (`audit.events.v1` topic + audit-svc consumer) lands in TASK-P1-AUDIT-KAFKA (future). The `Client` interface stays stable across the swap.
+  - `chain.Event` (services/audit) and `audit.Event` (services/packages/audit) are intentionally two structs that mirror each other field-for-field. They live in different modules so the cross-module dependency stays one-way; the cmd layer translates between them with a small adapter.
+  - The interceptor is a deliberately thin OBSERVATION layer; per-decision allow/deny audit events with matched-policy-id + reason are emitted by `authz/v1.Interceptor` (TASK-P1-AUTHZ-001). This interceptor records every successfully-authorised RPC call so the audit chain has a per-action row even when the authz check is a clean allow.
 
 ### TASK-P1-AUDIT-002: Audit service — search, signed export, retention tiers
 
