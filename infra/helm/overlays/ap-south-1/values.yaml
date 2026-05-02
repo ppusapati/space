@@ -1,0 +1,37 @@
+# India region overlay (template only — `enabled: false` until v1.2
+# rollout when CERT-In compliance lands per plan/requirements.md §5.4).
+
+enabled: false
+region: ap-south-1
+
+postgres:
+  host: ap-south-1.db.chetana.internal
+  port: 5432
+  secretRef: chetana-postgres-credentials
+
+kafka:
+  bootstrap: ap-south-1.kafka.chetana.internal:9094
+  fipsMode: false
+
+redis:
+  host: ap-south-1.redis.chetana.internal
+  port: 6379
+
+s3:
+  region: ap-south-1
+  endpoint: s3.ap-south-1.amazonaws.com
+
+kms:
+  region: ap-south-1
+  endpoint: kms.ap-south-1.amazonaws.com
+
+iam:
+  enabled: false
+audit:
+  enabled: false
+notify:
+  enabled: false
+export:
+  enabled: false
+realtime-gw:
+  enabled: false

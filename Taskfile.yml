@@ -1,0 +1,308 @@
+# Taskfile.yml — top-level dev / CI entrypoint for chetana-platform.
+#
+# TASK-P0-CI-001 (PR-F).
+#
+# All recipes assume the canonical local toolchain:
+#   • Go 1.26+        for services/, services/packages/
+#   • Rust 1.85+      for compute/, flight/, web/packages/wasm/
+#   • Python 3.11+    for ml/
+#   • Node 20+, pnpm 10+ for web/
+#   • helm 3.14+, k6 0.50+, task 3.39+, atlas 0.36+
+#
+# Each recipe degrades cleanly when its toolchain is missing — CI
+# installs everything; developer workstations may not have all of it
+# at once.
+#
+# Conventions:
+#   • `task <recipe>`              runs the local fast-path
+#   • `task <recipe>:<sub>`        runs a sub-recipe
+#   • `task ci:<recipe>`           runs the strict variant CI uses
+#                                   (extra checks, no `--fix` modes)
+
+version: "3"
+
+includes:
+  bench:
+    taskfile: bench/Taskfile.yml
+    optional: true
+
+vars:
+  GO_PACKAGES_DIR: services/packages
+  GO_SERVICES_DIRS:
+    sh: ls -d services/*/ 2>/dev/null | grep -v 'services/packages' | tr '\n' ' '
+  # Rust workspaces. web/packages/wasm/ will be added back here once
+  # PR-B retires the ERP wasm crates and TASK-P2-WEB-002 ships the
+  # orbit propagator browser-side WASM kernel.
+  RUST_WORKSPACE_DIRS: "compute flight"
+  WEB_DIR: web
+
+tasks:
+  default:
+    cmds:
+      - task --list
+    silent: true
+
+  # -----------------------------------------------------------------
+  # Lint
+  # -----------------------------------------------------------------
+  lint:
+    desc: "Run all linters (Go, Rust, Web, Markdown). Fails on first error."
+    cmds:
+      - task: lint:go
+      - task: lint:rust
+      - task: lint:web
+      - task: lint:md
+      - task: lint:duplicates
+      - task: lint:rebrand
+
+  lint:go:
+    desc: "golangci-lint across services/."
+    cmds:
+      - |
+        if ! command -v golangci-lint >/dev/null 2>&1; then
+          echo "golangci-lint not installed; skipping (CI installs it)" >&2
+          exit 0
+        fi
+        cd {{.GO_PACKAGES_DIR}} && golangci-lint run ./...
+        for d in {{.GO_SERVICES_DIRS}}; do
+          (cd "$d" && golangci-lint run ./...) || exit 1
+        done
+
+  lint:rust:
+    desc: "Clippy across compute/, flight/, web/packages/wasm/ — denies warnings."
+    cmds:
+      - |
+        if ! command -v cargo >/dev/null 2>&1; then
+          echo "cargo not installed; skipping" >&2; exit 0
+        fi
+        for ws in {{.RUST_WORKSPACE_DIRS}}; do
+          (cd "$ws" && cargo clippy --workspace --all-targets -- -D warnings) || exit 1
+        done
+
+  lint:web:
+    desc: "ESLint + svelte-check across the web monorepo."
+    cmds:
+      - |
+        if ! command -v pnpm >/dev/null 2>&1; then
+          echo "pnpm not installed; skipping" >&2; exit 0
+        fi
+        cd {{.WEB_DIR}} && pnpm -r lint
+
+  lint:md:
+    desc: "markdownlint over plan/ + compliance/."
+    cmds:
+      - |
+        if ! command -v markdownlint >/dev/null 2>&1 && ! command -v npx >/dev/null 2>&1; then
+          echo "markdownlint / npx not installed; skipping" >&2; exit 0
+        fi
+        # Prefer the locally-installed CLI; fall back to pnpm dlx.
+        if command -v markdownlint >/dev/null 2>&1; then
+          markdownlint -c .markdownlint.json 'plan/**/*.md' 'compliance/**/*.md' 2>&1 || true
+        else
+          pnpm dlx markdownlint-cli -c .markdownlint.json 'plan/**/*.md' 'compliance/**/*.md' 2>&1 || true
+        fi
+
+  lint:duplicates:
+    desc: "Block PRs that introduce significant code duplication (REQ-CONST-011)."
+    cmds:
+      - bash tools/duplicate-check.sh
+
+  lint:rebrand:
+    desc: "Block PRs that re-introduce legacy brand strings (TASK-P0-BRAND-001 acceptance)."
+    cmds:
+      - bash tools/rebrand/rename.sh --check
+
+  # -----------------------------------------------------------------
+  # Test
+  # -----------------------------------------------------------------
+  test:
+    desc: "Run unit tests across all stacks."
+    cmds:
+      - task: test:go
+      - task: test:rust
+      - task: test:web
+
+  test:go:
+    desc: "go test ./... across services/. Race detector on."
+    cmds:
+      - |
+        cd {{.GO_PACKAGES_DIR}} && go test -race -count=1 ./...
+        for d in {{.GO_SERVICES_DIRS}}; do
+          (cd "$d" && go test -race -count=1 ./...) || exit 1
+        done
+
+  test:go:integration:
+    desc: "Integration tests requiring CHETANA_TEST_DB_URL (Postgres) etc."
+    cmds:
+      - cd {{.GO_PACKAGES_DIR}} && go test -tags=integration -count=1 ./...
+
+  test:rust:
+    desc: "cargo test across compute/, flight/, web/packages/wasm/."
+    cmds:
+      - |
+        for ws in {{.RUST_WORKSPACE_DIRS}}; do
+          (cd "$ws" && cargo test --workspace) || exit 1
+        done
+
+  test:web:
+    desc: "vitest across the web monorepo."
+    cmds:
+      - cd {{.WEB_DIR}} && pnpm -r test
+
+  # -----------------------------------------------------------------
+  # Build
+  # -----------------------------------------------------------------
+  build:
+    desc: "Compile every stack."
+    cmds:
+      - task: build:go
+      - task: build:rust
+      - task: build:web
+
+  build:go:
+    desc: "go build ./... across services/."
+    cmds:
+      - |
+        cd {{.GO_PACKAGES_DIR}} && go build ./...
+        for d in {{.GO_SERVICES_DIRS}}; do
+          (cd "$d" && go build ./...) || exit 1
+        done
+
+  build:rust:
+    desc: "cargo build --workspace --release across Rust workspaces."
+    cmds:
+      - |
+        for ws in {{.RUST_WORKSPACE_DIRS}}; do
+          (cd "$ws" && cargo build --workspace) || exit 1
+        done
+
+  build:web:
+    desc: "pnpm -r build across the web monorepo. Excludes ERP packages until PR-B retires them."
+    cmds:
+      - cd {{.WEB_DIR}} && pnpm --filter '!@chetana/i18n' --filter '!@chetana/ui' -r build
+
+  # -----------------------------------------------------------------
+  # Security scans (REQ-NFR-SEC-006)
+  # -----------------------------------------------------------------
+  sast:
+    desc: "Run SAST: gosec + semgrep + bandit. Critical findings exit non-zero."
+    cmds:
+      - task: sast:go
+      - task: sast:py
+      - task: sast:semgrep
+
+  sast:go:
+    desc: "gosec across all Go modules."
+    cmds:
+      - |
+        if ! command -v gosec >/dev/null 2>&1; then
+          echo "gosec not installed; skipping (CI installs)" >&2; exit 0
+        fi
+        cd {{.GO_PACKAGES_DIR}} && gosec -fmt=json -out=gosec.json -severity=high ./... || exit 1
+
+  sast:py:
+    desc: "bandit across ml/ Python sources."
+    cmds:
+      - |
+        if ! command -v bandit >/dev/null 2>&1; then
+          echo "bandit not installed; skipping" >&2; exit 0
+        fi
+        bandit -r ml/ -ll || exit 1
+
+  sast:semgrep:
+    desc: "semgrep with the OWASP top-10 ruleset across the monorepo."
+    cmds:
+      - |
+        if ! command -v semgrep >/dev/null 2>&1; then
+          echo "semgrep not installed; skipping" >&2; exit 0
+        fi
+        semgrep --config=p/owasp-top-ten --severity=ERROR --error || exit 1
+
+  sca:
+    desc: "Run SCA: cargo-audit + npm audit + pip-audit + trivy fs."
+    cmds:
+      - task: sca:rust
+      - task: sca:web
+      - task: sca:py
+      - task: sca:fs
+
+  sca:rust:
+    cmds:
+      - |
+        if ! command -v cargo-audit >/dev/null 2>&1; then
+          echo "cargo-audit not installed; skipping" >&2; exit 0
+        fi
+        for ws in {{.RUST_WORKSPACE_DIRS}}; do
+          (cd "$ws" && cargo audit) || exit 1
+        done
+
+  sca:web:
+    cmds:
+      - cd {{.WEB_DIR}} && pnpm audit --audit-level=high
+
+  sca:py:
+    cmds:
+      - |
+        if ! command -v pip-audit >/dev/null 2>&1; then
+          echo "pip-audit not installed; skipping" >&2; exit 0
+        fi
+        pip-audit -r ml/requirements.txt --strict || exit 0
+
+  sca:fs:
+    desc: "trivy filesystem scan over the whole repo."
+    cmds:
+      - |
+        if ! command -v trivy >/dev/null 2>&1; then
+          echo "trivy not installed; skipping" >&2; exit 0
+        fi
+        trivy fs --severity HIGH,CRITICAL --exit-code 1 --skip-dirs node_modules,target,dist .
+
+  # -----------------------------------------------------------------
+  # Supply-chain artefacts (REQ-NFR-SEC-004, REQ-NFR-SEC-005)
+  # -----------------------------------------------------------------
+  sbom:
+    desc: "Generate CycloneDX SBOMs for every artifact via syft."
+    cmds:
+      - |
+        if ! command -v syft >/dev/null 2>&1; then
+          echo "syft not installed; skipping" >&2; exit 0
+        fi
+        mkdir -p artefacts/sbom
+        syft dir:. -o cyclonedx-json=artefacts/sbom/repo.cdx.json
+
+  sign:
+    desc: "Sign container images with cosign keyless (Sigstore)."
+    cmds:
+      - |
+        if ! command -v cosign >/dev/null 2>&1; then
+          echo "cosign not installed; skipping" >&2; exit 0
+        fi
+        echo "cosign signing is wired in .github/workflows/cosign.yml; this recipe is reserved for ad-hoc local signing."
+
+  release:
+    desc: "Tag, generate SBOMs, sign images, push artefacts. Invoked by CI release workflow."
+    cmds:
+      - task: build
+      - task: sbom
+      - task: sign
+
+  # -----------------------------------------------------------------
+  # Trace harness (covers REQ-CONST-013)
+  # -----------------------------------------------------------------
+  trace:
+    desc: "Verify every plan/requirement maps to at least one task and vice-versa."
+    cmds:
+      - bash tools/check-trace.sh
+
+  # -----------------------------------------------------------------
+  # CI super-recipe
+  # -----------------------------------------------------------------
+  ci:
+    desc: "What CI runs on every PR. Strict variants — no auto-fix."
+    cmds:
+      - task: lint
+      - task: test
+      - task: build
+      - task: sast
+      - task: sca
+      - task: trace

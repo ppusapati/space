@@ -1,0 +1,45 @@
+apiVersion: v2
+name: chetana-platform
+description: |
+  Umbrella chart that aggregates every chetana platform-tier service
+  into a single helm install. Each subchart is conditional on a values
+  flag so PR-by-PR rollouts stay opt-in until the dependent code lands.
+
+  Initially only the foundation infrastructure (atlas migration runner,
+  Postgres/Timescale, Kafka, Redis) is enabled. Application subcharts
+  (iam, audit, notify, export, realtime-gw, …) light up as their
+  service charts are authored in later PRs.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+maintainers:
+  - name: Platform Infra
+    email: platform@p9e.in
+
+# Subcharts — each guarded by its own enabled flag in values.yaml.
+# `repository: file://...` is resolved at `helm dependency update`
+# time. Adding a new service = adding a row here + a values block
+# below + a service chart under infra/helm/charts/<svc>/.
+dependencies:
+  # Foundation tier (this PR). Marked `enabled: false` so the umbrella
+  # renders cleanly even before the per-service charts exist.
+  - name: iam
+    version: 0.0.0
+    repository: file://../iam
+    condition: iam.enabled
+  - name: audit
+    version: 0.0.0
+    repository: file://../audit
+    condition: audit.enabled
+  - name: notify
+    version: 0.0.0
+    repository: file://../notify
+    condition: notify.enabled
+  - name: export
+    version: 0.0.0
+    repository: file://../export
+    condition: export.enabled
+  - name: realtime-gw
+    version: 0.0.0
+    repository: file://../realtime-gw
+    condition: realtime-gw.enabled

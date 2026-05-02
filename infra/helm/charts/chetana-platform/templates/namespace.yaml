@@ -1,0 +1,30 @@
+{{/*
+namespace.yaml — the platform namespace + its labels. Application
+charts (iam, audit, …) reference this namespace via .Values.namespace
+in the umbrella values.
+*/}}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: chetana-platform
+  labels:
+    chetana.p9e.in/region: {{ .Values.region | quote }}
+    pod-security.kubernetes.io/enforce: "restricted"
+    pod-security.kubernetes.io/audit: "restricted"
+    pod-security.kubernetes.io/warn: "restricted"
+---
+{{/*
+default-deny ingress NetworkPolicy at the namespace level. Per-service
+NetworkPolicy resources (emitted by the chetana-service library)
+layer explicit allows on top. REQ-NFR-REL-004.
+*/}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: chetana-platform
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+  ingress: []

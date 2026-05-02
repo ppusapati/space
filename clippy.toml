@@ -1,0 +1,27 @@
+# clippy.toml — repo-root Clippy config.
+#
+# TASK-P0-CI-001. Per-workspace clippy.toml files (compute/clippy.toml,
+# flight/clippy.toml, web/packages/wasm/clippy.toml) inherit any
+# settings from this root file at the moment Cargo invokes Clippy
+# (Clippy walks up the directory tree). Workspace-specific overrides
+# go in those files.
+
+# Reject unwrap()/expect() on Result/Option in production crates;
+# tests/binaries override per-crate when the readability win is worth it.
+disallowed-methods = [
+    { path = "std::result::Result::unwrap", reason = "use `.context(...)?` or `unwrap_or_else(|| ...)`" },
+    { path = "std::result::Result::expect", reason = "use `.context(...)?`" },
+    { path = "std::option::Option::unwrap", reason = "use `?` or `unwrap_or_else(|| ...)`" },
+]
+
+# Warn at MSRV ceiling so CI catches unintended std-lib version bumps.
+msrv = "1.85.0"
+
+# Cap cyclomatic complexity. Functions above this need refactoring,
+# not annotation.
+cognitive-complexity-threshold = 25
+type-complexity-threshold = 250
+
+# Enum + struct hygiene.
+enum-variant-name-threshold = 3
+too-many-arguments-threshold = 7

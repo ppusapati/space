@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://chetana.p9e.in/schemas/_chetana-service-values.json",
+  "title": "chetana-service library values",
+  "description": "Schema enforced on every consumer of the chetana-service library chart. Required fields fail Helm rendering when missing (TASK-P0-INFRA-001 acceptance criterion #2).",
+  "type": "object",
+  "required": ["service", "image", "region", "hpa", "pdb", "networkPolicy"],
+  "properties": {
+    "service": {
+      "type": "object",
+      "required": ["name", "port", "metricsPort"],
+      "additionalProperties": true,
+      "properties": {
+        "name":        { "type": "string", "minLength": 1, "pattern": "^[a-z][a-z0-9-]*$" },
+        "port":        { "type": "integer", "minimum": 1, "maximum": 65535 },
+        "metricsPort": { "type": "integer", "minimum": 1, "maximum": 65535 }
+      }
+    },
+    "image": {
+      "type": "object",
+      "required": ["repository", "tag"],
+      "additionalProperties": true,
+      "properties": {
+        "repository": { "type": "string", "minLength": 1 },
+        "tag":        { "type": "string", "minLength": 1 },
+        "pullPolicy": { "type": "string", "enum": ["Always", "IfNotPresent", "Never"] }
+      }
+    },
+    "region": {
+      "type": "string",
+      "pattern": "^[a-z]+(-[a-z]+)+-[0-9]+$",
+      "description": "Region identifier (us-gov-east-1, eu-central-1, ap-south-1) — must match services/packages/region.Validate."
+    },
+    "replicaCount": { "type": "integer", "minimum": 1, "default": 2 },
+    "resources": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "hpa": {
+      "type": "object",
+      "required": ["enabled", "minReplicas", "maxReplicas"],
+      "additionalProperties": false,
+      "properties": {
+        "enabled":     { "type": "boolean" },
+        "minReplicas": { "type": "integer", "minimum": 1 },
+        "maxReplicas": { "type": "integer", "minimum": 1 },
+        "targetCPUUtilizationPercentage":    { "type": "integer", "minimum": 1, "maximum": 100, "default": 70 },
+        "targetMemoryUtilizationPercentage": { "type": "integer", "minimum": 1, "maximum": 100 }
+      }
+    },
+    "pdb": {
+      "type": "object",
+      "required": ["minAvailable"],
+      "additionalProperties": false,
+      "properties": {
+        "minAvailable":   { "type": ["integer", "string"], "description": "Integer or percent string (e.g. \"50%\"). Enforces REQ-NFR-REL-003 minAvailable >=1." },
+        "maxUnavailable": { "type": ["integer", "string"] }
+      }
+    },
+    "networkPolicy": {
+      "type": "object",
+      "required": ["ingress"],
+      "additionalProperties": false,
+      "properties": {
+        "ingress": {
+          "type": "array",
+          "description": "List of explicit allow rules layered on top of the default-deny baseline. Empty array = no inbound traffic accepted (still installable).",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+              "from": { "type": "array" },
+              "ports": { "type": "array" }
+            }
+          }
+        },
+        "egress": {
+          "type": "array",
+          "description": "Optional explicit allow-egress rules. Without entries the namespace's default applies."
+        }
+      }
+    },
+    "serviceAccount": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "create":      { "type": "boolean", "default": true },
+        "name":        { "type": "string" },
+        "annotations": { "type": "object", "additionalProperties": true }
+      }
+    },
+    "env": {
+      "type": "array",
+      "description": "Extra environment variables passed to the main container.",
+      "items": {
+        "type": "object",
+        "required": ["name"],
+        "additionalProperties": true,
+        "properties": {
+          "name":  { "type": "string", "minLength": 1 },
+          "value": { "type": "string" }
+        }
+      }
+    },
+    "podAnnotations": { "type": "object", "additionalProperties": true },
+    "podLabels":      { "type": "object", "additionalProperties": true }
+  },
+  "additionalProperties": true
+}

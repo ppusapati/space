@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json",
+  "//": "TASK-P0-CI-001 — markdownlint config for plan/, compliance/, and the few README files we author.",
+
+  "default": true,
+
+  "// MD013 (line length)": "Disabled — plan docs use long table rows that would line-wrap badly.",
+  "MD013": false,
+
+  "// MD024 (no duplicate headings)": "Allow when nested under different parents (e.g. multiple ## Files (create/modify) sections).",
+  "MD024": { "siblings_only": true },
+
+  "// MD007 (ul-indent)": "Plan docs use 2-space indents; default is 2 — keep but be permissive.",
+  "MD007": { "indent": 2 },
+
+  "// MD033 (no-inline-html)": "Allow <details> / <summary> for collapsible sections in long docs.",
+  "MD033": { "allowed_elements": ["details", "summary", "br"] },
+
+  "// MD041 (first-line h1)": "Some files (CHANGELOG, .gitattributes-style notes) start with a comment block.",
+  "MD041": false,
+
+  "// MD046 (code block style)": "Force fenced — table-cell code spans don't trigger this anyway.",
+  "MD046": { "style": "fenced" }
+}

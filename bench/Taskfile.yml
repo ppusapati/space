@@ -1,0 +1,62 @@
+# bench/Taskfile.yml — TASK-P0-INFRA-001 acceptance criterion #5.
+#
+# Run with `task -t bench/Taskfile.yml <recipe>`. Top-level Taskfile
+# (TASK-P0-CI-001 / PR-F) will reference this file under the bench:
+# namespace so the entrypoint becomes `task bench:scaffold` from the
+# repo root.
+
+version: "3"
+
+vars:
+  RESULTS_DIR: "{{.ROOT_DIR}}/bench/results"
+  SCAFFOLD_BUDGET_P95_MS: "50"
+
+tasks:
+  default:
+    cmds:
+      - task --list
+    silent: true
+
+  # Verify the k6 binary is on PATH before any bench runs.
+  preflight:
+    desc: "Verify k6 is installed and reports a sane version."
+    silent: true
+    cmds:
+      - |
+        if ! command -v k6 >/dev/null 2>&1; then
+          echo "k6 not on PATH. Install from https://k6.io/docs/get-started/installation/" >&2
+          exit 127
+        fi
+        k6 version
+
+  # Phase-0 scaffold bench. Hits the example service running locally
+  # on :8080 (see services/packages/observability/serverobs/example).
+  # Acceptance criterion #5: reports p95 < 50ms.
+  scaffold:
+    desc: "Phase-0 smoke bench against the example serverobs service. Requires the example running on :8080."
+    deps: [preflight]
+    cmds:
+      - mkdir -p {{.RESULTS_DIR}}/phase0
+      - >
+        k6 run
+        -e CHETANA_BENCH_NOAUTH=true
+        -e CHETANA_BENCH_BASE_URL={{.CHETANA_BENCH_BASE_URL | default "http://localhost:8080"}}
+        bench/k6/scaffold.bench.js
+      - task: report:scaffold
+
+  # Print the latest scaffold p95 and budget verdict.
+  report:scaffold:
+    desc: "Print the p95 + verdict from the most recent scaffold bench."
+    silent: true
+    cmds:
+      - |
+        if [ ! -f "{{.RESULTS_DIR}}/phase0/scaffold.json" ]; then
+          echo "no result file at {{.RESULTS_DIR}}/phase0/scaffold.json — run task scaffold first" >&2
+          exit 1
+        fi
+        python -c "import json,sys; d=json.load(open('{{.RESULTS_DIR}}/phase0/scaffold.json')); print(f\"scaffold: p95={d['p95_ms']:.2f}ms budget={d['budget_p95_ms']}ms passed={d['thresholdsPassed']}\")"
+
+  clean:
+    desc: "Remove all bench result files."
+    cmds:
+      - rm -rf {{.RESULTS_DIR}}

@@ -1,0 +1,18 @@
+{{/*
+templates/workload.yaml — emits one of every chetana-service library
+template. The render test asserts that:
+  • Every block produces YAML that helm template can serialise.
+  • Required fields (hpa.enabled, pdb.minAvailable, networkPolicy.ingress)
+    are honoured.
+*/}}
+{{- include "chetana.deployment" . }}
+---
+{{- include "chetana.service" . }}
+---
+{{- include "chetana.serviceaccount" . }}
+---
+{{- include "chetana.hpa" . }}
+---
+{{- include "chetana.pdb" . }}
+---
+{{- include "chetana.networkpolicy" . }}

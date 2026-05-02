@@ -1,0 +1,11 @@
+# .zap/rules.tsv — ZAP baseline-action rule overrides.
+#
+# TASK-P0-CI-001. Tab-separated: <ruleID>\t<threshold>\t<comment>.
+# Thresholds: WARN, FAIL, IGNORE.
+#
+# Add per-rule overrides here when ZAP reports a finding that's a
+# false-positive against the chetana threat model. Empty file =
+# default OWASP top-10 ruleset applies as-is.
+#
+# Example:
+# 10202	IGNORE	Anti-CSRF token absent — example serverobs has no auth in Phase 0.

@@ -1,0 +1,47 @@
+# Minimum-viable values for the example consumer. Mirrors what a real
+# service chart would declare; the render test uses this file as the
+# happy-path baseline and overrides individual fields to exercise the
+# negative cases.
+
+service:
+  name: example
+  port: 8080
+  metricsPort: 9090
+
+image:
+  repository: ghcr.io/p9e/example-service
+  tag: v0.0.1
+
+region: us-gov-east-1
+
+replicaCount: 2
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+pdb:
+  minAvailable: 1
+
+networkPolicy:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              chetana.p9e.in/tier: "edge"
+      ports:
+        - protocol: TCP
+          port: 8080
+
+serviceAccount:
+  create: true

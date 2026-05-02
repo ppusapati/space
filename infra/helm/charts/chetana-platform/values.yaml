@@ -1,0 +1,18 @@
+# Umbrella defaults. Region overlays in infra/helm/overlays/<region>/
+# override the region-specific block below; per-service blocks are
+# authored in the matching subchart's values.yaml.
+
+# Active region. Overridden by overlays in infra/helm/overlays/.
+region: us-gov-east-1
+
+# All subcharts default to disabled — they light up as PRs land.
+iam:
+  enabled: false
+audit:
+  enabled: false
+notify:
+  enabled: false
+export:
+  enabled: false
+realtime-gw:
+  enabled: false

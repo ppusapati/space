@@ -1,0 +1,56 @@
+# Active region overlay (REQ-CONST-003 — v1 deploys to GovCloud).
+#
+# Apply with:
+#   helm upgrade --install chetana \
+#     infra/helm/charts/chetana-platform \
+#     -f infra/helm/overlays/us-gov-east-1/values.yaml
+#
+# Region-scoped resources follow the conventions in
+# services/packages/region/region.go.
+
+enabled: true
+region: us-gov-east-1
+
+# Cluster-wide infrastructure addresses.
+postgres:
+  host: us-gov-east-1.db.chetana.internal
+  port: 5432
+  # User/password are read from a Secret managed by external-secrets;
+  # this overlay only carries non-secret addressing.
+  secretRef: chetana-postgres-credentials
+
+kafka:
+  bootstrap: us-gov-east-1.kafka.chetana.internal:9094
+  fipsMode: true     # MSK FIPS-mode TLS per REQ-NFR-SEC-001.
+
+redis:
+  host: us-gov-east-1.redis.chetana.internal
+  port: 6379
+
+s3:
+  # The region.S3Bucket helper composes "chetana-<region>-<prefix>";
+  # this overlay just records the AWS region for clients that need it.
+  region: us-gov-east-1
+  endpoint: s3-fips.us-gov-east-1.amazonaws.com   # FIPS endpoint per REQ-NFR-SEC-001.
+
+kms:
+  region: us-gov-east-1
+  endpoint: kms-fips.us-gov-east-1.amazonaws.com  # FIPS endpoint.
+
+iam:
+  enabled: true
+  replicaCount: 3
+
+audit:
+  enabled: true
+  replicaCount: 3
+
+notify:
+  enabled: true
+
+export:
+  enabled: true
+
+realtime-gw:
+  enabled: true
+  replicaCount: 3

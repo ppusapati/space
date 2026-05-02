@@ -1,0 +1,33 @@
+apiVersion: v2
+name: chetana-service
+description: |
+  Reusable library chart for chetana-platform Go services. Every
+  service chart sets `dependencies: [chetana-service]` (with this chart
+  as a Helm "library" type) and includes the named templates below to
+  get a deployment, service, HPA, PDB, and default-deny network policy
+  for free.
+
+  The library is intentionally opinionated:
+
+    • Every consumer MUST set hpa.enabled, pdb.minAvailable, and
+      networkPolicy.ingress[] — values.schema.json fails Helm
+      rendering when they're missing (REQ-NFR-REL-003, REQ-NFR-REL-004).
+    • NetworkPolicy ingress defaults to default-deny; explicit allows
+      come from networkPolicy.ingress[] (REQ-NFR-REL-004).
+    • All Pods carry the chetana_region label drawn from .Values.region
+      so prometheus-operator + node-affinity rules can target them
+      regionally (REQ-NFR-SCALE-003, design.md §4.8).
+
+# Library charts ship templates only — never installable on their own.
+type: library
+version: 0.1.0
+appVersion: "0.1.0"
+maintainers:
+  - name: Platform Infra
+    email: platform@p9e.in
+keywords:
+  - chetana
+  - library
+  - hpa
+  - pdb
+  - network-policy

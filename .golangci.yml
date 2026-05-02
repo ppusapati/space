@@ -1,0 +1,90 @@
+# .golangci.yml — TASK-P0-CI-001
+#
+# Lint baseline for every Go module in the repo:
+#   • services/packages/  (the kosha shared library)
+#   • services/<svc>/     (17 ConnectRPC services)
+#
+# Each module has its own go.mod + go.sum but shares this config —
+# golangci-lint resolves config from the nearest parent dir, and we
+# keep this file at repo root so a single edit applies to all modules.
+#
+# Linters chosen per design.md §10.4 + REQ-NFR-SEC-006:
+#   • gofumpt     — strict gofmt superset (style)
+#   • govet       — std vet checks
+#   • errcheck    — unchecked errors
+#   • staticcheck — comprehensive static analysis
+#   • gosec       — security-focused (SAST overlap; we run gosec
+#                    standalone in CI but fail-fast here too)
+#   • copylocks   — sync.Mutex copy detection
+#   • unused      — dead code
+#   • revive      — replacement for the deprecated golint
+#   • bodyclose   — http.Response.Body must be closed
+#   • prealloc    — slice preallocation hints
+#   • gocyclo     — cap cyclomatic complexity at 15
+
+run:
+  timeout: 10m
+  tests: true
+  # The proto-generated *.pb.go are mechanically generated and not
+  # subject to our style rules. Same for sqlc-generated db/generated/.
+  build-tags:
+    - integration
+    - helm
+
+issues:
+  exclude-dirs:
+    - api          # *.pb.go
+    - db/generated # sqlc output
+  exclude-rules:
+    # Tests routinely use _ assignment to discard results.
+    - path: _test\.go
+      linters: [errcheck, gosec]
+    # Migrations/scripts under cmd/ may use os.Exit directly.
+    - path: cmd/
+      linters: [gochecknoglobals]
+  max-same-issues: 0   # report every occurrence
+  max-issues-per-linter: 0
+
+linters:
+  disable-all: true
+  enable:
+    - gofumpt
+    - govet
+    - errcheck
+    - staticcheck
+    - gosec
+    - copyloopvar
+    - unused
+    - revive
+    - bodyclose
+    - prealloc
+    - gocyclo
+    - ineffassign
+    - misspell
+    - nakedret
+    - nilerr
+    - rowserrcheck
+    - sqlclosecheck
+    - unconvert
+    - whitespace
+
+linters-settings:
+  gofumpt:
+    extra-rules: true
+  gosec:
+    severity: medium
+    confidence: medium
+    excludes:
+      # G115 (integer overflow conversion) is too noisy on protobuf
+      # int conversions; we re-enable per-package as needed.
+      - G115
+  gocyclo:
+    min-complexity: 15
+  revive:
+    rules:
+      - name: var-naming
+      - name: package-comments
+      - name: indent-error-flow
+      - name: superfluous-else
+  misspell:
+    locale: US

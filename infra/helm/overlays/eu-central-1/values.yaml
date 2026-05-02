@@ -1,0 +1,42 @@
+# EU region overlay (template only — `enabled: false` until v1.x rollout).
+#
+# Per REQ-NFR-SCALE-003 / design.md §4.8 the chart MUST render cleanly
+# against this overlay even before the cluster exists, so adding the EU
+# region in v1.x is `terraform apply` + `helm install` with this file.
+# No code changes.
+
+enabled: false
+region: eu-central-1
+
+postgres:
+  host: eu-central-1.db.chetana.internal
+  port: 5432
+  secretRef: chetana-postgres-credentials
+
+kafka:
+  bootstrap: eu-central-1.kafka.chetana.internal:9094
+  fipsMode: false   # Standard MSK TLS suffices in commercial AWS.
+
+redis:
+  host: eu-central-1.redis.chetana.internal
+  port: 6379
+
+s3:
+  region: eu-central-1
+  endpoint: s3.eu-central-1.amazonaws.com
+
+kms:
+  region: eu-central-1
+  endpoint: kms.eu-central-1.amazonaws.com
+
+# All subcharts off until the EU cluster is provisioned.
+iam:
+  enabled: false
+audit:
+  enabled: false
+notify:
+  enabled: false
+export:
+  enabled: false
+realtime-gw:
+  enabled: false

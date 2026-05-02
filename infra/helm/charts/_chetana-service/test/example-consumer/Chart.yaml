@@ -1,0 +1,10 @@
+apiVersion: v2
+name: example-consumer
+description: Minimal consumer of the chetana-service library, used by the render test to exercise every named template.
+type: application
+version: 0.0.1
+appVersion: "0.0.1"
+dependencies:
+  - name: chetana-service
+    version: 0.1.0
+    repository: file://../..
