@@ -19,9 +19,12 @@
 //	                    (success=true) + return tokens (empty in
 //	                    Phase-1-IAM-001; populated in IAM-002)
 //
-// JWT issuance lands in TASK-P1-IAM-002; this handler returns
-// LoginResponse with empty token fields (the proto already
-// reserves them) so downstream services don't need a recompile.
+// JWT + refresh-token issuance — TASK-P1-IAM-002. When a TokenIssuer
+// is wired into HandlerConfig, a successful login also mints an
+// access token + a fresh refresh-token family; both are surfaced on
+// the Result and the connect mapper copies them onto the proto
+// response. Handlers without an issuer keep the IAM-001 behaviour
+// (auth + audit only) so unit tests don't require a key store.
 
 package login
 
@@ -104,11 +107,45 @@ const (
 // status code (200/401/423/429/500). The Connect handler defined
 // alongside this package takes care of the proto / status mapping.
 type Result struct {
-	Status     ResultStatus
-	UserID     string
-	SessionID  string
-	RetryAfter time.Duration // populated for RateLimited + Locked
-	Reason     string
+	Status              ResultStatus
+	UserID              string
+	SessionID           string
+	RetryAfter          time.Duration // populated for RateLimited + Locked
+	Reason              string
+	AccessToken         string
+	AccessTokenExpires  time.Time
+	RefreshToken        string
+	RefreshTokenExpires time.Time
+}
+
+// TokenIssuer mints an access token + a fresh refresh-token family
+// for a successful login. Implemented by services/iam/internal/token
+// (Issuer + RefreshStore wrapper). Optional: if Handler is configured
+// without one, the handler returns Result without token fields.
+type TokenIssuer interface {
+	IssueLoginTokens(ctx context.Context, in TokenIssueInput) (TokenIssueOutput, error)
+}
+
+// TokenIssueInput is the per-login payload handed to TokenIssuer.
+type TokenIssueInput struct {
+	UserID         string
+	TenantID       string
+	SessionID      string
+	IsUSPerson     bool
+	ClearanceLevel string
+	Nationality    string
+	Roles          []string
+	Scopes         []string
+	AMR            []string
+}
+
+// TokenIssueOutput carries the access + refresh credentials returned
+// to the client.
+type TokenIssueOutput struct {
+	AccessToken         string
+	AccessTokenExpires  time.Time
+	RefreshToken        string
+	RefreshTokenExpires time.Time
 }
 
 // ResultStatus enumerates the broad outcomes of a Login call.
@@ -148,6 +185,14 @@ type HandlerConfig struct {
 	// SleepUntil sleeps until t. Tests inject a no-op so the
 	// constant-time delay does not blow up the unit-test runtime.
 	SleepUntil func(ctx context.Context, t time.Time) error
+	// Tokens is the optional access/refresh token issuer. nil →
+	// handler returns Result without token fields (used by unit
+	// tests that don't exercise the token surface).
+	Tokens TokenIssuer
+	// AMR is the auth-methods-references list stamped onto issued
+	// tokens. Defaults to {"pwd"} (single-factor password). Once
+	// MFA lands the handler will append "mfa".
+	AMR []string
 }
 
 // NewHandler builds a Handler. limiter / users / audit MUST be
@@ -173,6 +218,9 @@ func NewHandler(limiter Limiter, users UserStore, audit AuditEmitter, cfg Handle
 	}
 	if cfg.SleepUntil == nil {
 		cfg.SleepUntil = realSleepUntil
+	}
+	if len(cfg.AMR) == 0 {
+		cfg.AMR = []string{"pwd"}
 	}
 	return &Handler{
 		limiter: limiter,
@@ -373,6 +421,33 @@ func (h *Handler) Login(ctx context.Context, in LoginInput) (Result, error) {
 		return finish(Result{Status: ResultInternalError, Reason: "session id"}, err)
 	}
 
+	res := Result{
+		Status:    ResultOK,
+		UserID:    user.ID,
+		SessionID: sessionID,
+	}
+
+	if h.cfg.Tokens != nil {
+		out, err := h.cfg.Tokens.IssueLoginTokens(ctx, TokenIssueInput{
+			UserID:    user.ID,
+			TenantID:  h.cfg.TenantID,
+			SessionID: sessionID,
+			AMR:       h.cfg.AMR,
+			// Phase 1: clearance / nationality / role projection lands
+			// once the user-attributes table (TASK-P1-IAM-USER-ATTRS)
+			// ships. Until then we issue tokens with the conservative
+			// default ("internal" clearance, no role grants).
+			ClearanceLevel: "internal",
+		})
+		if err != nil {
+			return finish(Result{Status: ResultInternalError, Reason: "token mint"}, err)
+		}
+		res.AccessToken = out.AccessToken
+		res.AccessTokenExpires = out.AccessTokenExpires
+		res.RefreshToken = out.RefreshToken
+		res.RefreshTokenExpires = out.RefreshTokenExpires
+	}
+
 	h.emitOrLog(ctx, Event{
 		TenantID:   h.cfg.TenantID,
 		UserID:     user.ID,
@@ -383,11 +458,7 @@ func (h *Handler) Login(ctx context.Context, in LoginInput) (Result, error) {
 		Outcome:    OutcomeSuccess,
 	})
 
-	return finish(Result{
-		Status:    ResultOK,
-		UserID:    user.ID,
-		SessionID: sessionID,
-	}, nil)
+	return finish(res, nil)
 }
 
 // emitOrLog publishes the event to the audit pipeline. We do NOT

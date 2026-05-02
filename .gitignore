@@ -6,3 +6,4 @@ web/apps/**/build/
 web/apps/**/dist/
 web/packages/**/build/
 web/packages/**/dist/
+.zap

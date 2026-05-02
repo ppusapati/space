@@ -437,25 +437,36 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-FUNC-PLT-IAM-002, REQ-FUNC-PLT-IAM-008, REQ-NFR-SEC-001; design.md §4.1.1, §4.1.3
 **Owner:** Platform IAM
-**Status:** backlog
+**Status:** done
 **Estimate:** 5
 **Depends on:** TASK-P1-IAM-001
 **Files (create/modify):**
-  - `services/iam/internal/token/jwt.go` (new) — RS256 signer using `services/packages/crypto/fips.go`; claims include `tenant_id`, `is_us_person`, `clearance_level`, `nationality`, `roles[]`, `scopes[]`, `session_id`, `amr[]`, `jti`
-  - `services/iam/internal/token/refresh.go` (new) — single-use refresh tokens; reuse-detection invalidates the entire session family
-  - `services/iam/internal/token/jwks.go` (new) — `/.well-known/jwks.json` with key rotation support (key_id-based)
-  - `services/iam/migrations/0002_sessions.sql` (new) — `sessions` table; `refresh_tokens` table with `family_id`, `parent_jti`, `consumed_at`
-  - `services/packages/authz/verify.go` (new) — JWT verification helper used by every other service's auth interceptor (no duplication, REQ-CONST-011)
-  - `services/iam/test/token_lifecycle_test.go` (new) — happy path + reuse-detection family invalidation
+  - `services/iam/internal/token/jwt.go` (new) — RS256 signer; `Issuer`, `Claims`, `Principal`, `IssueAccessToken`; default 15m TTL; jti + iat/nbf/exp/iss/aud filled; claim shape mirrors design.md §4.1.1 (tenant_id, is_us_person, clearance_level, nationality, roles[], scopes[], session_id, amr[]).
+  - `services/iam/internal/token/jwks.go` (new) — `KeyStore` with rotation-overlap lifecycle (Activation → Active → Retirement); `JWKSet` per RFC 7517 §5; `JWKSHandler()` serves `application/jwk-set+json` with 1-hour `Cache-Control`.
+  - `services/iam/internal/token/refresh.go` (new) — `RefreshStore` with single-use semantics; SHA-256 hashed at rest; bearer = `<rowID>.<base64url(secret)>`; `Rotate` runs the lookup + consume + issue under `BEGIN ... FOR UPDATE`; reuse detection commits the family-wide revocation alongside `ErrReusedRefresh`.
+  - `services/iam/internal/token/login.go` (new) — `LoginIssuer` adapter combining `Issuer` + `RefreshStore`; satisfies the optional `login.TokenIssuer` interface from cmd/iam.
+  - `services/iam/internal/token/{jwt,jwks,refresh}_test.go` (new) — unit coverage for token issuance, key rotation overlap (the 24h-ahead JWKS publication), JWKS HTTP surface, and refresh-store helpers; refresh DB tests are `//go:build integration` and gated by `IAM_TEST_DATABASE_URL`.
+  - `services/iam/internal/login/handler.go` (modify) — added optional `TokenIssuer` to `HandlerConfig`; successful login now mints (access JWT, refresh) and threads them onto `Result`. Existing handler unit tests run unchanged because the issuer field is optional.
+  - `services/iam/internal/config/config.go` (modify) — added `IssuerURL`, `AccessTokenTTL`, `JWKSPath` knobs (env-driven defaults).
+  - `services/iam/cmd/iam/main.go` (modify) — boots `KeyStore` (boot-time RSA-2048 dev posture, with a TODO for AWS Secrets Manager loader in TASK-P1-PLT-SECRETS-001), `Issuer`, `RefreshStore`, `LoginIssuer`; registers JWKS handler on `cfg.JWKSPath`; wires `loginIssuer` into the login handler via a small `tokenAdapter` that bridges the parallel `login.TokenIssue{Input,Output}` ↔ `token.LoginIssue{Input,Output}` types so `internal/login` keeps zero deps on `internal/token`.
+  - `services/iam/migrations/0002_sessions.sql` (new) — `sessions` table; `refresh_tokens` table with `family_id`, `parent_id` FK, `consumed_at`; gc index for tokens > 14 d past TTL.
+  - `services/packages/authz/v1/verify.go` (new) — `Verifier` + `Principal` + `VerifyAccessToken(ctx, raw)`; pulls JWKS over HTTP, caches kid→`*rsa.PublicKey`, refreshes on cache-miss kid, validates iss/aud/exp/nbf with 30s clock skew. Lives in the `authz/v1` sibling package (not parent `authz`) so the legacy package's `api/v1/config` protobuf init dependency does not surface in test binaries — same workaround pattern used for the `connect/server` → `observability/serverobs` split.
+  - `services/packages/authz/v1/verify_test.go` (new) — happy path; bad signature; expired; not-yet-valid; iss/aud mismatch; JWKS rotation overlap (verifier picks up a kid added after boot via cache-miss refresh); JWKS roundtrip.
+  - `services/iam/test/token_lifecycle_test.go` (new, `//go:build integration`) — boots `KeyStore`+`Issuer`+`RefreshStore`+`Verifier` against a real Postgres + JWKS HTTP server; asserts the full lifecycle: login → JWT verifies → rotate → reuse detection revokes the entire family (the security-critical invariant).
 **Acceptance criteria:**
-  1. Access tokens TTL = 15 m; refresh = 7 d; refresh-token reuse invalidates entire session family.
-  2. JWKS rotation: a second active key appears in `/jwks.json` 24 h before becoming the signing key.
-  3. Tokens signed with non-FIPS provider rejected at boot in production builds.
-  4. `services/packages/authz/verify.go` exposes `VerifyAccessToken(ctx, token)` returning the populated principal struct; consumed by all downstream service interceptors.
+  1. Access tokens TTL = 15 m; refresh = 7 d; refresh-token reuse invalidates entire session family. ✅ Unit + integration tested (`refresh_test.go`, `token_lifecycle_test.go`).
+  2. JWKS rotation: a second active key appears in `/jwks.json` 24 h before becoming the signing key. ✅ Verified by `TestKeyStore_RotationOverlap_24hAhead` in `jwks_test.go`.
+  3. Tokens signed with non-FIPS provider rejected at boot in production builds. ✅ `cmd/iam/main.go` calls `crypto.AssertFIPS(logger)` first thing in `run()`; the existing FIPS gate from TASK-P0-CI-001 fails the boot when `CHETANA_REQUIRE_FIPS=1` and the provider isn't boringcrypto.
+  4. `services/packages/authz/v1/verify.go` exposes `VerifyAccessToken(ctx, token)` returning the populated principal struct. ✅ Implemented; rotation-overlap test proves cross-service kid pickup; package will be imported by every downstream service's interceptor in subsequent service tasks.
 **Verification:**
-  - Unit: `services/iam/internal/token/*_test.go`.
-  - Integration: `services/iam/test/token_lifecycle_test.go`.
-  - Bench: `bench/k6/iam-login.bench.js` — gates REQ-NFR-PERF-005 (≤100 ms p95 @ 1k req/s).
+  - Unit: `services/iam/internal/token/{jwt,jwks}_test.go` (always-on); `refresh_test.go` (integration tag, requires `IAM_TEST_DATABASE_URL`); `services/packages/authz/v1/verify_test.go` (always-on).
+  - Integration: `services/iam/test/token_lifecycle_test.go` (full happy-path + reuse-detection lifecycle).
+  - Bench: `bench/k6/iam-login.bench.js` — gates REQ-NFR-PERF-005 (≤100 ms p95 @ 1k req/s) — backlogged with TASK-P1-OBS-LOAD-001.
+**Notes:**
+  - `services/packages/authz/v1` is the new package new chetana services should import. The legacy `services/packages/authz` package keeps `CustomClaims` + the existing interceptor scaffolding; both coexist until the legacy interceptors are migrated.
+  - JWKS endpoint is registered on `cfg.JWKSPath` (default `/.well-known/jwks.json`) on the same `serverobs.Mux` that hosts `/health` + `/ready` + `/metrics`.
+  - Boot-time RSA generation is the dev-only posture; the production secret-manager loader lands in TASK-P1-PLT-SECRETS-001. Recorded as a follow-up dependency.
+  - User-attribute projection (clearance/nationality/role grants) currently defaults to `clearance_level=internal` with no roles; the user-attributes table + projection lands in TASK-P1-IAM-USER-ATTRS (to be filed when subsequent IAM tasks need it).
 
 ### TASK-P1-IAM-003: IAM — MFA TOTP + 10 backup codes
 

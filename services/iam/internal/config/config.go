@@ -35,6 +35,19 @@ type Config struct {
 	// Build identity injected at link time via -ldflags.
 	Version string
 	GitSHA  string
+
+	// IssuerURL is the canonical iss claim stamped onto issued JWTs.
+	// Typically https://iam.<region>.chetana.p9e.in. Override via
+	// CHETANA_IAM_ISSUER for dev / test.
+	IssuerURL string
+
+	// AccessTokenTTL caps the lifetime of issued access tokens.
+	// Defaults to 15m per REQ-FUNC-PLT-IAM-002.
+	AccessTokenTTL time.Duration
+
+	// JWKSPath is the URL path the JWKS handler is registered under.
+	// Defaults to /.well-known/jwks.json.
+	JWKSPath string
 }
 
 // Load reads config from env vars + region defaults.
@@ -48,6 +61,16 @@ func Load() (Config, error) {
 		RedisAddr:       getenvOr("CHETANA_REDIS_ADDR", region.Active().String()+".redis.chetana.internal:6379"),
 		Version:         getenvOr("CHETANA_VERSION", "v0.0.0-dev"),
 		GitSHA:          getenvOr("CHETANA_GIT_SHA", "unknown"),
+		IssuerURL:       getenvOr("CHETANA_IAM_ISSUER", "https://iam."+region.Active().String()+".chetana.p9e.in"),
+		AccessTokenTTL:  15 * time.Minute,
+		JWKSPath:        getenvOr("CHETANA_IAM_JWKS_PATH", "/.well-known/jwks.json"),
+	}
+	if v := os.Getenv("CHETANA_IAM_ACCESS_TTL"); v != "" {
+		dur, err := time.ParseDuration(v)
+		if err != nil {
+			return Config{}, fmt.Errorf("config: parse CHETANA_IAM_ACCESS_TTL %q: %w", v, err)
+		}
+		cfg.AccessTokenTTL = dur
 	}
 	if v := os.Getenv("SHUTDOWN_TIMEOUT"); v != "" {
 		dur, err := time.ParseDuration(v)

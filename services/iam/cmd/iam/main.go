@@ -29,6 +29,7 @@ import (
 	"github.com/ppusapati/space/services/iam/internal/config"
 	"github.com/ppusapati/space/services/iam/internal/login"
 	"github.com/ppusapati/space/services/iam/internal/store"
+	"github.com/ppusapati/space/services/iam/internal/token"
 )
 
 func main() {
@@ -84,19 +85,52 @@ func run(logger *slog.Logger) error {
 	rdb := redis.NewClient(&redis.Options{Addr: cfg.RedisAddr})
 	defer func() { _ = rdb.Close() }()
 
-	// 5. Wire the login handler.
+	// 5. Build the JWT signing key store.
+	//
+	// Phase-1 dev posture: generate an RSA key at boot. Production
+	// loads the private bytes from AWS Secrets Manager
+	// (REQ-NFR-SEC-003) — that loader lands in TASK-P1-PLT-SECRETS-001.
+	// Until then a fresh boot-time key is fine: every IAM restart
+	// invalidates outstanding tokens, which is the conservative
+	// default while we don't have a hardware-backed signer.
+	rsaKey, err := token.GenerateRSAKey(2048)
+	if err != nil {
+		return err
+	}
+	keyStore := token.NewKeyStore(time.Now)
+	if err := keyStore.Add(token.SigningKey{
+		KeyID:      token.SHA256KID(&rsaKey.PublicKey),
+		Private:    rsaKey,
+		Activation: time.Now().Add(-time.Minute), // active immediately
+		Retirement: time.Now().Add(7 * 24 * time.Hour),
+	}); err != nil {
+		return err
+	}
+
+	issuer, err := token.NewIssuer(keyStore, token.IssuerConfig{
+		Issuer:         cfg.IssuerURL,
+		AccessTokenTTL: cfg.AccessTokenTTL,
+	})
+	if err != nil {
+		return err
+	}
+	refreshStore := token.NewRefreshStore(pool, time.Now)
+	loginIssuer := &tokenAdapter{inner: token.NewLoginIssuer(issuer, refreshStore, time.Now)}
+
+	// 6. Wire the login handler.
 	users := store.NewStore(pool)
 	limiter := login.NewIPLimiter(rdb, login.IPLimiterConfig{})
 	audit := login.NopAudit{} // TASK-P1-AUDIT-001 supplies the real Kafka emitter
 	handler, err := login.NewHandler(limiter, users, audit, login.HandlerConfig{
 		TenantID: cfg.TenantID,
+		Tokens:   loginIssuer,
 	})
 	if err != nil {
 		return err
 	}
 	_ = handler // wired into the Connect mux once iam.proto codegen lands
 
-	// 6. Build the observability HTTP surface (/health, /ready, /metrics).
+	// 7. Build the observability HTTP surface (/health, /ready, /metrics).
 	srv := serverobs.NewServer(
 		serverobs.ServerConfig{Addr: cfg.HTTPAddr},
 		serverobs.ObservabilityConfig{
@@ -108,6 +142,13 @@ func run(logger *slog.Logger) error {
 			},
 		},
 	)
+
+	// 8. Register the JWKS endpoint so downstream services (and
+	// the verifier in services/packages/authz/v1) can fetch the
+	// active public-key set. Per RFC 8615 the canonical path is
+	// /.well-known/jwks.json; the handler emits an
+	// application/jwk-set+json response with a 1-hour cache window.
+	srv.Mux.Handle(cfg.JWKSPath, keyStore.JWKSHandler())
 
 	// Connect RPC handler registration lands once iam.proto is
 	// generated (BSR auth required — OQ-004). The /v1/iam routes
@@ -131,4 +172,35 @@ func run(logger *slog.Logger) error {
 	}
 	logger.Info("iam stopped cleanly")
 	return nil
+}
+
+// tokenAdapter bridges token.LoginIssuer to login.TokenIssuer. The two
+// interfaces use parallel input/output types so that the login package
+// stays free of any token-package import (one-way layering: cmd/iam
+// composes; internal layers do not see each other).
+type tokenAdapter struct {
+	inner *token.LoginIssuer
+}
+
+func (a *tokenAdapter) IssueLoginTokens(ctx context.Context, in login.TokenIssueInput) (login.TokenIssueOutput, error) {
+	out, err := a.inner.IssueLoginTokens(ctx, token.LoginIssueInput{
+		UserID:         in.UserID,
+		TenantID:       in.TenantID,
+		SessionID:      in.SessionID,
+		IsUSPerson:     in.IsUSPerson,
+		ClearanceLevel: in.ClearanceLevel,
+		Nationality:    in.Nationality,
+		Roles:          in.Roles,
+		Scopes:         in.Scopes,
+		AMR:            in.AMR,
+	})
+	if err != nil {
+		return login.TokenIssueOutput{}, err
+	}
+	return login.TokenIssueOutput{
+		AccessToken:         out.AccessToken,
+		AccessTokenExpires:  out.AccessTokenExpires,
+		RefreshToken:        out.RefreshToken,
+		RefreshTokenExpires: out.RefreshTokenExpires,
+	}, nil
 }
