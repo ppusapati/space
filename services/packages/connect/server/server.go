@@ -234,14 +234,22 @@ func CORSMiddleware(allowedOrigins []string) func(http.Handler) http.Handler {
 }
 
 // RegisterHealthEndpoints adds /health and /ready endpoints to the mux.
+//
+// Deprecated: this is a back-compat shim that returns trivial 200 OK
+// responses. New code should use the richer surface in
+// p9e.in/chetana/packages/observability/serverobs (NewServer +
+// /metrics + dep checks + build_info), which lives in a sibling package
+// to avoid the proto-init init() chain that this package transitively
+// pulls in via connect/interceptors → database/pgxpostgres → api/v1
+// (TASK-P0-OBS-001 follow-up).
 func RegisterHealthEndpoints(mux *http.ServeMux) {
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("OK"))
+		_, _ = w.Write([]byte("OK"))
 	})
 
 	mux.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("READY"))
+		_, _ = w.Write([]byte("READY"))
 	})
 }

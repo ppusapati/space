@@ -1,0 +1,64 @@
+# Default: let git auto-detect text files and normalize line endings.
+* text=auto eol=lf
+
+# Source files: explicit LF, never CRLF, regardless of core.autocrlf.
+*.go             text eol=lf
+*.proto          text eol=lf
+*.sql            text eol=lf
+*.ts             text eol=lf
+*.tsx            text eol=lf
+*.js             text eol=lf
+*.svelte         text eol=lf
+*.json           text eol=lf
+*.yaml           text eol=lf
+*.yml            text eol=lf
+*.md             text eol=lf
+*.toml           text eol=lf
+*.hcl            text eol=lf
+*.sh             text eol=lf
+*.rs             text eol=lf
+*.py             text eol=lf
+Dockerfile       text eol=lf
+Makefile         text eol=lf
+Taskfile.yml     text eol=lf
+.gitignore       text eol=lf
+.gitattributes   text eol=lf
+
+# Generated proto files contain raw byte descriptors as Go string
+# literals. CRLF translation corrupts those bytes and causes the
+# protobuf-go runtime to panic with "slice bounds out of range" on
+# init. Force LF unconditionally.
+*.pb.go          text eol=lf
+*.pb.ts          text eol=lf
+*_pb.ts          text eol=lf
+*_connect.ts     text eol=lf
+
+# Windows-only files genuinely want CRLF.
+*.bat            text eol=crlf
+*.cmd            text eol=crlf
+*.ps1            text eol=crlf
+
+# Binary files: never normalize.
+*.png            binary
+*.jpg            binary
+*.jpeg           binary
+*.gif            binary
+*.ico            binary
+*.webp           binary
+*.pdf            binary
+*.zip            binary
+*.gz             binary
+*.tar            binary
+*.tgz            binary
+*.exe            binary
+*.dll            binary
+*.so             binary
+*.dylib          binary
+*.wasm           binary
+*.woff           binary
+*.woff2          binary
+*.ttf            binary
+*.otf            binary
+*.eot            binary
+*.bin            binary
+*.dat            binary
