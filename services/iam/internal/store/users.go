@@ -263,6 +263,37 @@ WHERE id = $1
 	return updated, nil
 }
 
+// UpdatePasswordHash replaces the user's password hash + algo and
+// resets the lockout state (so a successful password reset
+// implicitly unlocks an account that had been frozen by repeated
+// bad-password attempts). The `algo` value is the PHC string's
+// algorithm name — currently always "argon2id" via PolicyV1.
+//
+// Returns ErrUserNotFound when no row matches the supplied id.
+func (s *Store) UpdatePasswordHash(ctx context.Context, userID, hash, algo string, now time.Time) error {
+	if userID == "" || hash == "" || algo == "" {
+		return errors.New("store: empty user_id / hash / algo")
+	}
+	const q = `
+UPDATE users
+SET password_hash = $2,
+    password_algo = $3,
+    failed_login_count = 0,
+    locked_until = NULL,
+    lockout_level = 0,
+    updated_at = $4
+WHERE id = $1
+`
+	tag, err := s.pool.Exec(ctx, q, userID, hash, algo, now)
+	if err != nil {
+		return fmt.Errorf("store.UpdatePasswordHash: %w", err)
+	}
+	if tag.RowsAffected() == 0 {
+		return ErrUserNotFound
+	}
+	return nil
+}
+
 // lockoutDurationFor returns the lockout duration for a given level.
 // Exposed in this file for the unit test on the ladder.
 func lockoutDurationFor(level int) time.Duration {

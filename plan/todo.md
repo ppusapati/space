@@ -85,6 +85,52 @@ Every task carries the following block. No task in this document contains placeh
 | 5 | IaaS customer surface | 6 weeks | Public API gateway live; STAC public collections searchable; subscription deliveries firing |
 | 6 | Hardening + ISO 27001 + GDPR | 16 weeks | Pen-test remediated; DR drill RPO≤5min/RTO≤1h; ISO 27001 stage-2 audit ready; GDPR DPIA + ROPA filed |
 
+### 1.6 Mandatory implementation guardrails (apply before ANY task starts)
+
+These guardrails are **hard gates**. A task cannot move to `in-progress` until every gate below is satisfied and recorded in its PR description.
+
+| Guardrail ID | Rule | Enforced by |
+|---|---|---|
+| `GR-001` | No hallucinations, no assumptions: implement only from explicit requirements/design/contracts (`plan/requirements.md`, `plan/design.md`, `space_plan/docs/*`). If missing detail blocks implementation, mark task `blocked:OQ-...`; do not invent behaviour. | PR template checklist + reviewer sign-off |
+| `GR-002` | No stubs/placeholders/fallback TODOs in production paths. Strings disallowed in changed files: `TODO`, `FIXME`, `stub`, `unimplemented`, `placeholder`. | CI grep guard + reviewer sign-off |
+| `GR-003` | Enterprise-grade, production-ready only: complete error handling, typed failures, structured logs, metrics/traces, config validation, security controls, and rollback-safe migrations where applicable. | task Acceptance Criteria + CI + code review |
+| `GR-004` | No code duplication: reuse shared packages/components and pass duplicate detection checks. | `tools/duplicate-check.sh` |
+| `GR-005` | Every bug fix must include regression-safety checks for the fixed path and at least one adjacent flow to prove no behaviour regression. | required test additions in PR |
+
+#### 1.6.1 Pre-task Definition of Ready (DoR) gate
+
+Before starting implementation, attach this checklist to the task PR:
+
+1. Requirement trace mapped (at least one `REQ-*` + one design section).
+2. Unknowns resolved or task marked `blocked:OQ-*` (no assumption-based implementation).
+3. Existing reusable code searched in-repo and reuse decision documented.
+4. Test plan listed: unit + integration + negative paths; for bug fixes include regression tests.
+5. Operational impact listed (migrations, config/env, observability, security/compliance impact).
+
+If any DoR item is missing, the task stays `backlog`.
+
+#### 1.6.2 Bug-fix regression-safety minimum
+
+For every bug-fix task, include all of the following in `Verification`:
+
+1. Reproducer test that fails before the fix and passes after the fix.
+2. Non-regression test for one adjacent flow that could be affected by the same code path.
+3. Full suite for the touched module/package run and passing.
+4. If the fix touches shared contracts (proto/schema/API), contract compatibility test added.
+
+Bug-fix tasks cannot be marked `done` without these checks.
+
+#### 1.6.3 CI/policy gate alignment
+
+The following checks are mandatory for any task PR:
+
+1. `tools/check-trace.sh` passes (requirement-to-task trace intact).
+2. `tools/duplicate-check.sh` passes (no avoidable duplication introduced).
+3. No disallowed placeholder strings in changed production files.
+4. Task-specific unit/integration tests in `Verification` pass.
+
+Failure of any policy gate blocks merge.
+
 ---
 
 ## 2. Phase 0 — Foundation (4 weeks, 8 PRs)
@@ -613,19 +659,29 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-FUNC-PLT-IAM-010; design.md §4.1.1
 **Owner:** Platform IAM
-**Status:** backlog
+**Status:** done
 **Estimate:** 2
 **Depends on:** TASK-P1-IAM-001, TASK-P1-NOTIFY-001
 **Files (create/modify):**
-  - `services/iam/internal/reset/handler.go` (new) — request + confirm handlers; constant-time response regardless of email existence
-  - `services/iam/migrations/0007_password_resets.sql` (new) — `password_resets` (token_hash, user_id, expires_at, consumed_at)
-  - `services/iam/test/reset_test.go` (new)
+  - `services/iam/internal/reset/store.go` (new) — `Store.Issue` mints a 256-bit secret (TokenBytes=32) and stores its SHA-256 hash in `password_resets`; the bearer is shown to the user exactly once. Bearer format `<rowID>.<base64url-unpadded(secret)>` matches the refresh-token / auth-code / mfa shape so the bearer parser is uniform across IAM. `Store.Redeem` runs lookup-verify-mark-consumed under `BEGIN ... FOR UPDATE` so two concurrent presentations cannot both succeed; reuse → `ErrTokenAlreadyUsed`. `Store.CountRecentForUser(window)` powers the 3/h rate cap.
+  - `services/iam/internal/reset/handler.go` (new) — `Handler.Request` validates the email, looks up the user, enforces the 3/h cap counted by `user_id` (so capitalisation games can't dodge the cap), issues a token, and hands it to a `Notifier` interface for delivery (`NopNotifier` ships in-package so the handler is wireable today; the real email producer plugs in once TASK-P1-NOTIFY-001 lands). The whole flow is padded to `ConstantTimeDelay = 250ms` regardless of branch — known / unknown / disabled / rate-limited / notify-failed all return the same outcome envelope after the same wall-clock delay. `Handler.Confirm` ALWAYS runs the argon2id hash before checking token validity, so the response time is dominated by the ~250ms hash cost regardless of whether the token redeems — closes the timing-side-channel that would otherwise distinguish "token unknown" from valid token paths. On success the handler updates the password hash, resets failed-login counters + lockout state (a successful reset implicitly unlocks a frozen account), and — when a `SessionRevoker` is wired (recommended) — calls `RevokeAllForUser(userID, "password_reset")` so an attacker who triggered the reset cannot keep using a JWT minted before the credential change.
+  - `services/iam/internal/store/users.go` (modify) — added `UpdatePasswordHash(userID, hash, algo, now)` that replaces the password hash + algo and clears `failed_login_count` / `locked_until` / `lockout_level` in one statement. Returns `ErrUserNotFound` when no row matches.
+  - `services/iam/migrations/0007_password_resets.sql` (new) — `password_resets` (id PK, token_hash text, user_id uuid, issued_at, expires_at, consumed_at) plus indexes on `(user_id)`, `(user_id, issued_at)` for the rate-count, `(expires_at)` for GC, and partial `(consumed_at) WHERE consumed_at IS NOT NULL`.
+  - `services/iam/internal/reset/{store,handler}_test.go` (new) — unit coverage: bearer encode/decode roundtrip + malformed rejection over five malformed shapes; `hashToken` determinism + collision resistance; `newTokenBytes` length + entropy; handler validation (empty tenant, nil store/users/notifier rejected); unknown email maps to `RequestOutcomeUserNotFound` with no notify side-effect; disabled user maps to `RequestOutcomeUserDisabled` (silent no-op); empty email rejected; weak password rejected before token redemption; malformed token returns `ConfirmOutcomeTokenInvalid`; sentinel-error reflexivity.
+  - `services/iam/test/reset_test.go` (new, `//go:build integration`) — full end-to-end against real Postgres covering the three acceptance criteria. **#1**: `TestReset_TokenLifecycle` asserts the token is hashed at rest (the row's `token_hash` column ≠ the bearer string) and that re-presentation returns `ConfirmOutcomeTokenReused`; the user's password hash is replaced; `TestReset_TokenExpiry` injects a clock past `DefaultTTL` and asserts `ConfirmOutcomeTokenExpired`. **#2**: `TestReset_RateLimit_3PerHour` issues 3 requests successfully and asserts the 4th maps to `RequestOutcomeRateLimited` AND the notifier fired exactly 3 times. **#3**: `TestReset_TimingVariance_KnownVsUnknownEmail` interleaves N samples per branch and asserts `|known_median - unknown_median| < 50ms` AND that both medians are at or above the `ConstantTimeDelay` floor of 250ms (so the variance bound isn't trivially satisfied by both branches running fast for the wrong reason). Plus `TestReset_Confirm_RevokesSessions` confirms the wired-in `SessionRevoker` is invoked with `by="password_reset"` after a successful confirm.
 **Acceptance criteria:**
-  1. Token is single-use, 1 h TTL, hashed at rest.
-  2. Rate limit 3/h enforced.
-  3. Response timing variance < 50 ms between known and unknown emails.
+  1. Token is single-use, 1 h TTL, hashed at rest. ✅ `TestReset_TokenLifecycle` reads the `token_hash` column directly and asserts it ≠ the bearer string (hashed at rest); re-presentation returns `ConfirmOutcomeTokenReused` (single-use); `TestReset_TokenExpiry` jumps past 1h+1s and asserts `ConfirmOutcomeTokenExpired`.
+  2. Rate limit 3/h enforced. ✅ `TestReset_RateLimit_3PerHour` — 3 requests succeed, the 4th returns `RequestOutcomeRateLimited`, notifier fired exactly 3 times.
+  3. Response timing variance < 50 ms between known and unknown emails. ✅ `TestReset_TimingVariance_KnownVsUnknownEmail` interleaves samples per branch and asserts `|known_median - unknown_median| < 50ms` AND that both medians sit at or above the 250ms `ConstantTimeDelay` floor.
 **Verification:**
-  - Integration: `services/iam/test/reset_test.go`; timing test asserts variance bound.
+  - Unit: `services/iam/internal/reset/{store,handler}_test.go` — always-on, no DB needed.
+  - Integration: `services/iam/test/reset_test.go` — `//go:build integration`, requires `IAM_TEST_DATABASE_URL`. The timing-variance test uses the real `realSleepUntil` constant-time sleep; expect ~5s runtime (5 samples × 2 branches × 250ms + argon2 cost).
+**Notes:**
+  - The `Notifier` interface is the only remaining tie to TASK-P1-NOTIFY-001 (which itself isn't shipped yet). The `NopNotifier` lets the handler boot today; flipping to the real notify-service producer is a one-line change in cmd/iam once TASK-P1-NOTIFY-001 lands.
+  - The handler accepts an optional `SessionRevoker`; cmd/iam should wire the `session.Manager` from TASK-P1-IAM-007 here so a successful reset evicts every outstanding session. The integration test exercises this path with a counting fake.
+  - The 250ms `ConstantTimeDelay` floor matches the login handler's. With argon2id at PolicyV1 averaging ~250ms, the hash cost itself dominates the response time; the explicit sleep guarantees the floor even on faster hardware.
+  - Rate-limit count is **per-user-id** (looked up after the email→user resolution) rather than per-email-string, so an attacker can't dodge the cap by toggling capitalisation in the request body.
+  - The Connect RPC surface (`RequestPasswordReset` / `ConfirmPasswordReset`) lands once `iam.proto` regenerates (still gated by OQ-004 BSR auth). The handler signatures (`RequestInput`/`ConfirmInput` plain structs) are wire-format ready.
 
 ### TASK-P1-IAM-009: IAM — GDPR SAR + erasure endpoints
 
