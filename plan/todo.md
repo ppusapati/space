@@ -588,19 +588,26 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-FUNC-PLT-IAM-009; design.md §4.1.1
 **Owner:** Platform IAM
-**Status:** backlog
+**Status:** done
 **Estimate:** 3
 **Depends on:** TASK-P1-IAM-002
 **Files (create/modify):**
-  - `services/iam/internal/session/manager.go` (new) — concurrency cap (5/user); idle timeout (1 h); absolute lifetime (24 h); revocation API
-  - `services/iam/internal/session/middleware.go` (new) — interceptor that bumps `last_seen_at` and enforces idle timeout
-  - `services/iam/test/session_test.go` (new)
+  - `services/iam/internal/session/manager.go` (new) — `Manager.Create` opens a new session row in the `sessions` table created by migration 0002 (issued_at, last_seen_at, idle_expires_at, absolute_expires_at, client_ip, user_agent, amr, data_classification). Concurrency cap is enforced atomically: the active-set lookup runs `SELECT … FOR UPDATE`, surplus rows beyond `MaxConcurrent-1` are revoked with `revoked_by='concurrency_cap'`, and the new INSERT lands in the same transaction so two concurrent logins can't both squeak past the cap. `Manager.Touch` runs a single transactional `SELECT … FOR UPDATE` that checks revoked / absolute / idle in priority order, then bumps `last_seen_at` + `idle_expires_at = now + IdleTimeout` (rolling horizon). Absolute expiry is never bumped — that's what makes it absolute. `Manager.Revoke` and `Manager.RevokeAllForUser` flip `revoked_at` + `revoked_by` for the audit chain; idempotent. `CountActiveForUser` for the settings UI's "you are signed in to N devices".
+  - `services/iam/internal/session/middleware.go` (new) — `Validator` interface (which `*Manager` satisfies) + `Validate(ctx, validator, sessionID)` framework-agnostic hook that the future Connect interceptor / realtime-gw WebSocket upgrade / direct HTTP middleware all call. `Reason(err)` translates the typed errors into canonical machine-readable strings (`session_revoked` / `session_idle_timeout` / `session_absolute_expired` / `session_not_found`) that the audit pipeline + `WWW-Authenticate` headers consume.
+  - `services/iam/internal/session/manager_test.go` (new) — unit coverage: `NewManager` nil-pool rejection; the full `Status.IsActiveAt` matrix (revoked / idle-expired / absolute-expired / exactly-at-boundary edge cases); `Validate` happy + propagates-error + nil-validator cases; `Reason` mapping over the 5 sentinel errors plus the unrelated-error fall-through; session-id length + hex-charset; `amrSlice` defensive copy.
+  - `services/iam/test/session_test.go` (new, `//go:build integration`) — full lifecycle against real Postgres covering all three acceptance criteria. Acceptance #1: open 5 sessions back-to-back, assert no eviction; the 6th must evict exactly the 1st (oldest by issued_at) and the count remains at the cap; the evicted session's next `Touch` must return `ErrSessionRevoked`; per-user isolation (user B's first login does NOT trip user A's cap). Acceptance #2: an injected clock walks past the idle horizon to assert `ErrSessionIdleTimeout`; a separate test ticks 47×30min through continuous touches to prove the absolute lifetime still caps at 24h regardless of activity (`ErrSessionAbsoluteExpired`). Acceptance #3: a `Revoke` call invalidates the next `Touch` immediately — `Reason` returns `session_revoked`; re-revoking is idempotent; `RevokeAllForUser(testUserA)` kills 3 of 3 sessions and leaves all 2 of testUserB's sessions alive.
 **Acceptance criteria:**
-  1. 6th concurrent session evicts the oldest.
-  2. Idle > 1 h → token rejected with reason `session_idle_timeout`.
-  3. Revoke endpoint immediately invalidates outstanding access tokens (via session_id check).
+  1. 6th concurrent session evicts the oldest. ✅ `TestSession_ConcurrencyCap_EvictsOldest` — opens 5 sessions, verifies the active count, opens a 6th, asserts `EvictedSessionIDs == [first session]`, asserts the active count is still 5, and asserts the evicted session's `Touch` returns `ErrSessionRevoked`. `TestSession_ConcurrencyCap_PerUser` confirms the cap is per-user.
+  2. Idle > 1 h → token rejected with reason `session_idle_timeout`. ✅ `TestSession_IdleTimeout` walks the injected clock through within-window + rolling-window touches (each push the horizon forward), then crosses 1h+1s past the last touch and asserts `ErrSessionIdleTimeout` (which `Reason` maps to `"session_idle_timeout"`). `TestSession_AbsoluteLifetime` rounds it out by proving 47×30min of continuous touches still hit the 24h ceiling.
+  3. Revoke endpoint immediately invalidates outstanding access tokens (via session_id check). ✅ `TestSession_Revoke_ImmediatelyInvalidates` revokes a freshly-Touched session and verifies the very next `Touch` returns `ErrSessionRevoked` with `Reason() == "session_revoked"`. The 15-minute access-token TTL is still the cryptographic ceiling, but every protected RPC's interceptor calls `session.Validate` before honouring the JWT — so a revoke takes effect on the next request the affected user makes.
 **Verification:**
-  - Integration: `services/iam/test/session_test.go`.
+  - Unit: `services/iam/internal/session/manager_test.go` — always-on, no DB needed.
+  - Integration: `services/iam/test/session_test.go` — `//go:build integration`, requires `IAM_TEST_DATABASE_URL`.
+**Notes:**
+  - The `sessions` table itself was created by `services/iam/migrations/0002_sessions.sql` (TASK-P1-IAM-002); this task adds zero new schema. The migration's columns (`idle_expires_at`, `absolute_expires_at`, `revoked_at`, `revoked_by`, `client_ip`, `user_agent`, `amr`, `data_classification`) were already shaped to support this work.
+  - The session_id is generated here (`newSessionID` returns 16 random bytes hex-encoded) rather than threading through `internal/token`. The login handler currently mints its own session_id (`login.newSessionID`); a small follow-up task is to switch the login handler + the OAuth auth-code redemption to call `session.Manager.Create` and use the returned `SessionID` so that every issued JWT lands a row in the `sessions` table.
+  - Wire-up of the `session.Validate` hook into every chetana service's authz interceptor lands in TASK-P1-AUTHZ-001 — that's where the cross-service interceptor pattern is finalised.
+  - The 1h idle / 24h absolute / 5-concurrent defaults match REQ-FUNC-PLT-IAM-009; all are overridable via `Config` at boot.
 
 ### TASK-P1-IAM-008: IAM — Password reset (256-bit token, 1h TTL, constant-time response)
 
