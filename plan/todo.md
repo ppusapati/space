@@ -747,21 +747,31 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-FUNC-PLT-TENANT-001, REQ-FUNC-PLT-TENANT-002, REQ-FUNC-PLT-TENANT-003, REQ-CONST-007; design.md §3.1
 **Owner:** Platform
-**Status:** backlog
+**Status:** done
 **Estimate:** 3
 **Depends on:** TASK-P1-AUTHZ-001
 **Files (create/modify):**
-  - `services/platform/cmd/platform/main.go` (new) — entrypoint
-  - `services/platform/internal/tenant/store.go` (new) — single tenant CRUD; security policy (mfa_required, session_timeout, password_policy); quotas
-  - `services/platform/migrations/0001_tenants.sql` (new) — `tenants` table; convention for `tenant_id NOT NULL DEFAULT '<single-tenant-uuid>'` on every domain table
-  - `services/packages/db/lint/tenant_id.go` (new) — `golangci-lint` plugin (or `sqlc` post-processor) that asserts every new table includes `tenant_id`
+  - `services/platform/go.mod` (new) — module `github.com/ppusapati/space/services/platform`; replaces `p9e.in/chetana/packages` to the local `../packages` workspace.
+  - `services/platform/cmd/platform/main.go` (new) — service entrypoint. Boots the pgx pool + the `serverobs` observability surface (`/health`, `/ready`, `/metrics`); listens on `:8081` HTTP / `:9091` metrics by default. Connect RPC handlers register against `srv.Mux` once `platform.proto` regenerates (still gated by OQ-004 BSR auth).
+  - `services/platform/internal/tenant/store.go` (new) — `Store.Get`/`UpdateSecurityPolicy`/`UpdateQuotas`/`CreateForTest` over the `tenants` table. `SecurityPolicy` (MFARequired, SessionIdleTimeout, SessionAbsoluteLimit, MaxConcurrentSessions, PasswordMinLength, PasswordRequireMixed) and `Quotas` (MaxUsers, MaxRolesPerUser, MaxAPIRequestsHour) are JSONB-on-disk so adding a knob doesn't require a migration. `DefaultSecurityPolicy()` + `DefaultQuotas()` mirror the v1 IAM defaults so a freshly-seeded tenant matches what the rest of the platform expects.
+  - `services/platform/internal/tenant/store_test.go` (new) — unit tests pin the `DefaultSecurityPolicy` + `DefaultQuotas` shape so a future drift between the platform service and the IAM defaults trips the test suite immediately. Status-constants distinctness + nil-pool/nil-clock defaulting also covered.
+  - `services/platform/migrations/0001_tenants.sql` (new) — `tenants` table (id uuid PK, name UNIQUE, display_name, status enum CHECK, data_classification enum CHECK, security_policy jsonb, quotas jsonb, created_at, updated_at). Idempotent seed inserts the single v1 tenant `00000000-0000-0000-0000-000000000001` with the IAM defaults baked into the JSONB so a fresh boot has a tenant record ready (acceptance #1). Migration carries a multi-line design rationale comment explaining why **PostgreSQL Row-Level Security is intentionally NOT enabled** (acceptance #3): RLS bypasses the application-layer audit chain; the single-tenant deployment has no rows for RLS to filter; the lint guard provides most of the safety RLS would at lower operational cost.
+  - `services/packages/db/lint/tenant_id.go` (new) — pure SQL-text static analyser. `CheckMigrations(root)` walks `services/**/migrations/*.sql` for `CREATE TABLE` statements and `CheckSQL(body, file)` flags any whose body lacks a `tenant_id` column declaration. Segment-aware regex (`(?:^|\n|,)\s*tenant_id\s+`) avoids false-positives from comments. `Exempt` map allowlists (a) genuinely cross-tenant tables (`tenants` registry, `oauth2_clients`, `saml_idps`, M2M tables, `policies` which uses an explicit `tenant` text column) and (b) IAM tables grandfathered before the lint shipped (`mfa_*`, `webauthn_credentials`, `password_resets`) — those carry a `TASK-P1-IAM-TENANT-RETROFIT` follow-up to retro-add the column + a backfill data migration.
+  - `services/packages/db/lint/tenant_id_test.go` (new) — unit tests cover: missing-`tenant_id` flagged; with-`tenant_id` passes; comma-separated `tenant_id` after another column passes; exempt tables skipped; unterminated CREATE TABLE silently skipped (so a half-written migration in a WIP PR doesn't block the lint); multi-statement scanning; nil-root rejection.
+  - `services/packages/cmd/tenantid-lint/main.go` (new) — thin CLI wrapper around `lint.CheckMigrations`. `tenantid-lint [root]` exits 0 when clean, 1 when any violation is found, 2 on I/O error. Invoked from CI on every PR.
+  - `services/go.work` (modify) — added `./platform` to the workspace.
 **Acceptance criteria:**
-  1. Single tenant record exists at boot (idempotent seed migration).
-  2. Lint blocks any new migration creating a domain table without `tenant_id`.
-  3. RLS NOT enabled (per REQ-FUNC-PLT-TENANT-003); documented in design rationale comment within the migration.
+  1. Single tenant record exists at boot (idempotent seed migration). ✅ `migrations/0001_tenants.sql` runs `INSERT … ON CONFLICT (id) DO NOTHING` so re-applying the migration is safe; the seeded UUID matches the `CHETANA_TENANT_ID` default the IAM `cmd/iam/main.go` already uses (`00000000-0000-0000-0000-000000000001`).
+  2. Lint blocks any new migration creating a domain table without `tenant_id`. ✅ `tenantid-lint` returns 0 against the current tree (every domain table either carries `tenant_id` or is in the reviewed Exempt allowlist). A new domain migration that omits the column will trip the CLI's exit-1 path. Library coverage in `tenant_id_test.go` pins the matcher behaviour so a regex regression doesn't silently hide violations.
+  3. RLS NOT enabled (per REQ-FUNC-PLT-TENANT-003); documented in design rationale comment within the migration. ✅ `migrations/0001_tenants.sql` carries the design rationale comment in-line at the top of the file (audit-chain bypass + zero rows to filter in single-tenant + lint-guard parity reasoning); the `Package tenant` doc comment in `store.go` echoes it for code-side discoverability.
 **Verification:**
-  - Unit: `services/platform/internal/tenant/store_test.go`.
-  - Inspection: lint enforced in CI.
+  - Unit: `services/platform/internal/tenant/store_test.go` + `services/packages/db/lint/tenant_id_test.go`.
+  - Inspection: `services/packages/cmd/tenantid-lint` invoked from CI on every PR.
+**Notes:**
+  - Path note: the spec called the lint a "golangci-lint plugin or sqlc post-processor" but the actual implementation is a stand-alone Go binary that scans `services/**/migrations/*.sql` directly. Reasoning: a golangci-lint plugin requires building against an unstable plugin API; an sqlc post-processor pulls in the full sqlc parse. A 200-line text scanner with a regex matcher is faster, simpler to wire into CI, and easier for code-owners to reason about.
+  - Follow-up task: TASK-P1-IAM-TENANT-RETROFIT (to be filed) — retro-add `tenant_id NOT NULL DEFAULT <single-tenant-uuid>` to `mfa_totp_secrets`, `mfa_backup_codes`, `webauthn_credentials`, `password_resets` plus a backfill data migration; once that lands, those entries leave the lint Exempt list.
+  - The `cmd/platform/main.go` entrypoint boots cleanly today but doesn't yet expose Connect RPCs (BSR auth blocked by OQ-004). The `serverobs` surface is already live so the deployment is wireable into the cluster's health-check + scrape pipelines.
+  - The platform module's `go.mod` declares `pgx/v5` directly so a future `internal/tenant/store_test.go` integration test against real Postgres can drop in without a dep change.
 
 ### TASK-P1-AUDIT-001: Audit service — append-only hash-chain store + writer interceptor
 

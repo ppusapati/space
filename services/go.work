@@ -3,6 +3,7 @@ go 1.26.1
 use (
 	./packages
 	./iam
+	./platform
 	./eo-catalog
 	./eo-pipeline
 	./eo-analytics
