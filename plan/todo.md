@@ -121,6 +121,11 @@ Goal: lay the substrate the rest of the platform plugs into. No domain code in t
   - Unit: existing test suites still pass (`pnpm -r test`, `go test ./...`, `cargo test --workspace`).
   - Inspection: `tools/rebrand/rename.sh --dry-run` reports zero candidate renames after merge.
 
+**Follow-ups deferred from PR-A:**
+
+  - **`@chetana/i18n` build is broken on `main` and remains broken after PR-A** (TS2835 + TS2322 under `module: NodeNext` + `noUncheckedIndexedAccess`). Pre-existing; not a rebrand regression. Resolve in a follow-up PR by switching `web/packages/i18n/tsconfig.json` to `module: "ESNext"` + `moduleResolution: "Bundler"` (the right resolver for SvelteKit/Vite consumers — keeps imports pure-TS without `.js` extension noise) and narrowing the `resolve()` signature to handle `noUncheckedIndexedAccess`. Until then, exclude with `pnpm --filter '!@chetana/i18n' -r build` in CI.
+  - **`@chetana/ui` build fails resolving `@samavāya/stores` from `src/erp/ErpRootLayout.svelte`.** Expected — that file is in PR-A's deferred-exclude list and gets deleted by **PR-B (TASK-P0-WEB-001)** along with the rest of `web/packages/ui/src/erp/`. Until PR-B lands, exclude the `ui` build similarly: `pnpm --filter '!@chetana/i18n' --filter '!@chetana/ui' -r build`.
+
 ### TASK-P0-REPO-001: PR-A2 — Repo split: extract `chetana-defense`
 
 **Trace:** REQ-CONST-004, REQ-COMP-ITAR-001, REQ-COMP-ITAR-002; design.md §2.2, §2.4

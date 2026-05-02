@@ -1,23 +1,225 @@
+function p(r, e) {
+  return {
+    validate: (t) => r.safeParse(t).success,
+    message: e || "Validation failed"
+  };
+}
+function g(r, e) {
+  return {
+    validate: async (t) => (await r.safeParseAsync(t)).success,
+    message: e || "Validation failed"
+  };
+}
+function l(r, e) {
+  const t = r.safeParse(e);
+  if (t.success)
+    return {
+      isValid: !0,
+      errors: [],
+      fieldErrors: {},
+      data: t.data
+    };
+  const s = [], i = {};
+  for (const a of t.error.errors) {
+    const n = a.path.join(".");
+    s.push(a.message), n && (i[n] || (i[n] = []), i[n].push(a.message));
+  }
+  return {
+    isValid: !1,
+    errors: s,
+    fieldErrors: i
+  };
+}
+async function c(r, e) {
+  const t = await r.safeParseAsync(e);
+  if (t.success)
+    return {
+      isValid: !0,
+      errors: [],
+      fieldErrors: {},
+      data: t.data
+    };
+  const s = [], i = {};
+  for (const a of t.error.errors) {
+    const n = a.path.join(".");
+    s.push(a.message), n && (i[n] || (i[n] = []), i[n].push(a.message));
+  }
+  return {
+    isValid: !1,
+    errors: s,
+    fieldErrors: i
+  };
+}
+function y(r, e) {
+  return {
+    validate: (t) => {
+      try {
+        return r.validateSync(t), !0;
+      } catch {
+        return !1;
+      }
+    },
+    message: e || "Validation failed"
+  };
+}
+function v(r, e) {
+  return {
+    validate: async (t) => r.isValid(t),
+    message: e || "Validation failed"
+  };
+}
+function d(r, e) {
+  try {
+    const t = r.validateSync(e, { abortEarly: !1 });
+    return {
+      isValid: !0,
+      errors: [],
+      fieldErrors: {},
+      data: t
+    };
+  } catch (t) {
+    const s = t, i = s.errors || [], a = {};
+    if (s.inner)
+      for (const n of s.inner)
+        n.path && (a[n.path] || (a[n.path] = []), a[n.path].push(...n.errors));
+    return {
+      isValid: !1,
+      errors: i,
+      fieldErrors: a
+    };
+  }
+}
+async function f(r, e) {
+  try {
+    const t = await r.validate(e, { abortEarly: !1 });
+    return {
+      isValid: !0,
+      errors: [],
+      fieldErrors: {},
+      data: t
+    };
+  } catch (t) {
+    const s = t, i = s.errors || [], a = {};
+    if (s.inner)
+      for (const n of s.inner)
+        n.path && (a[n.path] || (a[n.path] = []), a[n.path].push(...n.errors));
+    return {
+      isValid: !1,
+      errors: i,
+      fieldErrors: a
+    };
+  }
+}
 class u {
+  schema;
+  type;
+  constructor(e, t) {
+    this.schema = e, this.type = t;
+  }
+  /**
+   * Create validator from Zod schema
+   */
+  static fromZod(e) {
+    return new u(e, "zod");
+  }
+  /**
+   * Create validator from Yup schema
+   */
+  static fromYup(e) {
+    return new u(e, "yup");
+  }
+  /**
+   * Validate data synchronously
+   */
+  validate(e) {
+    return this.type === "zod" ? l(this.schema, e) : d(this.schema, e);
+  }
+  /**
+   * Validate data asynchronously
+   */
+  async validateAsync(e) {
+    return this.type === "zod" ? c(this.schema, e) : f(this.schema, e);
+  }
+  /**
+   * Get a ValidationRule for a specific field path
+   */
+  getFieldRule(e, t) {
+    return {
+      validate: (s) => !this.validate({ [e]: s }).fieldErrors[e]?.length,
+      message: t || `${e} is invalid`
+    };
+  }
+  /**
+   * Convert schema to ValidationRule array for use with FormValidator
+   */
+  toValidationRules() {
+    return [{
+      validate: (e) => this.validate(e).isValid,
+      message: "Form validation failed"
+    }];
+  }
+}
+function E(r) {
+  return {
+    validate: (e) => l(r, e),
+    validateAsync: (e) => c(r, e),
+    validateField: (e, t, s) => {
+      const i = s ? { ...s, [e]: t } : { [e]: t }, a = l(r, i);
+      return {
+        isValid: !a.fieldErrors[e]?.length,
+        errors: a.fieldErrors[e] || []
+      };
+    }
+  };
+}
+function V(r) {
+  return {
+    validate: (e) => d(r, e),
+    validateAsync: (e) => f(r, e),
+    validateField: (e, t, s) => {
+      const i = s ? { ...s, [e]: t } : { [e]: t }, a = d(r, i);
+      return {
+        isValid: !a.fieldErrors[e]?.length,
+        errors: a.fieldErrors[e] || []
+      };
+    }
+  };
+}
+function F(r, e) {
+  return r.fieldErrors[e] || [];
+}
+function b(r, e) {
+  return (r.fieldErrors[e]?.length || 0) > 0;
+}
+function A(r, e) {
+  return r.fieldErrors[e]?.[0];
+}
+function R(r) {
+  const e = {};
+  for (const [t, s] of Object.entries(r.fieldErrors))
+    s.length > 0 && (e[t] = s[0]);
+  return e;
+}
+class w {
   fields = /* @__PURE__ */ new Map();
-  addField(t, s) {
-    this.fields.set(t, s);
+  addField(e, t) {
+    this.fields.set(e, t);
   }
-  removeField(t) {
-    this.fields.delete(t);
+  removeField(e) {
+    this.fields.delete(e);
   }
-  async validateField(t, s) {
-    const r = this.fields.get(t);
-    if (!r)
+  async validateField(e, t) {
+    const s = this.fields.get(e);
+    if (!s)
       return { isValid: !0, errors: [] };
     const i = [];
-    if (r.required && this.isEmpty(s) && i.push("This field is required"), this.isEmpty(s) && !r.required)
+    if (s.required && this.isEmpty(t) && i.push("This field is required"), this.isEmpty(t) && !s.required)
       return { isValid: !0, errors: [] };
-    for (const a of r.rules)
+    for (const a of s.rules)
       try {
-        if (!await a.validate(s)) {
-          const l = typeof a.message == "function" ? a.message(s) : a.message;
-          i.push(l);
+        if (!await a.validate(t)) {
+          const o = typeof a.message == "function" ? a.message(t) : a.message;
+          i.push(o);
         }
       } catch {
         i.push("Validation error occurred");
@@ -27,107 +229,122 @@ class u {
       errors: i
     };
   }
-  async validateForm(t) {
-    const s = {};
-    for (const [r, i] of this.fields) {
-      const a = t[r];
-      s[r] = await this.validateField(r, a);
+  async validateForm(e) {
+    const t = {};
+    for (const [s, i] of this.fields) {
+      const a = e[s];
+      t[s] = await this.validateField(s, a);
     }
-    return s;
+    return t;
   }
-  isEmpty(t) {
-    return t == null || t === "" || Array.isArray(t) && t.length === 0;
+  isEmpty(e) {
+    return e == null || e === "" || Array.isArray(e) && e.length === 0;
   }
 }
-const f = {
-  required: (e = "This field is required") => ({
-    validate: (t) => !o(t),
+const M = {
+  required: (r = "This field is required") => ({
+    validate: (e) => !h(e),
+    message: r
+  }),
+  email: (r = "Please enter a valid email address") => ({
+    validate: (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e),
+    message: r
+  }),
+  minLength: (r, e) => ({
+    validate: (t) => t.length >= r,
+    message: e || `Must be at least ${r} characters long`
+  }),
+  maxLength: (r, e) => ({
+    validate: (t) => t.length <= r,
+    message: e || `Must be no more than ${r} characters long`
+  }),
+  pattern: (r, e = "Invalid format") => ({
+    validate: (t) => r.test(t),
     message: e
   }),
-  email: (e = "Please enter a valid email address") => ({
-    validate: (t) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(t),
-    message: e
+  number: (r = "Must be a valid number") => ({
+    validate: (e) => !isNaN(Number(e)),
+    message: r
   }),
-  minLength: (e, t) => ({
-    validate: (s) => s.length >= e,
-    message: t || `Must be at least ${e} characters long`
+  min: (r, e) => ({
+    validate: (t) => Number(t) >= r,
+    message: e || `Must be at least ${r}`
   }),
-  maxLength: (e, t) => ({
-    validate: (s) => s.length <= e,
-    message: t || `Must be no more than ${e} characters long`
+  max: (r, e) => ({
+    validate: (t) => Number(t) <= r,
+    message: e || `Must be no more than ${r}`
   }),
-  pattern: (e, t = "Invalid format") => ({
-    validate: (s) => e.test(s),
-    message: t
+  phone: (r = "Please enter a valid phone number") => ({
+    validate: (e) => /^[\+]?[1-9][\d]{0,15}$/.test(e.replace(/[\s\-\(\)]/g, "")),
+    message: r
   }),
-  number: (e = "Must be a valid number") => ({
-    validate: (t) => !isNaN(Number(t)),
-    message: e
-  }),
-  min: (e, t) => ({
-    validate: (s) => Number(s) >= e,
-    message: t || `Must be at least ${e}`
-  }),
-  max: (e, t) => ({
-    validate: (s) => Number(s) <= e,
-    message: t || `Must be no more than ${e}`
-  }),
-  phone: (e = "Please enter a valid phone number") => ({
-    validate: (t) => /^[\+]?[1-9][\d]{0,15}$/.test(t.replace(/[\s\-\(\)]/g, "")),
-    message: e
-  }),
-  url: (e = "Please enter a valid URL") => ({
-    validate: (t) => {
+  url: (r = "Please enter a valid URL") => ({
+    validate: (e) => {
       try {
-        return new URL(t), !0;
+        return new URL(e), !0;
       } catch {
         return !1;
       }
     },
-    message: e
+    message: r
   }),
-  password: (e = {}, t) => ({
-    validate: (s) => {
+  password: (r = {}, e) => ({
+    validate: (t) => {
       const {
-        minLength: r = 8,
+        minLength: s = 8,
         requireUppercase: i = !0,
         requireLowercase: a = !0,
         requireNumbers: n = !0,
-        requireSymbols: l = !1
-      } = e;
-      return !(s.length < r || i && !/[A-Z]/.test(s) || a && !/[a-z]/.test(s) || n && !/\d/.test(s) || l && !/[^A-Za-z0-9]/.test(s));
+        requireSymbols: o = !1
+      } = r;
+      return !(t.length < s || i && !/[A-Z]/.test(t) || a && !/[a-z]/.test(t) || n && !/\d/.test(t) || o && !/[^A-Za-z0-9]/.test(t));
     },
-    message: t || "Password does not meet requirements"
+    message: e || "Password does not meet requirements"
   }),
-  match: (e, t, s) => ({
-    validate: (r) => r === t(),
-    message: s || `Must match ${e}`
+  match: (r, e, t) => ({
+    validate: (s) => s === e(),
+    message: t || `Must match ${r}`
   }),
-  fileSize: (e, t) => ({
-    validate: (s) => s.size <= e,
-    message: t || `File size must be less than ${d(e)}`
+  fileSize: (r, e) => ({
+    validate: (t) => t.size <= r,
+    message: e || `File size must be less than ${m(r)}`
   }),
-  fileType: (e, t) => ({
-    validate: (s) => e.includes(s.type),
-    message: t || `File type must be one of: ${e.join(", ")}`
+  fileType: (r, e) => ({
+    validate: (t) => r.includes(t.type),
+    message: e || `File type must be one of: ${r.join(", ")}`
   }),
-  async: (e, t = "Validation failed") => ({
-    validate: e,
-    message: t
+  async: (r, e = "Validation failed") => ({
+    validate: r,
+    message: e
   })
 };
-function o(e) {
-  return e == null || e === "" || Array.isArray(e) && e.length === 0;
+function h(r) {
+  return r == null || r === "" || Array.isArray(r) && r.length === 0;
 }
-function d(e, t = 2) {
-  if (e === 0) return "0 Bytes";
-  const s = 1024, r = t < 0 ? 0 : t, i = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"], a = Math.floor(Math.log(e) / Math.log(s));
-  return parseFloat((e / Math.pow(s, a)).toFixed(r)) + " " + i[a];
+function m(r, e = 2) {
+  if (r === 0) return "0 Bytes";
+  const t = 1024, s = e < 0 ? 0 : e, i = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"], a = Math.floor(Math.log(r) / Math.log(t));
+  return parseFloat((r / Math.pow(t, a)).toFixed(s)) + " " + i[a];
 }
 export {
-  u as FormValidator,
-  f as ValidationRules,
-  d as formatBytes,
-  o as isEmpty
+  w as FormValidator,
+  u as SchemaValidator,
+  M as ValidationRules,
+  V as createYupFormValidator,
+  E as createZodFormValidator,
+  m as formatBytes,
+  F as getFieldErrors,
+  A as getFirstFieldError,
+  b as hasFieldError,
+  h as isEmpty,
+  R as mapToFormErrors,
+  d as validateWithYup,
+  f as validateWithYupAsync,
+  l as validateWithZod,
+  c as validateWithZodAsync,
+  v as yupToAsyncRule,
+  y as yupToRule,
+  g as zodToAsyncRule,
+  p as zodToRule
 };
 //# sourceMappingURL=index.js.map
