@@ -1,0 +1,182 @@
+syntax = "proto3";
+
+// SpacecraftProfile — TASK-P0-HW-001 / design.md §4.5.
+//
+// The generic, mission-agnostic profile every chetana service consults
+// when it needs to know what an in-flight spacecraft can do (bands,
+// modulations, CCSDS link layer, link budget, safety modes, subsystem
+// catalog).
+//
+// Loaded by:
+//   • chetana-defense/services/sat-mission/internal/profile/loader.go
+//     — authoritative, full ITAR-classified set;
+//   • chetana-platform/services/{gs-pass-pred,gs-station} — receives
+//     the non-restricted subset replicated from sat-mission for
+//     scheduling decisions.
+//
+// REQ-FUNC-SAT-001 binds the profile to the runtime: services SHALL
+// configure their behaviour from the loaded profile rather than from
+// hard-coded constants.
+
+package packages.api.v1.satellite;
+
+option go_package = "p9e.in/chetana/packages/api/v1/satellite;satellitev1";
+
+import "google/protobuf/timestamp.proto";
+
+// SpacecraftProfile is the top-level message a service loads at boot
+// (from sat-mission via gRPC, or from a static YAML in dev). All
+// fields are present in v1 of the schema — no oneofs, no `any` —
+// so a YAML round-trip preserves shape exactly.
+message SpacecraftProfile {
+  // ProfileID is a ULID assigned at creation time.
+  string profile_id = 1;
+
+  // SpacecraftID identifies the vehicle. NORAD catalogue number when
+  // the vehicle is on-orbit; an internal mission id during
+  // pre-launch integration.
+  string spacecraft_id = 2;
+
+  // BusType is free-text describing the bus class
+  // (e.g. "LEO-100kg-3U", "GEO-comsat-medium").
+  string bus_type = 3;
+
+  // Bands is the set of RF bands the spacecraft uses for downlink
+  // and/or uplink. Order is not significant.
+  repeated Band bands = 4;
+
+  // Modulations is the set of demodulation schemes the ground
+  // station's RF chain must support.
+  repeated Modulation modulations = 5;
+
+  // CCSDSProfiles is the set of CCSDS link-layer profiles the
+  // spacecraft uses. Order is not significant.
+  repeated CcsdsProfile ccsds_profiles = 6;
+
+  // LinkBudget describes the analog signal envelope of the
+  // spacecraft. Required.
+  LinkBudget link_budget = 7;
+
+  // SafetyModes lists the spacecraft's safe-mode configurations.
+  repeated SafetyMode safety_modes = 8;
+
+  // Subsystems is the spacecraft's subsystem catalog. The order
+  // here defines the rendering order in mission-ops dashboards.
+  repeated Subsystem subsystems = 9;
+
+  // ItarClassification is one of "public" or "itar" per
+  // compliance/classification.yaml. ITAR-classified profiles
+  // travel only inside chetana-defense / chetana-itar namespace.
+  string itar_classification = 10;
+
+  // Version is a SemVer string identifying the profile schema
+  // version, NOT the spacecraft firmware version.
+  string version = 11;
+
+  // EffectiveAt is the wall-clock time from which this profile
+  // becomes the authoritative description of the spacecraft.
+  // Profiles with EffectiveAt in the future are pre-staged.
+  google.protobuf.Timestamp effective_at = 12;
+}
+
+// Band enumerates RF bands. Mirrors hardware.Band in
+// services/packages/hardware/driver.go.
+enum Band {
+  BAND_UNSPECIFIED = 0;
+  BAND_UHF = 1;
+  BAND_S = 2;
+  BAND_X = 3;
+}
+
+// Modulation enumerates demodulation schemes. Mirrors
+// hardware.Modulation in services/packages/hardware/driver.go.
+enum Modulation {
+  MODULATION_UNSPECIFIED = 0;
+  MODULATION_BPSK = 1;
+  MODULATION_QPSK = 2;
+  MODULATION_OQPSK = 3;
+  MODULATION_8PSK = 4;
+  MODULATION_GMSK = 5;
+}
+
+// CcsdsProfile enumerates the four canonical CCSDS link-layer
+// transfer-frame profiles per CCSDS 132.0-B-2 (TM_TF), 232.0-B-3
+// (TC_TF), 732.0-B-3 (AOS), and 732.1-B-2 (USLP).
+enum CcsdsProfile {
+  CCSDS_PROFILE_UNSPECIFIED = 0;
+  CCSDS_PROFILE_TM_TF = 1;
+  CCSDS_PROFILE_TC_TF = 2;
+  CCSDS_PROFILE_AOS = 3;
+  CCSDS_PROFILE_USLP = 4;
+}
+
+// LinkBudget describes the analog signal envelope of the spacecraft.
+// All values are nominal — the scheduling code adds margin for slant
+// range, weather, and antenna mispointing.
+message LinkBudget {
+  // EirpDbw is the spacecraft's effective isotropic radiated power
+  // in dB-watts.
+  double eirp_dbw = 1;
+
+  // AntennaGainDb is the ground-station antenna gain assumed in the
+  // budget, in dB.
+  double antenna_gain_db = 2;
+
+  // NoiseTempK is the system noise temperature in kelvin.
+  double noise_temp_k = 3;
+
+  // BitRateBps is the nominal downlink bit rate in bits per second.
+  double bit_rate_bps = 4;
+
+  // RequiredEbN0Db is the required Eb/N0 to close the link with
+  // acceptable BER, in dB.
+  double required_eb_n0_db = 5;
+}
+
+// SafetyMode describes one safe-mode configuration the spacecraft
+// can enter.
+message SafetyMode {
+  // Name is the human-readable safe-mode name (e.g. "sun-pointing",
+  // "low-power", "anomaly-A").
+  string name = 1;
+
+  // EntryCriteria is a free-text description of when this mode is
+  // entered. Strict semantics live in the on-board fault-detection
+  // code; this string is for operator awareness.
+  string entry_criteria = 2;
+
+  // RecoveryAction is a free-text description of how to exit the
+  // mode (operator commands, autonomous recovery, time-out).
+  string recovery_action = 3;
+}
+
+// Subsystem represents one logical subsystem on the spacecraft.
+message Subsystem {
+  // Kind is the subsystem family — power, ADCS, CDH, comms,
+  // thermal, propulsion, payload, structure.
+  Kind kind = 1;
+
+  // Name is the human-readable subsystem name
+  // (e.g. "X-band downlink", "main propulsion").
+  string name = 2;
+
+  // RedundancyN is the number of redundant units. 1 = no
+  // redundancy.
+  int32 redundancy_n = 3;
+
+  // VendorName / ModelNumber are diagnostic metadata.
+  string vendor_name = 4;
+  string model_number = 5;
+
+  enum Kind {
+    KIND_UNSPECIFIED = 0;
+    KIND_POWER = 1;
+    KIND_ADCS = 2;
+    KIND_CDH = 3;
+    KIND_COMMS = 4;
+    KIND_THERMAL = 5;
+    KIND_PROPULSION = 6;
+    KIND_PAYLOAD = 7;
+    KIND_STRUCTURE = 8;
+  }
+}

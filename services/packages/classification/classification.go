@@ -55,6 +55,8 @@ const (
 // AtLeast.
 type Level string
 
+// Canonical classification levels, ordered from least to most restrictive.
+// See compliance/classification.yaml for the full semantics.
 const (
 	Public     Level = "public"
 	Internal   Level = "internal"
