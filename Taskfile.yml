@@ -295,6 +295,24 @@ tasks:
       - bash tools/check-trace.sh
 
   # -----------------------------------------------------------------
+  # Compliance (TASK-P0-COMP-001 — PR-G)
+  # -----------------------------------------------------------------
+  compliance:
+    desc: "Run the compliance control-coverage report (advisory)."
+    cmds:
+      - bash tools/compliance/coverage.sh
+
+  compliance:strict:
+    desc: "Run coverage in strict mode — fails on malformed rows or implemented-without-evidence."
+    cmds:
+      - bash tools/compliance/coverage.sh --strict
+
+  compliance:test:
+    desc: "Run the coverage tool's own fixture test (planted malformed rows)."
+    cmds:
+      - bash tools/compliance/test/run.sh
+
+  # -----------------------------------------------------------------
   # CI super-recipe
   # -----------------------------------------------------------------
   ci:
@@ -306,3 +324,5 @@ tasks:
       - task: sast
       - task: sca
       - task: trace
+      - task: compliance
+      - task: compliance:test

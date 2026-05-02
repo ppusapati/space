@@ -1,0 +1,65 @@
+# compliance/itar-paths.txt — TASK-P0-COMP-001 (PR-G).
+#
+# Manifest of source paths classified as defense articles under
+# 22 CFR 120-130. Paths listed here:
+#
+#   • MUST live in chetana-defense (the second repo) once
+#     TASK-P0-REPO-001 lands. They are excluded from the public
+#     chetana-platform repo via tools/repo-split/extract.sh.
+#   • Trigger the .github/workflows/itar-path-guard.yml CI guard if a
+#     PR adds a file matching one of these patterns to chetana-platform.
+#   • Anchor the staged-certification posture in
+#     compliance/staging-plan-itar-records.md.
+#
+# This is the conservative all-defense classification model from PR-A2.
+# Open question OQ-005 (plan/requirements.md §9) covers a future
+# review where some sat-telemetry sub-paths may be reclassified to CUI
+# rather than full ITAR; until that review lands the entire sat-* and
+# defense-* tree is treated as ITAR.
+#
+# Format: one path pattern per line. Comments start with '#'. Patterns
+# follow `git filter-repo` path-glob semantics (substring match unless
+# anchored with leading slash).
+
+# ----------------------------------------------------------------------
+# Defense services (Go)
+# ----------------------------------------------------------------------
+services/sat-command/
+services/sat-conjunction/
+services/sat-fsw/
+services/sat-mission/
+services/sat-simulation/
+services/sat-telemetry/
+services/gs-rf/
+
+# ----------------------------------------------------------------------
+# Defense compute crates (Rust, host-side)
+# ----------------------------------------------------------------------
+compute/crates/gs-rf-driver/
+compute/crates/gs-bit-sync/
+compute/crates/gs-fec/
+compute/crates/gs-doppler/
+compute/crates/gs-antenna/
+
+# ----------------------------------------------------------------------
+# Flight software crates (Rust, embedded targets) — entire workspace
+# ----------------------------------------------------------------------
+flight/
+
+# ----------------------------------------------------------------------
+# Defense-side proto contracts (move with their service)
+# ----------------------------------------------------------------------
+services/sat-command/proto/
+services/sat-conjunction/proto/
+services/sat-fsw/proto/
+services/sat-mission/proto/
+services/sat-simulation/proto/
+services/sat-telemetry/proto/
+services/gs-rf/proto/
+
+# ----------------------------------------------------------------------
+# Spacecraft profiles (concrete vehicle data)
+# ----------------------------------------------------------------------
+# Reserved for future profile YAMLs added under sat-mission/profiles/.
+# Empty in Phase 0; populated as the first vehicle's profile is filed
+# (blocked on OQ-006 — spacecraft details for the first vehicle).

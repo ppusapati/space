@@ -1,0 +1,122 @@
+# compliance/classification.yaml — TASK-P0-COMP-001 (PR-G).
+#
+# Defines the five-level data classification scheme used across the
+# platform. Consumed at runtime by:
+#
+#   • services/packages/classification/   — Go loader + comparator
+#   • services/packages/api/              — envelope serializer
+#                                            (sets _meta.classification)
+#   • services/packages/authz/decision.go — clearance comparison
+#   • services/audit/internal/chain/...   — per-row classification tag
+#   • Helm charts                          — pod / topic labelling
+#
+# References:
+#   plan/requirements.md §2.2 (Authorization attributes)
+#   plan/design.md §4.6 (Classification & data labeling)
+
+# Schema version. Bump when the level set or comparator semantics change;
+# the Go loader rejects unknown major versions.
+version: 1
+
+# Five classification levels, ordered from least to most restrictive.
+# `level` is the integer ordinal used by the comparator
+# (principal.clearance_level >= resource.data_classification).
+levels:
+  - name: public
+    level: 0
+    description: |
+      Information that may be disclosed to anyone, including external
+      customers via the public API surface. STAC items in the public
+      collections, marketing pages, system status. No classification
+      label is required on egress.
+
+  - name: internal
+    level: 1
+    description: |
+      Default classification for unclassified business data.
+      Operational dashboards, telemetry from non-defense missions,
+      internal documents. Visible to any authenticated user with the
+      relevant RBAC role. Default for new tables / topics.
+    default: true
+
+  - name: restricted
+    level: 2
+    description: |
+      Sensitive business information requiring need-to-know. Customer
+      contracts, internal ML model weights, vendor pricing. RBAC role
+      required and explicit ABAC scope.
+
+  - name: cui
+    level: 3
+    description: |
+      Controlled Unclassified Information per NARA CUI Registry. May
+      contain PII, financial controls, or government-marked
+      Sensitive-But-Unclassified data. Subject to FedRAMP-Mod handling
+      requirements (NIST SP 800-171 baseline). Encryption-at-rest +
+      audit-log integrity required.
+
+  - name: itar
+    level: 4
+    description: |
+      Defense technical data subject to ITAR (22 CFR 120-130).
+      Restricted to US persons (is_us_person=true) per
+      REQ-FUNC-PLT-AUTHZ-001. Stored only in chetana-defense /
+      chetana-itar namespace. Container images carry
+      LABEL org.chetana.classification=itar; Kafka topic prefix:
+      <topic>.itar.<...>; Postgres tables carry the row tag and audit
+      retention is at least 5 years online.
+
+# Default classification for newly-created resources when the producing
+# service does not explicitly set one. Matches the `default: true` flag
+# above; replicated here so downstream code can read a single key.
+default: internal
+
+# Resource-kind to default-classification mapping. Overrides the global
+# default for specific resource kinds. Service code reads this at boot
+# and uses the value when inserting rows / publishing topics where the
+# classification is not user-supplied.
+resource_defaults:
+  audit_event: cui          # audit log inherently CUI per FedRAMP-Mod
+  command: itar             # defense command path
+  telemetry_sample: itar    # spacecraft telemetry default
+  spacecraft_profile: itar  # link budget, RF parameters
+  conjunction_cdm: cui      # CDMs from Space-Track
+  eo_scene: internal        # raw EO scenes start internal
+  stac_item_public: public  # explicitly published public STAC items
+  user: cui                 # user records contain PII
+
+# Egress rules. The API envelope serializer in services/packages/api/
+# inspects every payload before emitting and refuses to serialise data
+# whose `_meta.classification` exceeds the requesting principal's
+# clearance OR exceeds the egress channel's allowed_max.
+egress_channels:
+  internal_rpc:
+    allowed_max: itar
+  realtime_gw_websocket:
+    allowed_max: itar     # per-topic ABAC further restricts
+  public_api_v1:
+    allowed_max: public   # external customers — public only
+  notify_email:
+    allowed_max: cui      # PII permitted; ITAR forbidden in email
+  notify_sms:
+    allowed_max: internal # SMS body is unencrypted-in-transit; cap low
+  export_presigned_url:
+    allowed_max: cui      # exports may carry PII; ITAR routed via
+                          # chetana-defense export pipeline
+
+# Audit retention required per classification level (online tier).
+# Cold archive duration is uniform (Glacier 7y) per
+# REQ-FUNC-PLT-AUDIT-003.
+audit_retention_online_days:
+  public: 365
+  internal: 365
+  restricted: 1095   # 3 years
+  cui: 1825          # 5 years (FedRAMP-Mod)
+  itar: 1825         # 5 years (REQ-COMP-ITAR-004)
+
+# Container image label and Kafka topic prefix conventions. Service
+# code reads these at boot to validate its own labels at startup.
+labels:
+  container_image_label_key: org.chetana.classification
+  kafka_topic_prefix_template: "{topic}.{classification}.{tail}"
+  postgres_column_name: data_classification

@@ -333,7 +333,7 @@ The existing `services/packages/connect/server/` package transitively imports `c
 
 **Trace:** REQ-COMP-ISO-001, REQ-COMP-GDPR-001, REQ-COMP-GDPR-002, REQ-COMP-GDPR-003, REQ-COMP-ITAR-001, REQ-COMP-ITAR-003, REQ-COMP-FEDRAMP-002, REQ-CONST-013; design.md §9.1, §9.2, §9.3, §9.4
 **Owner:** Compliance + Platform
-**Status:** backlog
+**Status:** done
 **Estimate:** 5
 **Depends on:** TASK-P0-REPO-001
 **Files (create/modify):**

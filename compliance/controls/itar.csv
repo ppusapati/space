@@ -1,0 +1,13 @@
+control_id,title,owner,evidence_path,status,notes,phase
+22 CFR 120.10,Defense article and defense service definitions,Compliance,compliance/itar-paths.txt,implemented,Manifest of source paths classified as defense articles in chetana-defense (TASK-P0-REPO-001).,P0
+22 CFR 120.15,U.S. person definition,Platform IAM,services/iam/internal/token/jwt.go,pending,is_us_person token claim in TASK-P1-IAM-002.,P1
+22 CFR 123,Licenses for the export of defense articles,Compliance,compliance/staging-plan-itar-records.md,blocked,DDTC registration in v2.0; blocked on OQ-009 (Empowered Official staffing).,v2.0
+22 CFR 124,Agreements off-shore procurement and other defense services,Compliance,compliance/policies/itar-agreements.md,pending,,v2.0
+22 CFR 125,Licenses for the export of technical data and classified defense articles,Compliance,compliance/policies/itar-technical-data.md,pending,Architecture isolates technical data in chetana-defense + ITAR namespace per design.md §1.,v2.0
+22 CFR 126,General policies and provisions,Compliance,compliance/policies/itar-general.md,pending,,v2.0
+22 CFR 127,Violations and penalties,Compliance,compliance/policies/itar-violations.md,pending,Internal escalation playbook for suspected ITAR violations.,v2.0
+22 CFR 122,Registration of manufacturers and exporters,Compliance,compliance/staging-plan-itar-records.md,blocked,DDTC manufacturer/exporter registration. Blocked on OQ-009.,v2.0
+ITAR-INT-1,Two-repo posture,Platform Architecture,plan/design.md,implemented,chetana-platform vs chetana-defense split documented in plan/design.md §2.,P0
+ITAR-INT-2,US-persons-only namespace,Platform Architecture,infra/helm/charts/chetana-platform/templates/namespace.yaml,in-progress,Namespace + node-affinity baseline in TASK-P0-INFRA-001; chetana-itar namespace lands with sat-* services in P2.,P0
+ITAR-INT-3,Audit retention >= 5 years online,Platform IAM,services/audit/migrations/0002_retention.sql,pending,Implementation in TASK-P1-AUDIT-002.,P1
+ITAR-INT-4,Container labels for ITAR images,Security,.github/workflows/cosign.yml,in-progress,LABEL org.chetana.classification=itar policy in design.md §4.6; cosign-verified.,P0

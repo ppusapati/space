@@ -1,0 +1,39 @@
+control_id,title,owner,evidence_path,status,notes,phase
+CC1.1,Demonstrates commitment to integrity and ethical values,Compliance,compliance/policies/code-of-conduct.md,pending,,P6
+CC1.2,Exercises oversight responsibility,Compliance,compliance/management-review/,pending,Quarterly management review per ISO 27001 A.5.4.,P6
+CC1.3,Establishes structure authority and responsibility,Compliance,compliance/policies/roles.md,pending,,P6
+CC1.4,Demonstrates commitment to competence,Compliance,compliance/policies/awareness-training.md,pending,,P6
+CC1.5,Enforces accountability,Compliance,compliance/policies/disciplinary.md,pending,,P6
+CC2.1,Obtains uses and communicates relevant information,Compliance,compliance/policies/communications.md,pending,,P6
+CC2.2,Communicates internally,Compliance,compliance/policies/communications.md,pending,,P6
+CC2.3,Communicates externally,Compliance,compliance/policies/communications.md,pending,,P6
+CC3.1,Specifies suitable objectives,Platform Architecture,plan/requirements.md,implemented,REQ-* objective set baselined in plan/requirements.md.,P0
+CC3.2,Identifies and analyzes risk,Compliance,compliance/policies/risk-management.md,pending,,P6
+CC3.3,Assesses fraud risk,Compliance,compliance/policies/risk-management.md,pending,,P6
+CC3.4,Identifies and analyzes significant change,Compliance,compliance/policies/change-management.md,pending,,P6
+CC4.1,Selects develops and performs ongoing or separate evaluations,Compliance,compliance/internal-audits/,pending,TASK-P6-COMP-001.,P6
+CC4.2,Communicates and tracks deficiencies,Compliance,compliance/poa-m.md,pending,POA&M file in TASK-XC-COMP-001.,XC
+CC5.1,Selects and develops control activities,Compliance,compliance/controls/,implemented,Six control CSVs in this PR.,P0
+CC5.2,Selects and develops general controls over technology,Platform Infra,infra/helm/charts/_chetana-service/,implemented,Library chart with mandatory HPA/PDB/NetworkPolicy in TASK-P0-INFRA-001.,P0
+CC5.3,Deploys controls through policies and procedures,Compliance,compliance/policies/,pending,,P6
+CC6.1,Implements logical access controls,Platform IAM,services/iam/,pending,TASK-P1-IAM-001..009 + TASK-P1-AUTHZ-001.,P1
+CC6.2,Manages logical access provisioning,Platform IAM,services/iam/internal/policy/loader.go,pending,TASK-P1-AUTHZ-001 hot-reload of policies.,P1
+CC6.3,Manages logical access removal,Platform IAM,services/iam/internal/session/manager.go,pending,Session revocation in TASK-P1-IAM-007.,P1
+CC6.4,Restricts physical access,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS GovCloud.,P6
+CC6.5,Disposes of data,Platform Infra,compliance/policies/disposal.md,pending,,P6
+CC6.6,Implements logical access security measures,Platform IAM,services/packages/authz/decision.go,pending,TASK-P1-AUTHZ-001 deny-wins ABAC.,P1
+CC6.7,Restricts movement of information to authorized internal and external users,Platform IAM,services/realtime-gw/internal/topic/auth.go,pending,Per-topic ABAC in TASK-P1-RT-001.,P1
+CC6.8,Implements controls to prevent or detect introduction of unauthorized or malicious software,Security,.github/workflows/cosign.yml,implemented,Cosign + admission control in TASK-P0-CI-001 + chetana-platform Helm chart.,P0
+CC7.1,Detects and monitors changes,Security,services/audit/internal/chain/append.go,pending,Hash-chain audit log in TASK-P1-AUDIT-001.,P1
+CC7.2,Monitors system performance and capacity,Platform Infra,services/packages/observability/serverobs/,implemented,/metrics + Prometheus + Grafana dashboards in TASK-P0-OBS-001 + TASK-P1-OBS-001.,P0
+CC7.3,Evaluates security events,Security,compliance/breach-response/playbook.md,pending,TASK-P6-COMP-002.,P6
+CC7.4,Responds to identified security incidents,Security,compliance/breach-response/playbook.md,pending,TASK-P6-COMP-002.,P6
+CC7.5,Identifies recovers from and learns from security incidents,Security,compliance/pen-tests/,pending,TASK-P6-SEC-002 pen-test cycle.,P6
+CC8.1,Authorizes designs develops or acquires implements configures tests and approves changes,Platform Infra,.github/workflows/pr.yml,implemented,Required CI checks gating merge in TASK-P0-CI-001.,P0
+CC9.1,Identifies confidentiality risks and remediates,Compliance,compliance/dpia/,pending,DPIAs in TASK-P5-COMP-001 + TASK-P6-COMP-002.,P6
+CC9.2,Manages vendor risks,Compliance,compliance/policies/supplier.md,pending,,P6
+A1.1,Maintains and monitors current processing capacity to meet objectives,Platform Infra,infra/helm/charts/_chetana-service/templates/_hpa.tpl,implemented,HPA + PDB + monitoring in TASK-P0-INFRA-001 + TASK-P0-OBS-001.,P0
+A1.2,Authorizes designs develops or acquires implements operates approves maintains and monitors environmental protections software backup processes and recovery infrastructure,Platform Infra,compliance/dr-drills/,pending,TASK-P6-REL-001 DR drill.,P6
+A1.3,Tests recovery plan procedures,Platform Infra,compliance/dr-drills/2027-Q2.md,pending,TASK-P6-REL-001.,P6
+C1.1,Identifies and maintains confidential information,Platform Architecture,compliance/classification.yaml,implemented,Five-level classification scheme in this PR.,P0
+C1.2,Disposes of confidential information,Platform IAM,services/iam/internal/gdpr/erase.go,pending,Erasure path in TASK-P1-IAM-009 + audit retention boundaries in TASK-P1-AUDIT-002.,P1

@@ -1,0 +1,8 @@
+control_id,title,owner,evidence_path,status,notes,phase
+i,Synchronisation of system clocks to NTP server of NIC or NPL,Platform Infra,compliance/policies/ntp.md,pending,Inherits AWS GovCloud chrony; India region uses NIC NTP per CERT-In Directions 2022.,v1.2
+ii,Reporting of cyber security incidents to CERT-In within 6 hours,Security,compliance/breach-response/playbook.md,pending,6-hour notification path required for India region. Implementation in TASK-P6-COMP-002.,v1.2
+iii,Designation of Point of Contact for CERT-In,Compliance,compliance/cert-in-readiness.md,pending,Named POC; contact published before India region cutover.,v1.2
+iv,Maintenance of logs for a rolling period of 180 days within Indian jurisdiction,Platform Infra,services/audit/migrations/0002_retention.sql,pending,Audit + system logs retained 180+ days within ap-south-1. Already covered by 5-year audit retention; geo-pinning enforced by region overlay.,v1.2
+v,Maintenance of validated Know Your Customer (KYC) and financial transaction logs by VPSP/CSP/Crypto exchanges,Compliance,N/A,exception,Chetana is not a VPSP/CSP/crypto exchange. Recorded as N/A.,v1.2
+vi,Subscriber/customer registration details for VPN service providers,Compliance,N/A,exception,Chetana is not a VPN provider.,v1.2
+vii,Maintenance of customer information by VASPs / cryptographic services,Compliance,N/A,exception,Chetana is not a VASP/cryptographic service.,v1.2

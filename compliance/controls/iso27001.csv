@@ -1,0 +1,94 @@
+control_id,title,owner,evidence_path,status,notes,phase
+A.5.1,Policies for information security,Compliance,compliance/policies/information-security.md,pending,,P6
+A.5.2,Information security roles and responsibilities,Compliance,compliance/policies/roles.md,pending,,P6
+A.5.3,Segregation of duties,Compliance,compliance/policies/segregation.md,pending,,P6
+A.5.4,Management responsibilities,Compliance,compliance/policies/management-review.md,pending,,P6
+A.5.5,Contact with authorities,Compliance,compliance/policies/authorities.md,pending,,P6
+A.5.6,Contact with special interest groups,Compliance,compliance/policies/sigs.md,pending,,P6
+A.5.7,Threat intelligence,Security,compliance/policies/threat-intel.md,pending,,P6
+A.5.8,Information security in project management,Platform Architecture,compliance/policies/project-security.md,pending,,P6
+A.5.9,Inventory of information and other associated assets,Platform Infra,compliance/policies/asset-inventory.md,pending,,P6
+A.5.10,Acceptable use of information and other associated assets,Platform Infra,compliance/policies/aup.md,pending,,P6
+A.5.11,Return of assets,Platform Infra,compliance/policies/asset-return.md,pending,,P6
+A.5.12,Classification of information,Platform Architecture,compliance/classification.yaml,implemented,Defined in compliance/classification.yaml; consumed by services/packages/api/ envelope serializer in Phase 1.,P0
+A.5.13,Labelling of information,Platform Architecture,compliance/classification.yaml,in-progress,API envelope + Kafka topic prefix conventions in design.md §4.6.,P1
+A.5.14,Information transfer,Security,compliance/policies/information-transfer.md,pending,,P6
+A.5.15,Access control,Platform IAM,services/iam/internal/policy/,pending,Implementation in TASK-P1-AUTHZ-001.,P1
+A.5.16,Identity management,Platform IAM,services/iam/,pending,TASK-P1-IAM-001..009.,P1
+A.5.17,Authentication information,Platform IAM,services/iam/internal/password/argon2.go,pending,TASK-P1-IAM-001 (Argon2id).,P1
+A.5.18,Access rights,Platform IAM,services/packages/authz/decision.go,pending,TASK-P1-AUTHZ-001 (RBAC + ABAC).,P1
+A.5.19,Information security in supplier relationships,Compliance,compliance/policies/supplier.md,pending,,P6
+A.5.20,Addressing information security within supplier agreements,Compliance,compliance/policies/supplier.md,pending,,P6
+A.5.21,Managing information security in the ICT supply chain,Security,.github/workflows/sbom.yml,implemented,SBOMs + cosign signatures + SCA workflows landed in TASK-P0-CI-001.,P0
+A.5.22,Monitoring review and change management of supplier services,Compliance,compliance/policies/supplier.md,pending,,P6
+A.5.23,Information security for use of cloud services,Platform Infra,infra/helm/overlays/,in-progress,GovCloud single-cluster baseline; multi-region overlay templates in TASK-P0-INFRA-001.,P1
+A.5.24,Information security incident management planning and preparation,Security,compliance/breach-response/playbook.md,pending,TASK-P6-COMP-002.,P6
+A.5.25,Assessment and decision on information security events,Security,compliance/breach-response/playbook.md,pending,,P6
+A.5.26,Response to information security incidents,Security,compliance/breach-response/playbook.md,pending,,P6
+A.5.27,Learning from information security incidents,Security,compliance/breach-response/playbook.md,pending,,P6
+A.5.28,Collection of evidence,Security,services/audit/internal/chain/append.go,pending,TASK-P1-AUDIT-001 hash-chain audit log.,P1
+A.5.29,Information security during disruption,Platform Infra,compliance/dr-drills/,pending,TASK-P6-REL-001 DR drill.,P6
+A.5.30,ICT readiness for business continuity,Platform Infra,infra/runbooks/dr-failover.md,pending,TASK-P6-REL-001.,P6
+A.5.31,Legal statutory regulatory and contractual requirements,Compliance,compliance/policies/legal.md,pending,,P6
+A.5.32,Intellectual property rights,Compliance,compliance/policies/ip.md,pending,,P6
+A.5.33,Protection of records,Platform IAM,services/audit/migrations/0002_retention.sql,pending,5y online + 7y cold per REQ-FUNC-PLT-AUDIT-003.,P1
+A.5.34,Privacy and protection of PII,Compliance,compliance/dpia/,pending,TASK-P6-COMP-002 DPIA.,P6
+A.5.35,Independent review of information security,Compliance,compliance/internal-audits/,pending,TASK-P6-COMP-001 internal audit cycle.,P6
+A.5.36,Compliance with policies rules and standards for information security,Compliance,compliance/internal-audits/,pending,,P6
+A.5.37,Documented operating procedures,Platform Infra,infra/runbooks/,pending,,P6
+A.6.1,Screening,Compliance,compliance/policies/screening.md,pending,US-persons attestation for ITAR-namespace operators.,P6
+A.6.2,Terms and conditions of employment,Compliance,compliance/policies/employment.md,pending,,P6
+A.6.3,Information security awareness education and training,Compliance,compliance/policies/awareness-training.md,pending,,P6
+A.6.4,Disciplinary process,Compliance,compliance/policies/disciplinary.md,pending,,P6
+A.6.5,Responsibilities after termination or change of employment,Compliance,compliance/policies/offboarding.md,pending,,P6
+A.6.6,Confidentiality or non-disclosure agreements,Compliance,compliance/policies/nda.md,pending,,P6
+A.6.7,Remote working,Compliance,compliance/policies/remote-work.md,pending,,P6
+A.6.8,Information security event reporting,Security,compliance/breach-response/playbook.md,pending,,P6
+A.7.1,Physical security perimeters,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS GovCloud physical controls.,P6
+A.7.2,Physical entry,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+A.7.3,Securing offices rooms and facilities,Compliance,compliance/policies/physical-security.md,pending,,P6
+A.7.4,Physical security monitoring,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+A.7.5,Protecting against physical and environmental threats,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+A.7.6,Working in secure areas,Compliance,compliance/policies/physical-security.md,pending,,P6
+A.7.7,Clear desk and clear screen,Compliance,compliance/policies/clear-desk.md,pending,,P6
+A.7.8,Equipment siting and protection,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+A.7.9,Security of assets off-premises,Compliance,compliance/policies/byod.md,pending,,P6
+A.7.10,Storage media,Platform Infra,services/audit/internal/archive/glacier.go,pending,Glacier archival per REQ-FUNC-PLT-AUDIT-003.,P1
+A.7.11,Supporting utilities,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+A.7.12,Cabling security,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+A.7.13,Equipment maintenance,Platform Infra,compliance/policies/asset-inventory.md,pending,,P6
+A.7.14,Secure disposal or re-use of equipment,Platform Infra,compliance/policies/disposal.md,pending,Inherits AWS for data sanitisation.,P6
+A.8.1,User end point devices,Compliance,compliance/policies/byod.md,pending,,P6
+A.8.2,Privileged access rights,Platform IAM,services/iam/internal/policy/,pending,TASK-P1-AUTHZ-001 deny-wins policy.,P1
+A.8.3,Information access restriction,Platform IAM,services/packages/authz/decision.go,pending,TASK-P1-AUTHZ-001 RBAC + ABAC.,P1
+A.8.4,Access to source code,Platform Infra,compliance/policies/source-code-access.md,pending,Two-repo posture; chetana-defense access via US-persons team (TASK-P0-REPO-001).,P6
+A.8.5,Secure authentication,Platform IAM,services/iam/internal/mfa/,pending,TOTP + WebAuthn in TASK-P1-IAM-003/004.,P1
+A.8.6,Capacity management,Platform Infra,infra/helm/charts/_chetana-service/templates/_hpa.tpl,implemented,HPA template + per-service min/max replicas in TASK-P0-INFRA-001.,P0
+A.8.7,Protection against malware,Security,.github/workflows/pr.yml,implemented,Trivy + cargo-audit + npm audit + pip-audit in PR matrix (TASK-P0-CI-001).,P0
+A.8.8,Management of technical vulnerabilities,Security,compliance/vuln-mgmt/cadence.md,pending,TASK-P6-SEC-003.,P6
+A.8.9,Configuration management,Platform Infra,infra/helm/charts/_chetana-service/values.schema.json,implemented,Helm schema enforces required values in TASK-P0-INFRA-001.,P0
+A.8.10,Information deletion,Platform IAM,services/iam/internal/gdpr/erase.go,pending,TASK-P1-IAM-009 GDPR Article 17 erasure.,P1
+A.8.11,Data masking,Platform IAM,services/audit/internal/chain/append.go,pending,Audit log redaction policy in TASK-P1-AUDIT-001.,P1
+A.8.12,Data leakage prevention,Compliance,compliance/itar-paths.txt,implemented,ITAR-paths CI guard + classification labelling baseline.,P0
+A.8.13,Information backup,Platform Infra,compliance/dr-drills/,pending,TASK-P6-REL-001.,P6
+A.8.14,Redundancy of information processing facilities,Platform Infra,infra/helm/charts/_chetana-service/templates/_pdb.tpl,implemented,PDB template enforces minAvailable in TASK-P0-INFRA-001.,P0
+A.8.15,Logging,Platform IAM,services/audit/internal/chain/append.go,pending,Hash-chain audit log in TASK-P1-AUDIT-001.,P1
+A.8.16,Monitoring activities,Platform Infra,services/packages/observability/serverobs/,implemented,/health + /ready + /metrics + dep-check gauges in TASK-P0-OBS-001.,P0
+A.8.17,Clock synchronization,Platform Infra,compliance/policies/ntp.md,pending,Inherits chrony from AWS GovCloud node base image.,P6
+A.8.18,Use of privileged utility programs,Compliance,compliance/policies/privileged-utilities.md,pending,,P6
+A.8.19,Installation of software on operational systems,Security,.github/workflows/cosign.yml,implemented,Image signing + cosign verification in TASK-P0-CI-001.,P0
+A.8.20,Networks security,Platform Infra,infra/helm/charts/_chetana-service/templates/_networkpolicy.tpl,implemented,Default-deny NetworkPolicy + namespace-level deny in TASK-P0-INFRA-001.,P0
+A.8.21,Security of network services,Platform Infra,compliance/policies/network-services.md,pending,,P6
+A.8.22,Segregation of networks,Platform Infra,infra/helm/charts/chetana-platform/templates/namespace.yaml,implemented,chetana-platform vs chetana-itar namespaces (design.md §1).,P0
+A.8.23,Web filtering,Compliance,compliance/policies/web-filtering.md,pending,,P6
+A.8.24,Use of cryptography,Security,services/packages/crypto/fips.go,implemented,FIPS self-check + design.md §4.1.3 crypto policy in TASK-P0-OBS-001.,P0
+A.8.25,Secure development life cycle,Security,.github/workflows/pr.yml,implemented,SAST + SCA + duplicate-check + trace harness in TASK-P0-CI-001.,P0
+A.8.26,Application security requirements,Security,plan/requirements.md,implemented,REQ-NFR-SEC-* baseline in plan/requirements.md §4.3.,P0
+A.8.27,Secure system architecture and engineering principles,Platform Architecture,plan/design.md,implemented,plan/design.md baseline.,P0
+A.8.28,Secure coding,Security,.golangci.yml,implemented,golangci + clippy + eslint configs in TASK-P0-CI-001.,P0
+A.8.29,Security testing in development and acceptance,Security,.github/workflows/pr.yml,implemented,SAST + SCA + DAST workflows in TASK-P0-CI-001.,P0
+A.8.30,Outsourced development,Compliance,compliance/policies/outsourced-development.md,pending,,P6
+A.8.31,Separation of development test and production environments,Platform Infra,infra/helm/overlays/,in-progress,Region overlays in TASK-P0-INFRA-001; full env separation in P6.,P1
+A.8.32,Change management,Platform Infra,compliance/policies/change-management.md,pending,,P6
+A.8.33,Test information,Platform Infra,compliance/policies/test-data.md,pending,,P6
+A.8.34,Protection of information systems during audit testing,Security,compliance/policies/audit-testing.md,pending,,P6

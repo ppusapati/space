@@ -1,0 +1,276 @@
+control_id,title,owner,evidence_path,status,notes,phase
+AC-1,Policy and Procedures,Compliance,compliance/policies/access-control.md,pending,,v2.1
+AC-2,Account Management,Platform IAM,services/iam/,pending,TASK-P1-IAM-001..009.,v2.1
+AC-2(1),Automated System Account Management,Platform IAM,services/iam/,pending,,v2.1
+AC-2(2),Automated Temporary And Emergency Account Management,Platform IAM,services/iam/internal/session/manager.go,pending,,v2.1
+AC-2(3),Disable Accounts,Platform IAM,services/iam/,pending,,v2.1
+AC-2(4),Automated Audit Actions,Security,services/audit/,pending,,v2.1
+AC-2(5),Inactivity Logout,Platform IAM,services/iam/internal/session/manager.go,pending,Idle timeout in TASK-P1-IAM-007.,v2.1
+AC-2(7),Privileged User Accounts,Platform IAM,services/packages/authz/decision.go,pending,Deny-wins ABAC in TASK-P1-AUTHZ-001.,v2.1
+AC-2(9),Restrictions On Use Of Shared And Group Accounts,Platform IAM,services/iam/,pending,,v2.1
+AC-2(12),Account Monitoring For Atypical Usage,Security,services/audit/,pending,,v2.1
+AC-2(13),Disable Accounts For High-Risk Individuals,Platform IAM,services/iam/,pending,,v2.1
+AC-3,Access Enforcement,Platform IAM,services/packages/authz/decision.go,pending,TASK-P1-AUTHZ-001.,v2.1
+AC-4,Information Flow Enforcement,Platform Infra,infra/helm/charts/_chetana-service/templates/_networkpolicy.tpl,implemented,NetworkPolicy default-deny in TASK-P0-INFRA-001.,v2.1
+AC-4(21),Physical Or Logical Separation Of Information Flows,Platform Architecture,infra/helm/charts/chetana-platform/templates/namespace.yaml,implemented,Namespace + repo split in TASK-P0-REPO-001.,v2.1
+AC-5,Separation Of Duties,Compliance,compliance/policies/segregation.md,pending,Two-person command approval in TASK-P2-CMD-001.,v2.1
+AC-6,Least Privilege,Platform IAM,services/packages/authz/decision.go,pending,,v2.1
+AC-6(1),Authorize Access To Security Functions,Platform IAM,services/iam/,pending,,v2.1
+AC-6(2),Non-Privileged Access For Nonsecurity Functions,Platform IAM,services/iam/,pending,,v2.1
+AC-6(5),Privileged Accounts,Platform IAM,services/iam/,pending,,v2.1
+AC-6(7),Review Of User Privileges,Compliance,compliance/internal-audits/,pending,,v2.1
+AC-6(9),Log Use Of Privileged Functions,Security,services/audit/,pending,,v2.1
+AC-6(10),Prohibit Non-Privileged Users From Executing Privileged Functions,Platform IAM,services/packages/authz/decision.go,pending,,v2.1
+AC-7,Unsuccessful Logon Attempts,Platform IAM,services/iam/internal/login/ratelimit.go,pending,TASK-P1-IAM-001 progressive lockout.,v2.1
+AC-8,System Use Notification,Compliance,compliance/policies/aup.md,pending,,v2.1
+AC-11,Device Lock,Compliance,compliance/policies/byod.md,pending,,v2.1
+AC-12,Session Termination,Platform IAM,services/iam/internal/session/manager.go,pending,,v2.1
+AC-14,Permitted Actions Without Identification Or Authentication,Platform IAM,services/iam/,pending,,v2.1
+AC-17,Remote Access,Compliance,compliance/policies/remote-work.md,pending,,v2.1
+AC-17(1),Monitoring And Control,Security,services/audit/,pending,,v2.1
+AC-17(2),Protection Of Confidentiality And Integrity Using Encryption,Security,services/packages/crypto/fips.go,implemented,FIPS-validated TLS 1.3 in TASK-P0-OBS-001.,P0
+AC-18,Wireless Access,Compliance,compliance/policies/wireless.md,pending,,v2.1
+AC-19,Access Control For Mobile Devices,Compliance,compliance/policies/byod.md,pending,,v2.1
+AC-20,Use Of External Systems,Compliance,compliance/policies/external-systems.md,pending,,v2.1
+AC-21,Information Sharing,Compliance,compliance/policies/information-sharing.md,pending,,v2.1
+AC-22,Publicly Accessible Content,Platform Architecture,web/apps/shell/src/routes/(public)/,pending,Public route group in TASK-P5-WEB-001.,P5
+AT-1,Policy and Procedures,Compliance,compliance/policies/awareness-training.md,pending,,v2.1
+AT-2,Literacy Training And Awareness,Compliance,compliance/policies/awareness-training.md,pending,,v2.1
+AT-2(2),Insider Threat,Security,compliance/policies/awareness-training.md,pending,,v2.1
+AT-3,Role-Based Training,Compliance,compliance/policies/awareness-training.md,pending,,v2.1
+AT-4,Training Records,Compliance,compliance/policies/awareness-training.md,pending,,v2.1
+AU-1,Policy and Procedures,Security,compliance/policies/audit-policy.md,pending,,v2.1
+AU-2,Event Logging,Security,services/audit/,pending,TASK-P1-AUDIT-001.,P1
+AU-3,Content Of Audit Records,Security,services/audit/internal/chain/append.go,pending,,P1
+AU-3(1),Additional Audit Information,Security,services/audit/,pending,,P1
+AU-4,Audit Log Storage Capacity,Platform Infra,services/audit/migrations/0002_retention.sql,pending,,P1
+AU-5,Response To Audit Logging Process Failures,Security,services/audit/,pending,,P1
+AU-6,Audit Record Review Analysis And Reporting,Security,services/audit/internal/search/,pending,TASK-P1-AUDIT-002.,P1
+AU-6(1),Automated Process Integration,Security,services/audit/,pending,,P1
+AU-6(3),Correlate Audit Record Repositories,Security,services/audit/,pending,,P1
+AU-7,Audit Record Reduction And Report Generation,Security,services/audit/internal/export/,pending,TASK-P1-AUDIT-002.,P1
+AU-7(1),Automatic Processing,Security,services/audit/internal/export/,pending,,P1
+AU-8,Time Stamps,Platform Infra,compliance/policies/ntp.md,pending,,P6
+AU-9,Protection Of Audit Information,Security,services/audit/internal/chain/append.go,pending,Hash-chain integrity in TASK-P1-AUDIT-001.,P1
+AU-9(2),Store On Separate Physical Systems Or Components,Platform Infra,services/audit/internal/archive/glacier.go,pending,Glacier archival in TASK-P1-AUDIT-002.,P1
+AU-9(4),Access By Subset Of Privileged Users,Security,services/packages/authz/decision.go,pending,,P1
+AU-11,Audit Record Retention,Security,services/audit/migrations/0002_retention.sql,pending,5y online + 7y cold per REQ-FUNC-PLT-AUDIT-003.,P1
+AU-12,Audit Record Generation,Security,services/audit/,pending,,P1
+CA-1,Policy and Procedures,Compliance,compliance/policies/assessment.md,pending,,v2.1
+CA-2,Control Assessments,Compliance,compliance/external-audits/,pending,3PAO assessment in v2.1.,v2.1
+CA-3,Information Exchange,Compliance,compliance/policies/information-sharing.md,pending,,v2.1
+CA-5,Plan Of Action And Milestones,Compliance,compliance/poa-m.md,pending,POA&M in TASK-XC-COMP-001.,XC
+CA-6,Authorization,Compliance,compliance/external-audits/,pending,ATO in v2.1.,v2.1
+CA-7,Continuous Monitoring,Compliance,compliance/vuln-mgmt/cadence.md,pending,TASK-P6-SEC-003.,P6
+CA-7(4),Risk Monitoring,Security,compliance/vuln-mgmt/cadence.md,pending,,P6
+CA-9,Internal System Connections,Platform Infra,infra/helm/charts/_chetana-service/templates/_networkpolicy.tpl,implemented,,P0
+CM-1,Policy and Procedures,Platform Infra,compliance/policies/change-management.md,pending,,P6
+CM-2,Baseline Configuration,Platform Infra,infra/helm/overlays/,implemented,Region overlays + helm chart templates in TASK-P0-INFRA-001.,P0
+CM-2(2),Automation Support For Accuracy And Currency,Platform Infra,infra/helm/charts/_chetana-service/values.schema.json,implemented,Schema validation in TASK-P0-INFRA-001.,P0
+CM-2(3),Retention Of Previous Configurations,Platform Infra,infra/helm/charts/,implemented,Git history.,P0
+CM-2(7),Configure Systems Or Components For High-Risk Areas,Platform Infra,infra/helm/charts/chetana-platform/templates/namespace.yaml,in-progress,chetana-itar namespace overlay lands in P2.,P0
+CM-3,Configuration Change Control,Platform Infra,.github/workflows/pr.yml,implemented,Required CI checks gate merge in TASK-P0-CI-001.,P0
+CM-3(2),Testing Validation And Documentation Of Changes,Security,.github/workflows/pr.yml,implemented,,P0
+CM-3(4),Security And Privacy Representatives,Compliance,compliance/policies/change-management.md,pending,,P6
+CM-4,Impact Analyses,Compliance,compliance/policies/change-management.md,pending,,P6
+CM-4(2),Verification Of Controls,Compliance,compliance/internal-audits/,pending,,P6
+CM-5,Access Restrictions For Change,Platform IAM,services/packages/authz/decision.go,pending,,P1
+CM-6,Configuration Settings,Platform Infra,infra/helm/charts/_chetana-service/values.schema.json,implemented,,P0
+CM-7,Least Functionality,Platform Infra,infra/helm/charts/_chetana-service/templates/_networkpolicy.tpl,implemented,Default-deny network policy + restricted Pod Security in TASK-P0-INFRA-001.,P0
+CM-7(1),Periodic Review,Compliance,compliance/internal-audits/,pending,,P6
+CM-7(2),Prevent Program Execution,Platform Infra,compliance/policies/k8s-admission.md,pending,Cosign-verified images via admission control.,P0
+CM-7(5),Authorized Software / Allow-By-Exception,Security,.github/workflows/cosign.yml,implemented,Cosign signing required.,P0
+CM-8,System Component Inventory,Platform Infra,.github/workflows/sbom.yml,implemented,SBOMs per artefact in TASK-P0-CI-001.,P0
+CM-8(1),Updates During Installation And Removal,Platform Infra,.github/workflows/sbom.yml,implemented,,P0
+CM-8(3),Automated Unauthorized Component Detection,Security,.github/workflows/pr.yml,implemented,Trivy + cargo-audit + npm audit.,P0
+CM-9,Configuration Management Plan,Compliance,compliance/policies/change-management.md,pending,,P6
+CM-10,Software Usage Restrictions,Compliance,compliance/policies/software-usage.md,pending,,P6
+CM-11,User-Installed Software,Compliance,compliance/policies/software-usage.md,pending,,P6
+CP-1,Policy and Procedures,Platform Infra,compliance/policies/bcp.md,pending,,P6
+CP-2,Contingency Plan,Platform Infra,compliance/policies/bcp.md,pending,TASK-P6-REL-001.,P6
+CP-2(1),Coordinate With Related Plans,Compliance,compliance/policies/bcp.md,pending,,P6
+CP-2(3),Resume Mission And Business Functions,Platform Infra,compliance/policies/bcp.md,pending,,P6
+CP-2(8),Identify Critical Assets,Compliance,compliance/policies/asset-inventory.md,pending,,P6
+CP-3,Contingency Training,Compliance,compliance/policies/awareness-training.md,pending,,P6
+CP-4,Contingency Plan Testing,Platform Infra,compliance/dr-drills/,pending,TASK-P6-REL-001.,P6
+CP-4(1),Coordinate With Related Plans,Compliance,compliance/policies/bcp.md,pending,,P6
+CP-6,Alternate Storage Site,Platform Infra,infra/helm/overlays/,in-progress,Region overlays in TASK-P0-INFRA-001; cross-region replication in v1.x.,P0
+CP-6(1),Separation From Primary Site,Platform Infra,infra/helm/overlays/eu-central-1/values.yaml,in-progress,,P0
+CP-6(3),Accessibility,Platform Infra,compliance/policies/bcp.md,pending,,P6
+CP-7,Alternate Processing Site,Platform Infra,infra/helm/overlays/,in-progress,,P6
+CP-7(1),Separation From Primary Site,Platform Infra,infra/helm/overlays/,in-progress,,P6
+CP-7(2),Accessibility,Platform Infra,compliance/policies/bcp.md,pending,,P6
+CP-7(3),Priority Of Service,Platform Infra,compliance/policies/bcp.md,pending,,P6
+CP-8,Telecommunications Services,Platform Infra,compliance/policies/bcp.md,pending,Inherits AWS.,P6
+CP-9,System Backup,Platform Infra,services/audit/internal/archive/glacier.go,pending,TASK-P1-AUDIT-002.,P1
+CP-9(1),Testing For Reliability And Integrity,Platform Infra,compliance/dr-drills/,pending,TASK-P6-REL-001.,P6
+CP-9(8),Cryptographic Protection,Security,services/packages/crypto/fips.go,implemented,KMS-FIPS for at-rest encryption.,P0
+CP-10,System Recovery And Reconstitution,Platform Infra,compliance/dr-drills/,pending,TASK-P6-REL-001.,P6
+CP-10(2),Transaction Recovery,Platform Infra,services/packages/db/migrate/,implemented,Atlas migration framework + advisory locks in TASK-P0-DB-001.,P0
+IA-1,Policy and Procedures,Platform IAM,compliance/policies/access-control.md,pending,,P6
+IA-2,Identification And Authentication (Organizational Users),Platform IAM,services/iam/,pending,,P1
+IA-2(1),Multi-Factor Authentication To Privileged Accounts,Platform IAM,services/iam/internal/mfa/,pending,TOTP + WebAuthn in TASK-P1-IAM-003/004.,P1
+IA-2(2),Multi-Factor Authentication To Non-Privileged Accounts,Platform IAM,services/iam/internal/mfa/,pending,,P1
+IA-2(8),Access To Accounts - Replay Resistant,Platform IAM,services/iam/internal/mfa/totp.go,pending,Replay cache in TASK-P1-IAM-003.,P1
+IA-2(12),Acceptance Of PIV Credentials,Platform IAM,services/iam/internal/webauthn/,pending,WebAuthn in TASK-P1-IAM-004.,P1
+IA-3,Device Identification And Authentication,Platform IAM,services/iam/internal/oauth2/,pending,Client credentials grant in TASK-P1-IAM-005.,P1
+IA-4,Identifier Management,Platform IAM,services/iam/internal/store/users.go,pending,,P1
+IA-5,Authenticator Management,Platform IAM,services/iam/internal/password/argon2.go,pending,Argon2id + rotation in TASK-P1-IAM-001.,P1
+IA-5(1),Password-Based Authentication,Platform IAM,services/iam/internal/password/argon2.go,pending,,P1
+IA-5(2),Public Key-Based Authentication,Platform IAM,services/iam/internal/webauthn/,pending,,P1
+IA-5(6),Protection Of Authenticators,Platform IAM,services/iam/,pending,,P1
+IA-5(7),No Embedded Unencrypted Static Authenticators,Platform IAM,services/iam/,pending,,P1
+IA-6,Authentication Feedback,Platform IAM,services/iam/internal/login/handler.go,pending,Constant-time response in TASK-P1-IAM-001.,P1
+IA-7,Cryptographic Module Authentication,Security,services/packages/crypto/fips.go,implemented,FIPS self-check + boringcrypto build tag in TASK-P0-OBS-001.,P0
+IA-8,Identification And Authentication (Non-Organizational Users),Platform IAM,services/public-gw/,pending,API-key auth in TASK-P5-IAAS-001.,P5
+IA-11,Re-Authentication,Platform IAM,services/iam/internal/session/manager.go,pending,Absolute session lifetime + idle timeout in TASK-P1-IAM-007.,P1
+IA-12,Identity Proofing,Compliance,compliance/policies/identity-proofing.md,pending,,P6
+IR-1,Policy and Procedures,Security,compliance/policies/incident-response.md,pending,,P6
+IR-2,Incident Response Training,Compliance,compliance/policies/awareness-training.md,pending,,P6
+IR-3,Incident Response Testing,Security,compliance/breach-response/playbook.md,pending,Tabletop in TASK-P6-COMP-002.,P6
+IR-4,Incident Handling,Security,compliance/breach-response/playbook.md,pending,,P6
+IR-4(1),Automated Incident Handling Processes,Security,compliance/breach-response/playbook.md,pending,,P6
+IR-5,Incident Monitoring,Security,services/audit/,pending,,P1
+IR-6,Incident Reporting,Security,compliance/breach-response/playbook.md,pending,,P6
+IR-6(1),Automated Reporting,Security,compliance/breach-response/playbook.md,pending,,P6
+IR-7,Incident Response Assistance,Security,compliance/breach-response/playbook.md,pending,,P6
+IR-7(1),Automation Support For Availability Of Information And Support,Security,compliance/breach-response/playbook.md,pending,,P6
+IR-8,Incident Response Plan,Security,compliance/breach-response/playbook.md,pending,,P6
+MA-1,Policy and Procedures,Platform Infra,compliance/policies/maintenance.md,pending,,P6
+MA-2,Controlled Maintenance,Platform Infra,compliance/policies/maintenance.md,pending,,P6
+MA-3,Maintenance Tools,Platform Infra,compliance/policies/maintenance.md,pending,,P6
+MA-4,Nonlocal Maintenance,Platform Infra,compliance/policies/maintenance.md,pending,,P6
+MA-5,Maintenance Personnel,Platform Infra,compliance/policies/maintenance.md,pending,,P6
+MA-6,Timely Maintenance,Platform Infra,compliance/policies/maintenance.md,pending,,P6
+MP-1,Policy and Procedures,Compliance,compliance/policies/media-protection.md,pending,,P6
+MP-2,Media Access,Compliance,compliance/policies/media-protection.md,pending,Inherits AWS.,P6
+MP-3,Media Marking,Compliance,compliance/classification.yaml,implemented,Classification labelling in this PR.,P0
+MP-4,Media Storage,Compliance,compliance/policies/media-protection.md,pending,Inherits AWS.,P6
+MP-5,Media Transport,Compliance,compliance/policies/media-protection.md,pending,Inherits AWS.,P6
+MP-6,Media Sanitization,Compliance,compliance/policies/disposal.md,pending,Inherits AWS.,P6
+MP-7,Media Use,Compliance,compliance/policies/media-protection.md,pending,,P6
+PE-1,Policy and Procedures,Platform Infra,compliance/policies/physical-security.md,pending,,P6
+PE-2,Physical Access Authorizations,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-3,Physical Access Control,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-4,Access Control For Transmission,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-5,Access Control For Output Devices,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-6,Monitoring Physical Access,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-6(1),Intrusion Alarms And Surveillance Equipment,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-8,Visitor Access Records,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-9,Power Equipment And Cabling,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-10,Emergency Shutoff,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-11,Emergency Power,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-12,Emergency Lighting,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-13,Fire Protection,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-13(1),Detection Systems / Automatic Activation And Notification,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-14,Environmental Controls,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-15,Water Damage Protection,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-16,Delivery And Removal,Platform Infra,compliance/policies/physical-security.md,pending,Inherits AWS.,P6
+PE-17,Alternate Work Site,Compliance,compliance/policies/remote-work.md,pending,,P6
+PL-1,Policy and Procedures,Compliance,compliance/policies/planning.md,pending,,P6
+PL-2,System Security And Privacy Plans,Compliance,plan/design.md,implemented,plan/design.md baseline.,P0
+PL-4,Rules Of Behavior,Compliance,compliance/policies/aup.md,pending,,P6
+PL-4(1),Social Media And External Site Restrictions,Compliance,compliance/policies/aup.md,pending,,P6
+PL-8,Security And Privacy Architectures,Platform Architecture,plan/design.md,implemented,,P0
+PL-10,Baseline Selection,Compliance,plan/requirements.md,implemented,plan/requirements.md §4-5.,P0
+PL-11,Baseline Tailoring,Compliance,plan/requirements.md,implemented,plan/requirements.md §6 (constraints) records tailoring decisions.,P0
+PS-1,Policy and Procedures,Compliance,compliance/policies/personnel-security.md,pending,,P6
+PS-2,Position Risk Designation,Compliance,compliance/policies/personnel-security.md,pending,,P6
+PS-3,Personnel Screening,Compliance,compliance/policies/screening.md,pending,US-persons attestation for ITAR namespace operators.,P6
+PS-4,Personnel Termination,Compliance,compliance/policies/offboarding.md,pending,,P6
+PS-5,Personnel Transfer,Compliance,compliance/policies/personnel-security.md,pending,,P6
+PS-6,Access Agreements,Compliance,compliance/policies/nda.md,pending,,P6
+PS-7,External Personnel Security,Compliance,compliance/policies/supplier.md,pending,,P6
+PS-8,Personnel Sanctions,Compliance,compliance/policies/disciplinary.md,pending,,P6
+PS-9,Position Descriptions,Compliance,compliance/policies/roles.md,pending,,P6
+PT-1,Policy and Procedures,Compliance,compliance/policies/privacy.md,pending,,P6
+PT-2,Authority To Process Personally Identifiable Information,Compliance,compliance/dpia/,pending,,P6
+PT-3,Personally Identifiable Information Processing Purposes,Compliance,compliance/ropa.md,in-progress,ROPA in this PR.,P0
+PT-5,Privacy Notice,Compliance,web/apps/shell/src/routes/(public)/privacy/+page.svelte,pending,TASK-P6-COMP-002.,P6
+PT-6,System Of Records Notice,Compliance,compliance/dpia/,pending,,P6
+RA-1,Policy and Procedures,Compliance,compliance/policies/risk-management.md,pending,,P6
+RA-2,Security Categorization,Compliance,compliance/classification.yaml,implemented,,P0
+RA-3,Risk Assessment,Compliance,compliance/policies/risk-management.md,pending,,P6
+RA-3(1),Supply Chain Risk Assessment,Security,.github/workflows/sbom.yml,implemented,SBOM + cosign in TASK-P0-CI-001.,P0
+RA-5,Vulnerability Monitoring And Scanning,Security,.github/workflows/pr.yml,implemented,Trivy + SCA workflows in TASK-P0-CI-001.,P0
+RA-5(2),Update System Vulnerabilities To Be Scanned,Security,compliance/vuln-mgmt/cadence.md,pending,,P6
+RA-5(11),Public Disclosure Program,Security,compliance/policies/vuln-disclosure.md,pending,,P6
+RA-7,Risk Response,Security,compliance/poa-m.md,pending,POA&M in TASK-XC-COMP-001.,XC
+RA-9,Criticality Analysis,Compliance,compliance/policies/asset-inventory.md,pending,,P6
+SA-1,Policy and Procedures,Security,compliance/policies/secure-development.md,pending,,P6
+SA-2,Allocation Of Resources,Compliance,compliance/policies/secure-development.md,pending,,P6
+SA-3,System Development Life Cycle,Security,compliance/policies/secure-development.md,pending,,P6
+SA-4,Acquisition Process,Compliance,compliance/policies/supplier.md,pending,,P6
+SA-4(1),Functional Properties Of Controls,Compliance,compliance/policies/supplier.md,pending,,P6
+SA-4(2),Design / Implementation Information For Controls,Compliance,compliance/policies/supplier.md,pending,,P6
+SA-4(8),Continuous Monitoring Plan For Controls,Compliance,compliance/policies/supplier.md,pending,,P6
+SA-4(9),Functions / Ports / Protocols / Services In Use,Platform Infra,infra/helm/charts/_chetana-service/templates/_networkpolicy.tpl,implemented,,P0
+SA-4(10),Use Of Approved PIV Products,Platform IAM,services/iam/internal/webauthn/,pending,,P1
+SA-5,System Documentation,Platform Architecture,plan/design.md,implemented,,P0
+SA-8,Security And Privacy Engineering Principles,Platform Architecture,plan/design.md,implemented,,P0
+SA-9,External System Services,Compliance,compliance/policies/supplier.md,pending,,P6
+SA-9(2),Identification Of Functions / Ports / Protocols / Services,Platform Infra,infra/helm/charts/_chetana-service/templates/_networkpolicy.tpl,implemented,,P0
+SA-10,Developer Configuration Management,Security,.github/workflows/pr.yml,implemented,Required CI checks in TASK-P0-CI-001.,P0
+SA-11,Developer Testing And Evaluation,Security,.github/workflows/pr.yml,implemented,go test + cargo test + vitest in PR matrix.,P0
+SA-15,Development Process Standards And Tools,Security,.golangci.yml,implemented,Lint configs in TASK-P0-CI-001.,P0
+SA-22,Unsupported System Components,Security,.github/workflows/pr.yml,implemented,SCA workflows in TASK-P0-CI-001.,P0
+SC-1,Policy and Procedures,Security,compliance/policies/cryptography.md,pending,,P6
+SC-2,Separation Of System And User Functionality,Platform Architecture,plan/design.md,implemented,,P0
+SC-4,Information In Shared System Resources,Platform IAM,services/packages/authz/decision.go,pending,Tenant context isolation per design.md §4.1.2.,P1
+SC-5,Denial-Of-Service Protection,Platform Infra,services/iam/internal/login/ratelimit.go,pending,Rate-limiting baseline in TASK-P1-IAM-001.,P1
+SC-7,Boundary Protection,Platform Infra,infra/helm/charts/_chetana-service/templates/_networkpolicy.tpl,implemented,,P0
+SC-7(3),Access Points,Platform Infra,infra/helm/charts/chetana-platform/templates/namespace.yaml,implemented,,P0
+SC-7(4),External Telecommunications Services,Platform Infra,infra/helm/overlays/us-gov-east-1/values.yaml,implemented,FIPS endpoints in TASK-P0-INFRA-001.,P0
+SC-7(5),Deny By Default Allow By Exception,Platform Infra,infra/helm/charts/_chetana-service/templates/_networkpolicy.tpl,implemented,,P0
+SC-7(7),Split Tunneling For Remote Devices,Compliance,compliance/policies/remote-work.md,pending,,P6
+SC-7(8),Route Traffic To Authenticated Proxy Servers,Platform Infra,compliance/policies/network-services.md,pending,,P6
+SC-7(12),Host-Based Protection,Platform Infra,compliance/policies/k8s-admission.md,pending,,P6
+SC-7(13),Isolation Of Security Tools,Platform Infra,services/audit/,pending,Audit DB role isolation in TASK-P1-AUDIT-001.,P1
+SC-7(18),Fail Secure,Platform Infra,services/iam/,pending,Closed-by-default IAM responses.,P1
+SC-8,Transmission Confidentiality And Integrity,Security,services/packages/crypto/fips.go,implemented,TLS 1.3 FIPS in TASK-P0-OBS-001.,P0
+SC-8(1),Cryptographic Protection,Security,services/packages/crypto/fips.go,implemented,,P0
+SC-10,Network Disconnect,Platform IAM,services/iam/internal/session/manager.go,pending,Idle timeout in TASK-P1-IAM-007.,P1
+SC-12,Cryptographic Key Establishment And Management,Security,compliance/policies/cryptography.md,pending,KMS-FIPS + HSM in TASK-P6-SEC-001.,P6
+SC-12(1),Availability,Security,compliance/policies/cryptography.md,pending,,P6
+SC-12(2),Symmetric Keys,Security,compliance/policies/cryptography.md,pending,,P6
+SC-12(3),Asymmetric Keys,Security,compliance/policies/cryptography.md,pending,,P6
+SC-13,Cryptographic Protection,Security,services/packages/crypto/fips.go,implemented,FIPS self-check in TASK-P0-OBS-001.,P0
+SC-15,Collaborative Computing Devices,Compliance,compliance/policies/byod.md,pending,,P6
+SC-17,Public Key Infrastructure Certificates,Security,services/iam/internal/token/jwks.go,pending,JWKS rotation in TASK-P1-IAM-002.,P1
+SC-18,Mobile Code,Compliance,compliance/policies/mobile-code.md,pending,,P6
+SC-20,Secure Name / Address Resolution Service (Authoritative Source),Platform Infra,compliance/policies/dns.md,pending,Inherits AWS Route 53.,P6
+SC-21,Secure Name / Address Resolution Service (Recursive Or Caching Resolver),Platform Infra,compliance/policies/dns.md,pending,Inherits AWS.,P6
+SC-22,Architecture And Provisioning For Name / Address Resolution Service,Platform Infra,compliance/policies/dns.md,pending,Inherits AWS.,P6
+SC-23,Session Authenticity,Platform IAM,services/iam/internal/token/jwt.go,pending,Single-use refresh tokens in TASK-P1-IAM-002.,P1
+SC-28,Protection Of Information At Rest,Security,infra/helm/overlays/us-gov-east-1/values.yaml,implemented,KMS-FIPS + RDS encryption baseline in TASK-P0-INFRA-001.,P0
+SC-28(1),Cryptographic Protection,Security,services/packages/crypto/fips.go,implemented,,P0
+SC-39,Process Isolation,Platform Infra,infra/helm/charts/chetana-platform/templates/namespace.yaml,implemented,Pod Security restricted profile in TASK-P0-INFRA-001.,P0
+SI-1,Policy and Procedures,Security,compliance/policies/system-integrity.md,pending,,P6
+SI-2,Flaw Remediation,Security,compliance/vuln-mgmt/cadence.md,pending,TASK-P6-SEC-003.,P6
+SI-2(2),Automated Flaw Remediation Status,Security,.github/dependabot.yml,pending,Dependabot in TASK-P0-CI-001 follow-up.,P0
+SI-3,Malicious Code Protection,Security,.github/workflows/pr.yml,implemented,Trivy malware DB in PR matrix.,P0
+SI-4,System Monitoring,Platform Infra,services/packages/observability/serverobs/,implemented,/metrics + dep-checks in TASK-P0-OBS-001.,P0
+SI-4(2),Automated Tools And Mechanisms For Real-Time Analysis,Security,services/audit/,pending,,P1
+SI-4(4),Inbound And Outbound Communications Traffic,Platform Infra,infra/helm/charts/_chetana-service/templates/_networkpolicy.tpl,implemented,,P0
+SI-4(5),System-Generated Alerts,Platform Infra,services/platform/internal/health/alerter.go,pending,TASK-P1-PLT-HEALTH-001.,P1
+SI-5,Security Alerts Advisories And Directives,Security,compliance/vuln-mgmt/cadence.md,pending,,P6
+SI-7,Software Firmware And Information Integrity,Security,.github/workflows/cosign.yml,implemented,Cosign image signing in TASK-P0-CI-001.,P0
+SI-7(1),Integrity Checks,Security,.github/workflows/cosign.yml,implemented,,P0
+SI-7(7),Integration Of Detection And Response,Security,services/audit/,pending,,P1
+SI-8,Spam Protection,Compliance,compliance/policies/email.md,pending,Inherits SES.,P6
+SI-8(2),Automatic Updates,Compliance,compliance/policies/email.md,pending,Inherits SES.,P6
+SI-10,Information Input Validation,Security,services/packages/api/,pending,protovalidate baseline.,P1
+SI-11,Error Handling,Security,services/packages/errors/,implemented,Existing errors package.,P0
+SI-12,Information Management And Retention,Compliance,services/audit/migrations/0002_retention.sql,pending,5y/7y per REQ-FUNC-PLT-AUDIT-003.,P1
+SI-16,Memory Protection,Security,services/packages/crypto/fips.go,implemented,boringcrypto + Go memory model in TASK-P0-OBS-001.,P0
+SR-1,Policy and Procedures,Security,compliance/policies/supply-chain.md,pending,,P6
+SR-2,Supply Chain Risk Management Plan,Security,compliance/policies/supply-chain.md,pending,,P6
+SR-3,Supply Chain Controls And Processes,Security,.github/workflows/sbom.yml,implemented,SBOMs + cosign in TASK-P0-CI-001.,P0
+SR-5,Acquisition Strategies / Tools / Methods,Compliance,compliance/policies/supplier.md,pending,,P6
+SR-6,Supplier Assessments And Reviews,Compliance,compliance/policies/supplier.md,pending,,P6
+SR-8,Notification Agreements,Compliance,compliance/policies/supplier.md,pending,,P6
+SR-10,Inspection Of Systems Or Components,Security,.github/workflows/pr.yml,implemented,SAST + SCA in TASK-P0-CI-001.,P0
+SR-11,Component Authenticity,Security,.github/workflows/cosign.yml,implemented,,P0
+SR-11(1),Anti-Counterfeit Training,Compliance,compliance/policies/awareness-training.md,pending,,P6
+SR-11(2),Configuration Control For Component Service / Repair,Compliance,compliance/policies/supplier.md,pending,,P6
+SR-12,Component Disposal,Compliance,compliance/policies/disposal.md,pending,Inherits AWS.,P6

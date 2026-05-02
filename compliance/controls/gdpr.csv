@@ -1,0 +1,17 @@
+control_id,title,owner,evidence_path,status,notes,phase
+Art.5,Principles relating to processing of personal data,Compliance,compliance/dpia/dpia-platform.md,pending,Lawfulness fairness transparency purpose-limitation data-minimisation accuracy storage-limitation integrity-confidentiality accountability.,P6
+Art.6,Lawfulness of processing,Compliance,compliance/dpia/dpia-platform.md,pending,Legal basis recorded per processing activity in ROPA.,P6
+Art.13,Information to be provided where personal data are collected from the data subject,Compliance,web/apps/shell/src/routes/(public)/privacy/+page.svelte,pending,Privacy notice rendered on /privacy in TASK-P6-COMP-002.,P6
+Art.14,Information to be provided where personal data have not been obtained from the data subject,Compliance,compliance/dpia/dpia-platform.md,pending,Applies to subscription matching service in IaaS.,P5
+Art.15,Right of access by the data subject,Platform IAM,services/iam/internal/gdpr/sar.go,pending,SAR endpoint in TASK-P1-IAM-009.,P1
+Art.16,Right to rectification,Platform IAM,services/iam/internal/gdpr/rectify.go,pending,Typed PATCH endpoint in TASK-P1-IAM-009.,P1
+Art.17,Right to erasure (right to be forgotten),Platform IAM,services/iam/internal/gdpr/erase.go,pending,Soft-delete + PII anonymisation in TASK-P1-IAM-009. Audit chain preserved per A.5.28.,P1
+Art.20,Right to data portability,Platform IAM,services/iam/internal/gdpr/portability.go,pending,JSON export in TASK-P1-IAM-009.,P1
+Art.25,Data protection by design and by default,Platform Architecture,plan/design.md,implemented,Classification scheme + ABAC + audit-by-default in plan/design.md.,P0
+Art.27,Representatives of controllers or processors not established in the Union,Compliance,compliance/eu-representative.md,blocked,Blocked on OQ-010 (EU representative appointment).,P6
+Art.30,Records of processing activities,Compliance,compliance/ropa.md,in-progress,ROPA skeleton in this PR; populated as services land.,P0
+Art.32,Security of processing,Security,plan/requirements.md,implemented,REQ-NFR-SEC-* baseline.,P0
+Art.33,Notification of a personal data breach to the supervisory authority,Security,compliance/breach-response/playbook.md,pending,72-hour notification path in TASK-P6-COMP-002.,P6
+Art.34,Communication of a personal data breach to the data subject,Security,compliance/breach-response/playbook.md,pending,TASK-P6-COMP-002.,P6
+Art.35,Data protection impact assessment,Compliance,compliance/dpia/template.md,in-progress,Template in this PR; per-processing DPIAs in TASK-P5-COMP-001 (IaaS) and TASK-P6-COMP-002 (platform).,P0
+Art.37,Designation of the data protection officer,Compliance,compliance/dpo.md,blocked,Blocked on OQ-009 (DPO staffing decision).,P6

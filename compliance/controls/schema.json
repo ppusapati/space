@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "$id": "https://chetana.p9e.in/schemas/compliance-control-row.json",
+  "title": "Compliance control row",
+  "description": "Schema enforced on every row of every compliance/controls/<framework>.csv. tools/compliance/coverage.sh validates each row against this schema. TASK-P0-COMP-001 (PR-G).",
+  "type": "object",
+  "required": ["control_id", "title", "owner", "evidence_path", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "control_id": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier from the upstream framework. Examples: ISO27001 'A.5.1', NIST '800-53 AC-2', GDPR 'Art.30', 22 CFR '120.10', CERT-In 'i'."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 3,
+      "description": "Short human-readable summary. Verbatim from the framework where licensing permits."
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Internal team accountable for the control implementation + evidence (e.g. 'Platform IAM', 'Security', 'Compliance')."
+    },
+    "evidence_path": {
+      "type": "string",
+      "description": "Repo-relative path to the evidence artefact (code, policy doc, audit report, dashboard JSON). Empty string is permitted in Phase 0/1; coverage.sh reports it as 'pending'. From Phase 6 onward (TASK-P6-COMP-001) coverage.sh is strict and rejects empty values."
+    },
+    "status": {
+      "type": "string",
+      "enum": ["pending", "in-progress", "implemented", "verified", "exception", "blocked"],
+      "description": "Lifecycle state. 'exception' requires a non-empty notes field justifying the deviation. 'blocked' indicates an external dependency (typically an OQ-NNN open question in plan/requirements.md §9)."
+    },
+    "notes": {
+      "type": "string",
+      "description": "Optional free-text. Required when status='exception'."
+    },
+    "phase": {
+      "type": "string",
+      "pattern": "^P[0-6]$|^v[0-9]+(\\.[0-9]+)*$",
+      "description": "Optional planning phase tag. P0..P6 maps to plan/todo.md phases; v1.x / v2.0 / v2.1 reflect the staggered-cert calendar in plan/requirements.md §5."
+    }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "status": { "const": "exception" } } },
+      "then": { "required": ["notes"] }
+    }
+  ]
+}
