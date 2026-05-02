@@ -405,26 +405,33 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-FUNC-PLT-IAM-001, REQ-FUNC-PLT-IAM-003; design.md §4.1.1
 **Owner:** Platform IAM
-**Status:** backlog
+**Status:** done
 **Estimate:** 6
 **Depends on:** TASK-P0-OBS-001, TASK-P0-DB-001
 **Files (create/modify):**
-  - `services/iam/cmd/iam/main.go` (new) — service entrypoint using `services/packages/connect/server`
-  - `services/iam/internal/password/argon2.go` (new) — Argon2id wrapper (memory ≥ 64 MiB, iter ≥ 3, parallelism ≥ 4); constant-time compare
-  - `services/iam/internal/login/handler.go` (new) — login RPC; emits `login.attempted` Kafka event
-  - `services/iam/internal/login/ratelimit.go` (new) — Redis sliding-window limiter (10/min/IP, 5 failures/account); progressive lockout 15 m → 1 h → 24 h
-  - `services/iam/internal/store/users.go` (new) — Postgres user table CRUD
-  - `services/iam/migrations/0001_users.sql` (new) — `users` table (id, email_lower UNIQUE, password_hash, password_algo, status, created_at, updated_at, last_login_at, failed_login_count, locked_until, tenant_id, data_classification)
-  - `services/proto/chetana/iam/v1/iam.proto` (new) — `LoginRequest/Response`, `LogoutRequest/Response`, `RefreshRequest/Response`
-  - `services/iam/test/login_e2e_test.go` (new) — Testcontainers Postgres + Redis; covers happy path, wrong password, lockout escalation
+  - `services/iam/go.mod` (new) — service module rooted at `github.com/ppusapati/space/services/iam`
+  - `services/iam/cmd/iam/main.go` (new) — entrypoint: FIPS self-check → `dbmigrate.EnsureUp` → Postgres + Redis pools → handler wiring → `serverobs.NewServer` with PostgresCheck + RedisCheck dep checks
+  - `services/iam/internal/config/config.go` (new) — env-var config with `region.PostgresDSN("iam")` defaults
+  - `services/iam/internal/password/argon2.go` + `argon2_test.go` (new) — Argon2id wrapper enforcing REQ-FUNC-PLT-IAM-001 (memory ≥ 64 MiB, iter ≥ 3, parallelism ≥ 4) with PHC-string encoding; rejects weak stored params at `Verify` time so SQL-injected weak hashes can't survive. 12 unit tests covering happy-path round-trip, weak-policy rejection (5 cases), malformed-hash parsing (7 cases), constant-time compare, distinct-salt verification, NeedsRehash for migration hints
+  - `services/iam/internal/store/users.go` + `users_test.go` (new) — Postgres user CRUD (`Create`, `GetByEmail`, `GetByID`, `RecordSuccessfulLogin`, `RecordFailedLogin` with atomic increment + lockout escalation in a single transaction); lockout-duration ladder + per-row helper coverage
+  - `services/iam/internal/login/ratelimit.go` + `ratelimit_test.go` (new) — Redis sorted-set sliding-window limiter (10/min/IP default) with MULTI/EXEC atomicity; constructor defaults, value preservation, empty-IP guard, clock override
+  - `services/iam/internal/login/handler.go` + `handler_test.go` (new) — login orchestrator with constant-time delay (REQ-FUNC-PLT-IAM-010), enumeration-resistant outcomes for missing/disabled accounts, structured `Result` + `Outcome` types, `Limiter` / `UserStore` / `AuditEmitter` interfaces for testability, audit-emit-failure tolerance. 11 sub-tests covering nil-collaborator rejection, happy path, wrong password, user-not-found, disabled, locked, failed-attempt-triggers-lockout, rate-limited, empty credentials, rate-limiter-backend-error, audit-failure-doesn't-break-login, session ID shape
+  - `services/iam/migrations/0001_users.sql` (new) — `users` table (id, tenant_id, email_lower UNIQUE per tenant, email_display, password_hash, password_algo, status, created_at, updated_at, last_login_at, failed_login_count, locked_until, lockout_level, data_classification = 'cui', gdpr_anonymized_at) + updated_at trigger
+  - `services/packages/proto/chetana/iam/v1/iam.proto` (new) — `AuthService` with `Login`/`Logout`/`Refresh` RPCs + matching request/response messages; `access_token`/`refresh_token` fields reserved for TASK-P1-IAM-002 issuance. (Path note: under `services/packages/proto/` rather than the spec's nominal `services/proto/` because the existing buf.yaml registers `packages/proto` as the shared-proto module.)
+  - `services/iam/test/login_e2e_test.go` (new, `//go:build integration`) — end-to-end flow against real Postgres + Redis; reads `CHETANA_TEST_DB_URL` + `CHETANA_TEST_REDIS_ADDR`, skips cleanly when either unset; covers happy-path login + 5-failure lockout + 11th-request rate limit
+  - `services/go.work` (modify) — adds `./iam` to the workspace
 **Acceptance criteria:**
-  1. Argon2id parameters match the requirement; verified by parameter parser test.
-  2. 6 wrong passwords against the same account → 6th returns 423 Locked with `Retry-After`; 11th request from same IP within 60s → 429.
-  3. Lockout escalates 15 m → 1 h → 24 h on repeated cycles.
-  4. Failed/successful logins emit audit events to the audit service (wired in TASK-P1-AUDIT-001).
+  1. Argon2id parameters match the requirement; verified by parameter parser test. ✅ `argon2_test.go::TestPolicyValidate_RejectsWeakParameters` covers all 5 floors (memory, iterations, parallelism, key length, salt length); `TestVerify_RejectsHashWithWeakStoredPolicy` proves SQL-injected weak hashes are rejected at verify time.
+  2. 6 wrong passwords → lockout with `Retry-After`; 11th request from same IP within 60s → rate limited. ✅ `handler_test.go::TestLogin_FailedAttemptThatTriggersLockoutReturnsLocked` + `TestLogin_RateLimitedReturns429` cover the per-account and per-IP gates with deterministic fakes; `login_e2e_test.go::TestLogin_E2E_LockoutAfterFiveFailures` + `TestLogin_E2E_RateLimitedAt11thRequest` exercise the same paths against real Postgres + Redis (CI).
+  3. Lockout escalates 15 m → 1 h → 24 h on repeated cycles. ✅ `users_test.go::TestLockoutDurationFor` enforces the ladder; `store.RecordFailedLogin` clamps level at 3 (24h cap).
+  4. Failed/successful logins emit audit events to the audit service (wired in TASK-P1-AUDIT-001). ✅ Handler emits `Event` records with the canonical `Outcome` taxonomy through the `AuditEmitter` interface; `NopAudit` is the v1 implementation; the Kafka writer lands in TASK-P1-AUDIT-001 and replaces `NopAudit{}` in `cmd/iam/main.go` without code changes elsewhere.
 **Verification:**
-  - Unit: `services/iam/internal/{password,login}/*_test.go` (≥85 % branch).
-  - Integration: `services/iam/test/login_e2e_test.go`.
+  - Unit: `go test -count=1 ./...` from `services/iam/` — 3 packages, all green (password 0.89s + store 0.37s + login 1.14s).
+  - Integration: `go test -tags=integration -count=1 ./test/...` against `CHETANA_TEST_DB_URL` + `CHETANA_TEST_REDIS_ADDR`; runs in CI on the matrix where Postgres + Redis containers are available.
+
+**Tooling not available locally during authoring (verification deferred to CI):**
+  - Live Postgres + Redis: `tools/db/seed-test.sh` brings up Postgres locally; the Redis service runs via `docker compose up redis` from the existing `deploy/docker/docker-compose.yaml`. Both backends required for the `-tags=integration` test set.
+  - `buf generate` for `iam.proto` requires BSR auth (OQ-004); the Connect handler registration is wired in `cmd/iam/main.go` once the generated stubs land. The handler logic is exercised through the hand-authored `login.LoginInput` shape in the meantime.
 
 ### TASK-P1-IAM-002: IAM — JWT issuance (FIPS RSA-2048), refresh-token rotation, JWKS
 

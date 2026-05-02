@@ -1,0 +1,129 @@
+syntax = "proto3";
+
+// IAM service v1 — TASK-P1-IAM-001 + downstream IAM tasks.
+//
+// REQ-FUNC-PLT-IAM-001/002/003/004/005/006/007/008/009/010/011
+// design.md §4.1.1
+//
+// This file defines only the wire surface for Phase 1 P1-IAM-001
+// (Login + Logout + Refresh). MFA, WebAuthn, OIDC, SAML, GDPR SAR/
+// erasure each get their own message set in companion files
+// (mfa.proto, webauthn.proto, oidc.proto, saml.proto, gdpr.proto)
+// authored alongside their owning task.
+
+package chetana.iam.v1;
+
+option go_package = "p9e.in/chetana/packages/api/v1/iam;iamv1";
+
+import "google/protobuf/timestamp.proto";
+
+// AuthService groups the authentication RPCs. RBAC + ABAC checks
+// happen inside each handler, NOT via interceptor — auth flow itself
+// runs unauthenticated.
+service AuthService {
+  // Login authenticates with email + password.
+  // Returns 401 on bad credentials (with constant-time response per
+  // REQ-FUNC-PLT-IAM-010), 423 Locked when the account is in
+  // progressive lockout (REQ-FUNC-PLT-IAM-003), 429 when the IP
+  // exceeds the sliding-window rate limit.
+  rpc Login(LoginRequest) returns (LoginResponse);
+
+  // Logout invalidates the active session and revokes its refresh
+  // token family.
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+
+  // Refresh exchanges a refresh token for a new access+refresh
+  // token pair (single-use refresh tokens; reuse triggers session
+  // family invalidation per REQ-FUNC-PLT-IAM-002).
+  rpc Refresh(RefreshRequest) returns (RefreshResponse);
+}
+
+// ----------------------------------------------------------------------
+// Login
+// ----------------------------------------------------------------------
+
+message LoginRequest {
+  // Email is the user's primary login identifier; case-folded to
+  // lowercase before lookup per RFC 5321 + the platform convention.
+  string email = 1;
+
+  // Password is the cleartext password supplied by the user. The
+  // server hashes with Argon2id and compares against the stored hash
+  // in constant time.
+  string password = 2;
+
+  // ClientIP is the apparent source IP of the request. Forwarded
+  // through the realtime / API gateway. Used by the rate limiter.
+  string client_ip = 3;
+
+  // UserAgent is recorded in the audit log (REQ-FUNC-PLT-AUDIT-001).
+  string user_agent = 4;
+}
+
+message LoginResponse {
+  // AccessToken is the short-lived JWT (TTL 15m) issued in
+  // TASK-P1-IAM-002. Empty during Phase-1-IAM-001 because JWT
+  // issuance lands in the next task; the field shape is reserved
+  // here so clients written against IAM-001 do not need a recompile
+  // when IAM-002 ships.
+  string access_token = 1;
+
+  // RefreshToken is the long-lived (7d) refresh token (TASK-P1-IAM-002).
+  string refresh_token = 2;
+
+  // ExpiresAt is the wall-clock expiry of the access token.
+  google.protobuf.Timestamp expires_at = 3;
+
+  // SessionID identifies this login session. Issued at Login,
+  // referenced by every subsequent request via the JWT session_id
+  // claim, and revocable via Logout.
+  string session_id = 4;
+
+  // RequiresMFA is true when the account has MFA enabled and the
+  // login flow needs a second factor. The client follows up with
+  // an MFA challenge endpoint (added in TASK-P1-IAM-003); when true
+  // the AccessToken / RefreshToken fields are empty.
+  bool requires_mfa = 5;
+}
+
+// ----------------------------------------------------------------------
+// Logout
+// ----------------------------------------------------------------------
+
+message LogoutRequest {
+  // SessionID is the session to invalidate. Authorized via the
+  // requesting principal's JWT — only the session owner can revoke
+  // it, with admin role override per REQ-FUNC-PLT-IAM-009.
+  string session_id = 1;
+}
+
+message LogoutResponse {
+  // RevokedAt is the wall-clock instant the session was marked
+  // invalidated. Subsequent JWT verifications check this stamp
+  // against the session's last_revoked_at to enforce immediate
+  // revocation (RFC 7517 + TASK-P1-IAM-007).
+  google.protobuf.Timestamp revoked_at = 1;
+}
+
+// ----------------------------------------------------------------------
+// Refresh
+// ----------------------------------------------------------------------
+
+message RefreshRequest {
+  // RefreshToken is the long-lived token previously issued by
+  // Login or a prior Refresh. Single-use — TASK-P1-IAM-002 marks it
+  // consumed atomically and emits a fresh pair.
+  string refresh_token = 1;
+}
+
+message RefreshResponse {
+  // AccessToken is the new short-lived JWT.
+  string access_token = 1;
+
+  // RefreshToken is the new long-lived token. The previous token
+  // is now invalid; reusing it triggers session-family invalidation.
+  string refresh_token = 2;
+
+  // ExpiresAt is the wall-clock expiry of the new access token.
+  google.protobuf.Timestamp expires_at = 3;
+}
