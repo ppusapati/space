@@ -1,7 +1,7 @@
 package helpers_utils
 
 import (
-	"github.com/bufbuild/protovalidate-go"
+	protovalidate "buf.build/go/protovalidate"
 	"google.golang.org/protobuf/proto"
 )
 
