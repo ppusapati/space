@@ -1,0 +1,21 @@
+# infra/grafana/datasources/prometheus.yaml
+# Provisioned datasource (Grafana auto-loads from /etc/grafana/provisioning).
+# REQ-NFR-OBS-003 / TASK-P1-OBS-001 acceptance #1: Grafana shows
+# the chetana datasource on boot with no manual import.
+
+apiVersion: 1
+
+datasources:
+  - name: prometheus
+    type: prometheus
+    access: proxy
+    uid: prometheus
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false
+    jsonData:
+      timeInterval: 15s
+      httpMethod: POST
+      manageAlerts: true
+      prometheusType: Prometheus
+      prometheusVersion: 2.51.0

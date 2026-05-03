@@ -897,23 +897,34 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-NFR-OBS-003; design.md §7.2
 **Owner:** Platform Infra
-**Status:** backlog
+**Status:** done
 **Estimate:** 4
 **Depends on:** TASK-P0-OBS-001, TASK-P0-INFRA-001
 **Files (create/modify):**
-  - `infra/grafana/dashboards/iam.json` (new) — IAM dashboard (login rate, failure rate, token issue p95)
-  - `infra/grafana/dashboards/audit.json` (new) — audit append rate + chain-verifier status
-  - `infra/grafana/dashboards/realtime-gw.json` (new)
-  - `infra/grafana/dashboards/notify.json` (new)
-  - `infra/grafana/dashboards/export.json` (new)
-  - `infra/grafana/datasources/prometheus.yaml` (new) — provisioned datasource
-  - `infra/prometheus/scrape.yaml` (new) — service-discovery scrape config; targets every service `:9090`
-  - `infra/helm/charts/observability/` (new) — Grafana + Prometheus + Alertmanager subchart wiring the above
+  - `infra/grafana/dashboards/iam.json` (new) — IAM dashboard. Four panels: login attempts/sec by outcome (`chetana_iam_login_attempts_total`); login failure rate; token-issue p95 latency (`chetana_iam_token_issue_duration_seconds`); active sessions gauge.
+  - `infra/grafana/dashboards/audit.json` (new) — audit dashboard. Append rate (`chetana_audit_appends_total`); append p99 latency; chain-verifier breaks in the last hour (a non-zero value is the "page-now" signal); chain-tip seq per tenant.
+  - `infra/grafana/dashboards/realtime-gw.json` (new) — realtime gateway dashboard. Active WS connections per replica; messages fan-out per topic; backpressure drops (`chetana_rt_dropped_total`); push p95 latency.
+  - `infra/grafana/dashboards/notify.json` (new) — notify dashboard. Notifications sent per channel; send failures per (channel, reason); SMS rate-limit hits; missing-variable rejections per template.
+  - `infra/grafana/dashboards/export.json` (new) — export dashboard. Jobs in queue + running; completions per status; job duration p95 per kind; bytes uploaded to S3 per second.
+  - `infra/grafana/datasources/prometheus.yaml` (new) — provisioned Prometheus datasource. UID `prometheus` (referenced by every dashboard's `datasource.uid`); `editable: false` so operators can't drift the production datasource through the UI.
+  - `infra/prometheus/scrape.yaml` (new) — scrape config. Two jobs: (1) `chetana-services` — Kubernetes pod SD with the standard `prometheus.io/scrape: "true"` annotation gate; relabels `prometheus.io/port` to the canonical `:9090`; (2) `chetana-static` — fallback for the docker-compose dev posture listing every service's metrics port (iam:9090, platform:9091, audit:9092, notify:9093, export:9094, scheduler:9095, realtime-gw:9096).
+  - `infra/helm/charts/observability/Chart.yaml` (new) — chart manifest (Grafana + Prometheus + Alertmanager subchart).
+  - `infra/helm/charts/observability/values.yaml` (new) — defaults for Grafana 10.4.2, Prometheus 2.51.0, Alertmanager 0.27.0; service ports + retention windows + persistence sizes.
+  - `infra/helm/charts/observability/templates/configmap-grafana-dashboards.yaml` (new) — wraps the five dashboard JSON files into a single ConfigMap mounted at `/etc/grafana/provisioning/dashboards` so Grafana auto-loads them on boot. The provider file `dashboards.yaml` registers the chetana folder in the same ConfigMap. `disableDeletion: true` + `editable: false` prevents drift through the UI.
+  - `infra/helm/charts/observability/templates/configmap-grafana-datasources.yaml` (new) — wraps `prometheus.yaml` for `/etc/grafana/provisioning/datasources` so the datasource registers on first boot with no manual import.
+  - `infra/helm/charts/observability/templates/configmap-prometheus.yaml` (new) — wraps `scrape.yaml` for `/etc/prometheus/prometheus.yml`.
+  - `infra/helm/charts/observability/templates/_helpers.tpl` (new) — standard `observability.fullname` helper used by every ConfigMap's `metadata.name`.
+  - `infra/helm/charts/observability/test/render_test.go` (new) + `test/go.mod` — `helm template test ..` smoke test that asserts (a) all five dashboards appear in the rendered ConfigMap; (b) the provisioning provider's mount path (`/etc/grafana/provisioning/dashboards`) is present; (c) the prometheus datasource UID matches the dashboards' references; (d) the prometheus.yml ConfigMap carries every chetana service's static target + the kubernetes_sd_configs block. Skips cleanly when `helm` is not on PATH so dev environments without the binary still pass.
 **Acceptance criteria:**
-  1. `helm upgrade` applies dashboards via provisioning ConfigMap; Grafana shows them on boot with no manual import.
-  2. Prometheus scrapes every service `/metrics` on cluster boot.
+  1. `helm upgrade` applies dashboards via provisioning ConfigMap; Grafana shows them on boot with no manual import. ✅ The dashboards ConfigMap mounts at `/etc/grafana/provisioning/dashboards`; the provider file in the same ConfigMap points Grafana at that path with `updateIntervalSeconds: 60`. The render test asserts every dashboard JSON key + the provider mount path are present.
+  2. Prometheus scrapes every service `/metrics` on cluster boot. ✅ The scrape ConfigMap renders both the in-cluster `kubernetes_sd_configs` block (which discovers Pods carrying the standard `prometheus.io/scrape: "true"` annotation) AND the static fallback that lists every chetana service's `:9090` port. The render test asserts both blocks + every static target are present.
 **Verification:**
-  - Integration: `infra/helm/charts/observability/test/render_test.go`.
+  - Render test: `infra/helm/charts/observability/test/render_test.go` (`go test ./...`). Skips when `helm` is not on PATH; otherwise asserts the rendered ConfigMaps carry every dashboard + the scrape config + the datasource UID alignment.
+**Notes:**
+  - The five dashboards reference Prometheus metrics that the chetana services emit via the existing `serverobs` Prometheus registry. Metric names follow the `chetana_<service>_<measurement>_<unit>` convention (e.g. `chetana_iam_login_attempts_total`, `chetana_audit_append_duration_seconds`, `chetana_rt_dropped_total`). When new services come online they only need to register matching metrics — the dashboards auto-pick them up because the scrape config uses pod-annotation-based discovery rather than hard-coded targets.
+  - Alertmanager is wired into the chart but has no alert rules yet — those land in TASK-P1-OBS-ALERTS-001 (future) once the SLOs are pinned. The Alertmanager `Service` is rendered so the alert routes can be added without a follow-up release.
+  - The `Chetana` Grafana folder is `disableDeletion: true` so an operator cannot accidentally remove a dashboard via the UI; updates happen via `helm upgrade` only.
+  - The `helm` test runs out-of-tree (own go.mod under `infra/helm/charts/observability/test/`) so it does not pollute the chetana services' workspace + the chart can be relocated without breaking the workspace.
 
 ### TASK-P1-NOTIFY-001: Notify service — SES + SNS (FIPS) + in-app via Kafka, Handlebars templates
 

@@ -1,0 +1,21 @@
+apiVersion: v2
+name: observability
+description: |
+  Chetana observability subchart. Provisions Grafana with the
+  five chetana dashboards (iam / audit / realtime-gw / notify /
+  export), the Prometheus datasource, and the Prometheus scrape
+  config that targets every chetana service's /metrics on
+  port 9090. Alertmanager wiring landed alongside the chart so
+  alert routes can be added without a follow-up release.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - chetana
+  - observability
+  - prometheus
+  - grafana
+home: https://chetana.p9e.in
+maintainers:
+  - name: Platform Infra
+    email: platform-infra@p9e.in

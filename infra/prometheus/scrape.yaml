@@ -1,0 +1,65 @@
+# infra/prometheus/scrape.yaml — TASK-P1-OBS-001 acceptance #2.
+#
+# Service-discovery scrape config. Targets every chetana service
+# at port :9090 (the convention every cmd/<svc>/main.go follows
+# via the serverobs MetricsAddr default).
+#
+# In-cluster discovery: Kubernetes-native target finder.
+# Out-of-cluster (single-host docker-compose): static_configs
+# block lists every service the platform ships.
+
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 30s
+  external_labels:
+    cluster: chetana
+    region: ${CHETANA_REGION:-us-east}
+
+# When running inside Kubernetes, prefer the kubernetes_sd_config
+# block. Otherwise fall back to the static targets list below.
+scrape_configs:
+  # ---------------------------------------------------------------
+  # In-cluster discovery — Pods annotated with
+  #   prometheus.io/scrape: "true"
+  #   prometheus.io/port:   "9090"
+  # ---------------------------------------------------------------
+  - job_name: chetana-services
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: "true"
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        target_label: __address__
+        regex: ([^:]+)(?::\d+)?
+        replacement: ${1}:9090
+      - source_labels: [__meta_kubernetes_namespace]
+        action: replace
+        target_label: namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        action: replace
+        target_label: pod
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        action: replace
+        target_label: service
+
+  # ---------------------------------------------------------------
+  # Static fallback for the docker-compose dev posture. Each
+  # service exposes its /metrics on the port noted in its
+  # cmd/<svc>/main.go default.
+  # ---------------------------------------------------------------
+  - job_name: chetana-static
+    static_configs:
+      - targets:
+          - "iam:9090"
+          - "platform:9091"
+          - "audit:9092"
+          - "notify:9093"
+          - "export:9094"
+          - "scheduler:9095"
+          - "realtime-gw:9096"
+        labels:
+          environment: dev

@@ -1,0 +1,16 @@
+{{/*
+ConfigMap shipping the provisioned Prometheus datasource so
+Grafana shows it on boot with no manual import.
+*/}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "observability.fullname" . }}-grafana-datasources
+  labels:
+    app.kubernetes.io/name: grafana
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: datasources
+    chetana.observability/role: datasource-source
+data:
+  prometheus.yaml: |-
+{{ .Files.Get "../../../grafana/datasources/prometheus.yaml" | indent 4 }}

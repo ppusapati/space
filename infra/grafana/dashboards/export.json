@@ -1,0 +1,61 @@
+{
+  "annotations": { "list": [] },
+  "editable": false,
+  "graphTooltip": 1,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "Jobs in queue",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum(chetana_export_jobs_queued)", "legendFormat": "queued" },
+        { "expr": "sum(chetana_export_jobs_running)", "legendFormat": "running" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "ops" } },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "title": "Job completions / sec (per status)",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum(rate(chetana_export_jobs_completed_total[$__rate_interval])) by (status)", "legendFormat": "{{status}}" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 3,
+      "title": "Job duration p95",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "histogram_quantile(0.95, sum(rate(chetana_export_job_duration_seconds_bucket[$__rate_interval])) by (le,kind))", "legendFormat": "{{kind}} p95" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "decbytes" } },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 4,
+      "title": "Bytes uploaded to S3 / sec",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum(rate(chetana_export_s3_bytes_total[$__rate_interval]))", "legendFormat": "uploaded" }
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "tags": ["chetana", "export"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timezone": "utc",
+  "title": "Chetana / Export",
+  "uid": "chetana-export",
+  "version": 1
+}

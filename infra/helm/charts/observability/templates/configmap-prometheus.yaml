@@ -1,0 +1,18 @@
+{{/*
+ConfigMap shipping the chetana Prometheus scrape config.
+Mounted by the Prometheus Pod at /etc/prometheus/prometheus.yml.
+
+REQ-NFR-OBS-003 / TASK-P1-OBS-001 acceptance #2: Prometheus
+scrapes every chetana service /metrics on cluster boot.
+*/}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "observability.fullname" . }}-prometheus-config
+  labels:
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: scrape-config
+data:
+  prometheus.yml: |-
+{{ .Files.Get "../../../prometheus/scrape.yaml" | indent 4 }}

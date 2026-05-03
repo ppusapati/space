@@ -1,0 +1,60 @@
+{
+  "annotations": { "list": [] },
+  "editable": false,
+  "graphTooltip": 1,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "ops" } },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "Notifications sent / sec (per channel)",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum(rate(chetana_notify_sent_total[$__rate_interval])) by (channel)", "legendFormat": "{{channel}}" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "ops", "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [ {"color":"green","value":null}, {"color":"red","value":1} ] } } },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "title": "Send failures / sec",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum(rate(chetana_notify_send_failures_total[$__rate_interval])) by (channel,reason)", "legendFormat": "{{channel}} / {{reason}}" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "ops" } },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 3,
+      "title": "SMS rate-limit hits / sec",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum(rate(chetana_notify_sms_rate_limited_total[$__rate_interval]))", "legendFormat": "rate-limited" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "ops" } },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 4,
+      "title": "Missing-variable rejections / sec",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum(rate(chetana_notify_missing_var_total[$__rate_interval])) by (template_id)", "legendFormat": "{{template_id}}" }
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "tags": ["chetana", "notify"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timezone": "utc",
+  "title": "Chetana / Notify",
+  "uid": "chetana-notify",
+  "version": 1
+}

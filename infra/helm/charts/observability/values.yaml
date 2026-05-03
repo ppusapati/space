@@ -1,0 +1,51 @@
+# infra/helm/charts/observability/values.yaml
+#
+# Defaults for the chetana observability subchart. Operators
+# override per environment via `helm upgrade -f values.<env>.yaml`.
+
+grafana:
+  enabled: true
+  image:
+    repository: grafana/grafana
+    tag: "10.4.2"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+  adminUser: admin
+  # adminPassword is sourced from a separate Secret in production;
+  # the dev posture uses the value here.
+  adminPassword: changeme
+  persistence:
+    enabled: true
+    size: 5Gi
+  # The provisioning ConfigMap (rendered from
+  # configmap-grafana-dashboards.yaml + configmap-grafana-datasources.yaml)
+  # mounts at /etc/grafana/provisioning so Grafana auto-loads them on boot.
+
+prometheus:
+  enabled: true
+  image:
+    repository: prom/prometheus
+    tag: "v2.51.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 9090
+  retention: 15d
+  scrapeIntervalSeconds: 15
+  storage:
+    size: 50Gi
+
+alertmanager:
+  enabled: true
+  image:
+    repository: prom/alertmanager
+    tag: "v0.27.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 9093
+
+# region is stamped on every metric via Prometheus external labels.
+region: us-east

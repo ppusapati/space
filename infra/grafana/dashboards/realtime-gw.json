@@ -1,0 +1,60 @@
+{
+  "annotations": { "list": [] },
+  "editable": false,
+  "graphTooltip": 1,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "Active WS connections",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum(chetana_rt_connections_active) by (replica)", "legendFormat": "{{replica}}" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "ops" } },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "title": "Messages fan-out / sec",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum(rate(chetana_rt_messages_total[$__rate_interval])) by (topic)", "legendFormat": "{{topic}}" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "ops", "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [ {"color":"green","value":null}, {"color":"orange","value":10}, {"color":"red","value":100} ] } } },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 3,
+      "title": "Backpressure drops / sec",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum(rate(chetana_rt_dropped_total[$__rate_interval])) by (reason)", "legendFormat": "{{reason}}" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 4,
+      "title": "Push p95 latency",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "histogram_quantile(0.95, sum(rate(chetana_rt_push_duration_seconds_bucket[$__rate_interval])) by (le))", "legendFormat": "p95" }
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "tags": ["chetana", "realtime"],
+  "templating": { "list": [] },
+  "time": { "from": "now-30m", "to": "now" },
+  "timezone": "utc",
+  "title": "Chetana / Realtime Gateway",
+  "uid": "chetana-realtime-gw",
+  "version": 1
+}

@@ -1,0 +1,60 @@
+{
+  "annotations": { "list": [] },
+  "editable": false,
+  "graphTooltip": 1,
+  "panels": [
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "ops" } },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "Audit append rate",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "sum(rate(chetana_audit_appends_total[$__rate_interval]))", "legendFormat": "appends/s" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "id": 2,
+      "title": "Audit append p99 latency",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "histogram_quantile(0.99, sum(rate(chetana_audit_append_duration_seconds_bucket[$__rate_interval])) by (le))", "legendFormat": "p99" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "thresholds": { "mode": "absolute", "steps": [ {"color":"green","value":null}, {"color":"red","value":1} ] } } },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "id": 3,
+      "title": "Chain verifier breaks (last hour)",
+      "type": "stat",
+      "targets": [
+        { "expr": "increase(chetana_audit_chain_breaks_total[1h])", "legendFormat": "breaks" }
+      ]
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "fieldConfig": { "defaults": { "unit": "short" } },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "id": 4,
+      "title": "Chain tip seq (per tenant)",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "max(chetana_audit_chain_tip_seq) by (tenant_id)", "legendFormat": "{{tenant_id}}" }
+      ]
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "tags": ["chetana", "audit"],
+  "templating": { "list": [] },
+  "time": { "from": "now-6h", "to": "now" },
+  "timezone": "utc",
+  "title": "Chetana / Audit",
+  "uid": "chetana-audit",
+  "version": 1
+}
