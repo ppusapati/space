@@ -5,6 +5,7 @@ use (
 	./iam
 	./platform
 	./audit
+	./notify
 	./eo-catalog
 	./eo-pipeline
 	./eo-analytics

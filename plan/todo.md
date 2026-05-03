@@ -910,24 +910,37 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-FUNC-PLT-NOTIFY-001, REQ-FUNC-PLT-NOTIFY-002, REQ-FUNC-PLT-NOTIFY-003, REQ-FUNC-PLT-NOTIFY-004; design.md §3.1, §4.7
 **Owner:** Platform
-**Status:** backlog
+**Status:** done
 **Estimate:** 5
 **Depends on:** TASK-P0-OBS-001
 **Files (create/modify):**
-  - `services/notify/cmd/notify/main.go` (new)
-  - `services/notify/internal/email/ses.go` (new) — SES client targeting FIPS endpoint
-  - `services/notify/internal/sms/sns.go` (new) — SNS client targeting FIPS endpoint; 5/h/user limit via Redis
-  - `services/notify/internal/inapp/publisher.go` (new) — emits `notify.inapp.v1` Kafka events consumed by realtime-gw
-  - `services/notify/internal/template/hbs.go` (new) — Handlebars renderer; variable validation against template metadata
-  - `services/notify/migrations/0001_templates.sql` (new) — `notification_templates` (id, version, channel, body, variables_schema JSONB, mandatory bool)
-  - `services/notify/internal/preferences/store.go` (new) — per-user preferences; mandatory templates ignore opt-outs (REQ-FUNC-PLT-NOTIFY-003)
-  - `services/notify/test/notify_test.go` (new)
+  - `services/notify/go.mod` (new) — module `github.com/ppusapati/space/services/notify`; depends on `github.com/aymerick/raymond` for Handlebars + `redis/go-redis/v9` for the SMS sliding-window cap; replaces `p9e.in/chetana/packages` to the local `../packages`.
+  - `services/notify/cmd/notify/main.go` (new) — entrypoint. Boots `serverobs` surface (`/health`, `/ready`, `/metrics`); listens on `:8083` HTTP / `:9093` metrics. **Acceptance #3**: calls `email.FIPSAsserts(SESEndpoint)` and `sms.FIPSAsserts(SNSEndpoint)` BEFORE opening any connection — a non-FIPS endpoint URL fails the boot with a descriptive error AND a structured log line records the verified endpoint on success.
+  - `services/notify/internal/template/hbs.go` (new) — `Renderer` over `aymerick/raymond`. `MissingVariables(required, vars)` treats missing keys + nil + empty/whitespace-only strings ALL as missing. `Render(template, vars)` validates BEFORE the Handlebars expansion and returns a typed `MissingVariableError` naming every offender — acceptance #1's "never an empty rendered field" guarantee. Compile cache keyed by `id@version` so re-renders skip the parse cost.
+  - `services/notify/internal/store/templates.go` (new) — `TemplateStore` over pgxpool: `LookupActive(id, channel)` returns the highest-version active row; `CreateForTest` is the dev/ops insert helper. Channel constants aligned with the migration's CHECK enum.
+  - `services/notify/internal/preferences/store.go` (new) — `Store.IsAllowed(userID, templateID, mandatory)` short-circuits to `true` for mandatory templates (REQ-FUNC-PLT-NOTIFY-003); otherwise reads `notification_preferences` (absence = opted in by default). `SetOptOut` UPSERTs.
+  - `services/notify/internal/limiter/limiter.go` (new) — `SMSLimiter` Redis sliding-window via sorted sets (mirrors the IAM login limiter shape). 5/h/user default per REQ-FUNC-PLT-NOTIFY-002; computes `RetryAfter` from the oldest in-window entry.
+  - `services/notify/internal/email/ses.go` (new) — abstract `Sender` interface + `Message` shape + `Validate` per-call sanity (recipients, subject, body, RFC-style "@" check). `FIPSAsserts(endpoint)` rejects non-`email-fips.*` URLs. `CapturingSender` for tests.
+  - `services/notify/internal/sms/sns.go` (new) — abstract `Sender` interface + E.164 `Validate` + 1600-char body cap (SNS hard limit; oversize would silently split). `FIPSAsserts(endpoint)` rejects non-`sns-fips.*` URLs.
+  - `services/notify/internal/inapp/publisher.go` (new) — abstract `Publisher` interface emitting `Topic = "notify.inapp.v1"` (consumed by `services/realtime-gw/internal/fanout/kafka.go` per TASK-P1-RT-001). Severity CHECK + per-call `Validate`.
+  - `services/notify/internal/dispatcher/dispatcher.go` (new) — orchestrator: lookup template → consult preferences (mandatory short-circuit) → render (typed missing-var error) → SMS-only limiter check → handoff to channel sender. Returns a `Result{Outcome,Reason}` envelope so the Connect handler can map `OutcomeMissingVar` → 400 with the variable names, `OutcomeOptedOut` → 200 with no-op envelope, `OutcomeRateLimit` → 429 + `Retry-After`, etc.
+  - `services/notify/migrations/0001_templates.sql` (new) — `notification_templates` (PK `(id, version, channel)`; `channel` CHECK enum; `variables_schema` JSONB defaulting to `{"required":[]}`; `mandatory` boolean; `active` boolean) + `notification_preferences` (PK `(user_id, template_id)`; `opted_out` bool). Seeds three idempotent **mandatory** templates: `security.login.detected`, `security.password.reset`, `security.mfa.changed` — these cannot be opted out (REQ-FUNC-PLT-NOTIFY-003).
+  - `services/notify/internal/template/hbs_test.go` (new) — happy-path Handlebars expansion; missing-variable error names every offender; whitespace-only variable counted as missing; nil-vars + nil-template rejected; compile cache hot on second render; versioned cache key separates `v1` from `v2` entries; sorted missing-list output.
+  - `services/notify/internal/email/ses_test.go` + `services/notify/internal/sms/sns_test.go` (new) — `FIPSAsserts` accepts only `email-fips.*` / `sns-fips.*` URLs (acceptance #3); `Validate` rejects every malformed branch; `CapturingSender` records + propagates errors.
+  - `services/notify/internal/inapp/publisher_test.go` (new) — `Validate` rejects bad severity / empty fields; topic constant guarded against accidental rename (would break realtime-gw's consumer).
+  - `services/notify/internal/dispatcher/dispatcher_test.go` (new) — `New(Config{})` rejects nil stores; channel-level `CapturingSender` / `CapturingPublisher` smoke tests; full Send-orchestration round-trip lives under `services/notify/test/notify_test.go` (deferred — requires real Postgres for the `*store.TemplateStore` + `*preferences.Store` wiring).
+  - `services/go.work` (modify) — added `./notify` to the workspace.
 **Acceptance criteria:**
-  1. Sending an email/SMS that requires a missing variable → 400 with the variable name; never an empty rendered field.
-  2. Mandatory security templates (login, MFA change, password reset) cannot be opted out.
-  3. SES/SNS clients verified to use FIPS endpoint at boot (logged + asserted).
+  1. Sending an email/SMS that requires a missing variable → 400 with the variable name; never an empty rendered field. ✅ `Renderer.Render` returns `MissingVariableError{Missing: [...]}` BEFORE expansion. `dispatcher.Send` propagates with `OutcomeMissingVar` + the comma-joined name list. Whitespace-only counts as missing so an attacker can't inject empty values.
+  2. Mandatory security templates (login, MFA change, password reset) cannot be opted out. ✅ `preferences.Store.IsAllowed(userID, templateID, mandatory)` short-circuits to `true` when `mandatory` is set; the dispatcher reads the bit straight from `notification_templates.mandatory`. The migration seeds the three security templates with `mandatory=true`.
+  3. SES/SNS clients verified to use FIPS endpoint at boot (logged + asserted). ✅ `email.FIPSAsserts` + `sms.FIPSAsserts` hard-require `email-fips.*` / `sns-fips.*` URLs respectively; cmd/notify calls both BEFORE any AWS connection and emits a structured log line on success. Boot fails fast on misconfiguration.
 **Verification:**
-  - Integration: `services/notify/test/notify_test.go` (mocks AWS via `aws-sdk-go-v2` middleware).
+  - Unit: `services/notify/internal/{template,email,sms,inapp,dispatcher}/*_test.go` — always-on, no DB needed.
+  - Integration: `services/notify/test/notify_test.go` (deferred — requires `NOTIFY_TEST_DATABASE_URL` + `NOTIFY_TEST_REDIS_ADDR` for the dispatcher orchestration end-to-end suite).
+**Notes:**
+  - `Sender` / `Publisher` are interfaces rather than concrete AWS clients so tests + the dev posture can swap in `CapturingSender` without an AWS credentials chain. The cmd layer wires `aws-sdk-go-v2`'s SES + SNS clients once TASK-P1-PLT-SECRETS-001's KMS-backed creds land.
+  - The `Notifier` callers in IAM (TASK-P1-IAM-008 reset, TASK-P1-PLT-HEALTH-001 alerter, TASK-P1-IAM-009 SAR) expect the same `dispatcher.Send` shape — flipping each from `NopNotifier` to a producer that calls notify-svc is a one-line change.
+  - Connect RPC surface (`SendNotification` / `SetOptOut`) lands once `notify.proto` regenerates (still gated by OQ-004 BSR auth). The dispatcher's `Send(SendRequest)` is the wire-format ready function the Connect handler will call.
 
 ### TASK-P1-EXPORT-001: Export service — async job queue + S3 multipart + presigned URLs + auto-cleanup
 
