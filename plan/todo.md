@@ -1095,6 +1095,113 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
   - Bench: as above.
   - Inspection: results archived under `bench/results/phase1/`.
 
+### TASK-P1-WIRING-RETROFIT-001: Phase 1 closer — replace every Nop* stub with the real producer + wire every cmd entrypoint
+
+**Trace:** REQ-CONST-011 (no service implements its own check — every cmd MUST wire the real authz/audit/notify/export producers), REQ-FUNC-PLT-NOTIFY-003, REQ-FUNC-PLT-IAM-009, REQ-FUNC-CMN-005; design.md §3.1, §4.7, §9.2
+**Owner:** Platform IAM + Platform Infra
+**Status:** backlog
+**Estimate:** 5
+**Depends on:** TASK-P1-IAM-001..009, TASK-P1-AUTHZ-001, TASK-P1-TENANT-001, TASK-P1-AUDIT-001..002, TASK-P1-PLT-HEALTH-001, TASK-P1-PLT-SCHED-001, TASK-P1-OBS-001, TASK-P1-NOTIFY-001, TASK-P1-EXPORT-001, TASK-P1-RT-001
+
+**Why this task exists.** Every phase-1 service was built bottom-up: subsystems first (with Nop* stubs at every cross-service boundary), then the cross-service producers. The chetana convention is that the consumer's `cmd/<svc>/main.go` swaps the stub for the real producer once both halves ship — but that wiring was deferred per-task with the note "flipping to the real producer is a one-line change in cmd/X once Y lands." Phase 1 cannot close until those swaps actually happen + every per-subsystem service the cmd entrypoints DO NOT YET INSTANTIATE (reset, gdpr, mfa, webauthn, saml, session, oauth2, oidc, dispatcher, worker, runner, ws, alerter — most of phase 1's public surface) is wired into its cmd. This is the closer.
+
+**Inventory of stubs + missing wiring.**
+
+The following is the exhaustive list, derived by `grep -E '^(type|func) Nop'` across `services/**` plus a per-cmd audit of which subsystems the entrypoint actually constructs today.
+
+**Category A — Nop-to-real producer swaps (consumer + producer both ship; cmd uses the stub).**
+
+| # | Consumer (file) | Stub today | Real producer (already shipped) | Adapter needed |
+|---|---|---|---|---|
+| A1 | `cmd/iam/main.go` (line 123) | `login.NopAudit{}` | `services/packages/audit/direct.go::DirectClient` over `services/audit/internal/chain.Appender` | `audit.DirectClient` → `login.AuditEmitter` adapter (1:1 method shape; just translate `audit.Event` ↔ `login.Event`) |
+| A2 | `cmd/iam/main.go` (when `reset.NewHandler` is wired — currently NOT instantiated) | `reset.NopNotifier{}` | `services/notify/internal/dispatcher.Dispatcher` | adapter calls `dispatcher.Send(SendRequest{TemplateID:"security.password.reset", Channel:"email", Variables:{reset_link, expires_at}})` |
+| A3 | `cmd/iam/main.go` (when `gdpr.NewSARService` is wired — currently NOT instantiated) | `gdpr.NopExporter{}` | `services/export/internal/queue.Store` | adapter calls `queue.Store.Enqueue(EnqueueInput{Kind:"gdpr_sar", Payload: snapshot})` |
+| A4 | `cmd/audit/main.go` (when `archive` package is instantiated — currently NOT) | `archive.NopArchiver{}` (from AUDIT-002) | `services/export/internal/queue.Store` | adapter calls `queue.Store.Enqueue(EnqueueInput{Kind:"audit_archive", Payload: range_descriptor})` OR direct S3 multipart per the Archiver shape |
+| A5 | `cmd/platform/main.go` (when `health.Alerter` is wired — currently NOT) | `health.NopNotifier{}` | `services/notify/internal/dispatcher.Dispatcher` | adapter routes Slack via `Channel:"inapp"` (notify-svc's Slack producer when it lands) + Email via `Channel:"email"` + PagerDuty via a follow-up `pager` channel |
+| A6 | every chetana service's auth interceptor (when wired — currently NONE) | `authzv1.NopAudit{}` | `services/packages/audit/direct.go::DirectClient` | adapter satisfies `authzv1.AuditSink`; same `audit.Event` translation as A1 |
+| A7 | every chetana service's audit-recording interceptor (when wired — currently NONE) | `audit.NopClient{}` | `services/packages/audit/direct.go::DirectClient` | direct construction; no adapter needed |
+| A8 | webauthn callers (cmd-side once `webauthn.NewService` is wired — currently NOT) | `webauthn.NopAudit{}` | `audit.DirectClient` | trivial adapter satisfying `webauthn.AuditEmitter` |
+
+**Category B — subsystems shipped but NOT YET INSTANTIATED in any cmd entrypoint.**
+
+These are not "stubs" — they are entire subsystems whose cmd-layer wiring was deferred with the consistent note "Connect RPC handlers register against `srv.Mux` once `<svc>.proto` regenerates (still gated by OQ-004 BSR auth)." Even pre-RPC, they need direct construction so health endpoints reflect them and the in-process producers (A1-A8) actually fire.
+
+| # | Service | Subsystems shipped | cmd wiring needed |
+|---|---|---|---|
+| B1 | iam | `internal/reset` (P1-IAM-008) | `reset.NewHandler(rstore, users, notify-adapter, sessions, cfg)`; expose `/v1/iam/reset/{request,confirm}` via `srv.Mux` HTTP handlers (Connect-ready when proto lands) |
+| B2 | iam | `internal/gdpr` (P1-IAM-009) | `gdpr.NewSARService` + `gdpr.NewEraseService` + `gdpr.NewRectifyService`; expose `/v1/iam/gdpr/{sar,erase,rectify,portability}` |
+| B3 | iam | `internal/mfa` (P1-IAM-003) | `mfa.NewStore`; expose `/v1/iam/mfa/{enroll,verify,backup-codes}` |
+| B4 | iam | `internal/webauthn` (P1-IAM-004) | `webauthn.NewService`; expose `/v1/iam/webauthn/{register,assert}` |
+| B5 | iam | `internal/saml` (P1-IAM-006) | `saml.NewService` + `saml.NewJITProvisioner`; expose `/saml/{login,acs,metadata}/{idp_id}` |
+| B6 | iam | `internal/oauth2` + `internal/oidc` (P1-IAM-005) | `oauth2.NewClientStore` + `NewAuthCodeStore` + `NewAuthorizer` + `NewTokenHandler` + `NewUserInfoHandler`; expose `/oauth2/{authorize,token,userinfo}` + `/.well-known/openid-configuration` |
+| B7 | iam | `internal/session` (P1-IAM-007) | `session.NewManager`; modify login flow's `Result.SessionID` path to call `Manager.Create` (currently calls `login.newSessionID()` inline); expose `session.Validator` to the cross-service authz interceptor |
+| B8 | iam | `internal/policy` (P1-AUTHZ-001) | `policy.NewLoader`; periodic `Reload(ctx)` ticker; serve at `/v1/iam/policies` (read endpoint) |
+| B9 | platform | `internal/health` (P1-PLT-HEALTH-001) | `health.NewStore` + `NewAggregator(register every chetana service /ready)` + `NewAlerter`; spawn `go aggregator.Run(ctx)`; expose `/v1/health/services` |
+| B10 | audit | `internal/search` + `internal/export` + `internal/archive` (P1-AUDIT-002) | `search.NewService` + `export.NewJSONExporter` + `export.NewCSVExporter` + `archive.NewService`; expose `/v1/audit/{search,export.json,export.csv}`; cron the archive sweep |
+| B11 | audit | `internal/chain` (P1-AUDIT-001) | `chain.NewAppender` + `NewVerifier`; expose chain.Appender as the Postgres-side of `audit.DirectClient` (this enables every other service's A6/A7 wiring) |
+| B12 | notify | `internal/dispatcher` (P1-NOTIFY-001) | `dispatcher.New(Templates, Preferences, Renderer, Email, SMS, InApp, SMSLimiter)`; wire production `aws-sdk-go-v2` SES + SNS clients (FIPS endpoints already asserted at boot); wire Sarama producer for `notify.inapp.v1`; expose `/v1/notify/send` |
+| B13 | export | `internal/queue` + `internal/worker` + `internal/cleanup` (P1-EXPORT-001) | `queue.NewStore`; `worker.NewRegistry` + `Register("gdpr_sar", gdprProcessor)` + `Register("audit_archive", auditArchiveProcessor)` + `Register("audit_csv", auditCsvProcessor)` + `Register("audit_json", auditJsonProcessor)`; spawn `go worker.New(...).Run(ctx)`; spawn `go cleanup.New(...).Run(ctx, 24*time.Hour)`; expose `/v1/export/{submit,get,list}` |
+| B14 | scheduler | `internal/cron` + `internal/lock` + `internal/runner` + `internal/store` (P1-PLT-SCHED-001) | `store.NewJobStore` + `lock.NewLocker` + `runner.NewRegistry` + register the chetana built-in jobs (audit-archive sweep, export cleanup, session expiry, refresh-token gc); spawn `go runner.Run(ctx)`; expose `/v1/scheduler/{create,enable,disable,trigger,history}` |
+| B15 | realtime-gw | `internal/ws` + `internal/topic` + `internal/fanout` (P1-RT-001) | `authzv1.NewVerifier` against IAM JWKS URL; `topic.NewPolicyAuthorizer(policy.Loader)`; `fanout.NewRedisFanout` + `fanout.NewKafkaBridge(consumer, fanout, ["telemetry.params","pass.state","alert.*","command.state","notify.inapp.v1"])`; spawn `go bridge.Run(ctx)`; `ws.NewServer + ws.NewRegistry`; mount `srv.Mux.Handle("/v1/rt", wsServer)` |
+
+**Category C — required per-export-kind processors (new code).**
+
+`worker.Process` dispatches by job kind; the registry needs concrete `ProcessFunc`s for the kinds the chetana producers enqueue.
+
+| # | Processor | Source data | Output |
+|---|---|---|---|
+| C1 | `gdpr_sar` | call `gdpr.SnapshotBuilder.Build(userID)` | NDJSON snapshot bytes; `Filename:"sar.json"`, `ContentType:"application/x-ndjson"` |
+| C2 | `audit_archive` | call `search.Service.Stream(tenantID, range)` + `chain.Verifier.VerifyRange` for the envelope | gzipped NDJSON bytes; `Filename:"audit-<seq-range>.ndjson.gz"`, `ContentType:"application/gzip"` |
+| C3 | `audit_csv` | call `export.CSVExporter.Export(query)` | CSV bytes; `Filename:"audit.csv"`, `ContentType:"text/csv"` |
+| C4 | `audit_json` | call `export.JSONExporter.Export(query)` | NDJSON bytes; `Filename:"audit.ndjson"`, `ContentType:"application/x-ndjson"` |
+
+**Category D — login → session integration (cross-service in-process call).**
+
+| # | What | Today | Target |
+|---|---|---|---|
+| D1 | `login.Handler.Login` success path | Calls `login.newSessionID()` (16 random hex) and stamps it into the JWT; never inserts a `sessions` row | Calls `session.Manager.Create(in CreateInput)`; uses returned `SessionID` for the JWT; the row land in `sessions` so AUTHZ-001's `session.Validate` interceptor can reject revoked sessions on the next RPC |
+| D2 | `oauth2.TokenHandler.exchangeAuthorizationCode` success path | Same — uses the auth-code's `session_id` directly | Same fix: call `session.Manager.Create` so OAuth-issued tokens also land a sessions row |
+
+**Files (create/modify).**
+
+  - `services/iam/cmd/iam/main.go` (modify) — add wiring for B1-B8 (reset/gdpr/mfa/webauthn/saml/oauth2/oidc/session/policy); replace A1 (`login.NopAudit`) + A2 (reset Notifier) + A3 (gdpr Exporter) + A8 (webauthn audit) with the real producers via small adapters in `cmd/iam/adapters.go`.
+  - `services/iam/cmd/iam/adapters.go` (new) — the cross-service adapters: `auditAdapter` (`audit.DirectClient` → `login.AuditEmitter` + `webauthn.AuditEmitter`), `notifyAdapter` (`dispatcher.Dispatcher` → `reset.Notifier`), `exporterAdapter` (`queue.Store` → `gdpr.Exporter`).
+  - `services/iam/internal/login/handler.go` (modify) — add `session.Manager` to `HandlerConfig`; on success path call `Manager.Create` instead of `newSessionID`; D1.
+  - `services/iam/internal/oauth2/token.go` (modify) — same D2 hook.
+  - `services/platform/cmd/platform/main.go` (modify) — add wiring for B9 (health Aggregator + Alerter); replace A5 (`health.NopNotifier`) with notifyAdapter via Connect HTTP call (or direct dispatcher when notify-svc is co-located in dev).
+  - `services/audit/cmd/audit/main.go` (modify) — add wiring for B10 (search + export + archive) + B11 (chain Appender exposed as the audit-svc-internal `audit.DirectClient` backend); replace A4 (`archive.NopArchiver`) with `queue.Store` adapter.
+  - `services/notify/cmd/notify/main.go` (modify) — add wiring for B12 (dispatcher); add `aws-sdk-go-v2` SES + SNS client construction (FIPS asserts already in place); add Sarama producer for in-app channel.
+  - `services/export/cmd/export/main.go` (modify) — add wiring for B13 (queue + worker + cleanup); register C1-C4 processors; spawn worker + cleanup goroutines.
+  - `services/export/internal/processors/{gdpr_sar,audit_archive,audit_csv,audit_json}.go` (new) — C1-C4. Each is a single `ProcessFunc` calling into the source service's typed library + returning the rendered bytes.
+  - `services/scheduler/cmd/scheduler/main.go` (modify) — add wiring for B14 (store + locker + runner); register the chetana built-in jobs (audit-archive sweep, export cleanup, session-expiry sweep, refresh-token gc).
+  - `services/realtime-gw/cmd/realtime-gw/main.go` (modify) — add wiring for B15 (verifier + topic authorizer + redis fanout + kafka bridge + ws server + registry).
+  - `services/audit/internal/processors/audit_archive.go` OR call into the audit pkg from `services/export/internal/processors/audit_archive.go` — pulls from `chain.Verifier` + `search.Service.Stream`. Decision deferred to implementation: a single processor file in export-svc (with a chetana-internal pkg dep on services/audit) keeps the dep arrow one-way.
+  - `services/{iam,platform,audit,notify,export,scheduler,realtime-gw}/test/wiring_test.go` (new) — smoke test per service: boot the cmd's `run()` against an in-process httptest harness; assert (a) every wired subsystem's HTTP route returns at least 200/401 (not 404); (b) the audit chain shows the boot's setup events; (c) for IAM, the login → session.Create → JWT path lands a row in `sessions`.
+  - `services/iam/test/login_session_test.go` (new, integration) — full flow: login → JWT carries a session_id that exists in the `sessions` table → revoke → next protected call rejected.
+  - `tools/wiring/audit-wiring.sh` (new) — CI guard: greps `cmd/*/main.go` for `Nop[A-Z]` references; fails the build with the per-line diagnostic when any non-allowlisted Nop appears in a cmd entrypoint. Mirrors `tools/authz/no-bypass.sh`.
+
+**Acceptance criteria.**
+
+  1. **No Nop* in any cmd/main.go.** `tools/wiring/audit-wiring.sh` exits 0 against the tree. Test files + the per-package `_test.go` files MAY use Nop* (they're explicitly allowlisted); production cmd code MUST NOT.
+  2. **Every shipped phase-1 subsystem is constructed in its cmd entrypoint.** A grep for `<pkg>.New[A-Z]` in each `cmd/<svc>/main.go` matches every `internal/<pkg>` directory in that service. The wiring test in `services/<svc>/test/wiring_test.go` boots the entrypoint and asserts the HTTP routes are mounted.
+  3. **The login → session integration is end-to-end.** `TestLogin_LandsSessionRow` confirms a successful login inserts a row in `sessions`; `TestRevokedSession_RejectsNextRPC` confirms revoking the row immediately rejects the next protected call (REQ-FUNC-PLT-IAM-009 wired across the fleet).
+  4. **The notify stub→real swap is end-to-end.** A `TestPasswordReset_RoutesViaNotifySvc` integration test posts to `/v1/iam/reset/request` and asserts the notify-svc producer was invoked (via `dispatcher.CapturingPublisher` swapped in for the test) — the chetana convention's mandatory templates fire even when the user has opted out.
+  5. **The export stub→real swap is end-to-end.** A `TestSAR_LandsAsExportJob` integration test posts a SAR request and asserts a `gdpr_sar` row appears in `export_jobs` with the snapshot in `payload`; the worker picks it up; the resulting S3 key is reachable via the presigned URL.
+  6. **The audit Postgres-role grants from AUDIT-001 acceptance #1 are exercised.** A `TestNonAuditService_CannotInsertAuditEvents` integration test connects to Postgres as the `iam` service role and confirms an `INSERT INTO audit_events` raises a permissions error — the audit-writer-role-only invariant holds end-to-end.
+
+**Verification.**
+
+  - Unit: `services/{iam,platform,audit,notify,export,scheduler,realtime-gw}/test/wiring_test.go` (always-on; httptest-based; no DB needed for the route-mount assertion).
+  - Integration: `services/iam/test/login_session_test.go`, `services/iam/test/reset_routes_via_notify_test.go`, `services/iam/test/sar_lands_as_export_job_test.go`, `services/audit/test/role_grant_enforcement_test.go` — `//go:build integration`, require `<SVC>_TEST_DATABASE_URL`.
+  - CI guard: `bash tools/wiring/audit-wiring.sh` (exits 0).
+
+**Notes.**
+
+  - This is a phase-1 closer, not a feature. No new business logic — every line is "construct + connect" the pieces phase-1 already shipped.
+  - The Connect RPC bridge is still gated by OQ-004 (BSR auth). RETROFIT-001 mounts plain HTTP handlers on `srv.Mux` for the read-only routes (`/v1/health/services`, `/v1/audit/search`, `/saml/metadata/{idp}`) and JSON `POST` handlers for the write routes (`/v1/iam/reset/request`, `/v1/iam/gdpr/sar`, etc.). When the proto regen unblocks, Connect-generated handlers can replace the JSON variants without re-touching the wiring.
+  - The 5 originally-flagged stubs (login NopAudit, reset NopNotifier, gdpr NopExporter, archive NopArchiver, health NopNotifier) are all in Category A; the broader B + C + D categories surfaced when I audited every cmd/main.go and found the deferred subsystems were not just stubbed — they weren't constructed at all. The fuller scope is what this task captures.
+  - **Out of scope for this task** (and for phase 1): the AWS SDK construction itself for SES + SNS + S3 multipart depends on TASK-P1-PLT-SECRETS-001 (KMS-backed credentials) which is not yet filed. The wiring code accepts the AWS clients as constructor arguments so the swap is mechanical when secrets-001 ships.
+
 ---
 
 ## 4. Phase 2 — Ground Station MVP (12 weeks)
