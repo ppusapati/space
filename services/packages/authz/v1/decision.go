@@ -110,21 +110,12 @@ func Decide(principal *Principal, req Request, policies *PolicySet) (Decision, e
 			// we have to keep walking equal-or-higher priority
 			// denies — but the priority sort guarantees we have
 			// already seen them before any equal-priority allow.
-			if bestAllow != nil && bestAllow.MatchedPolicyID != "" {
-				if rulePassesAttributes(rule, principal, principalClearance) {
-					return Decision{
-						Effect:          EffectDeny,
-						MatchedPolicyID: rule.ID,
-						Reason:          ReasonExplicitDeny,
-					}, nil
-				}
-				continue
-			}
-			if rulePassesAttributes(rule, principal, principalClearance) {
+			fires, denyReason := denyFires(rule, principal, principalClearance)
+			if fires {
 				return Decision{
 					Effect:          EffectDeny,
 					MatchedPolicyID: rule.ID,
-					Reason:          ReasonExplicitDeny,
+					Reason:          denyReason,
 				}, nil
 			}
 
@@ -163,6 +154,39 @@ func Decide(principal *Principal, req Request, policies *PolicySet) (Decision, e
 		return *bestAllow, nil
 	}
 	return defaultDeny, nil
+}
+
+// denyFires returns whether the deny rule applies to the principal
+// AND a precise reason code when it does. Reason mapping:
+//
+//   • RequireUSPerson gate failed (non-US-person) → ReasonITAR
+//   • MinClearance gate failed (insufficient)     → ReasonClearance
+//   • Unconditional deny (no gates)               → ReasonExplicitDeny
+//
+// This lets the realtime gateway (and any other interceptor) emit
+// a typed close code that distinguishes ITAR violations from
+// generic policy denials per REQ-FUNC-RT-002.
+func denyFires(rule *Policy, principal *Principal, principalClearance int) (bool, string) {
+	if len(rule.Roles) > 0 && !rbacRoleMatch(rule.Roles, principal.Roles) {
+		return false, ""
+	}
+
+	hasClearanceGate := rule.MinClearance != ""
+	hasITARGate := rule.RequireUSPerson
+
+	if !hasClearanceGate && !hasITARGate {
+		return true, ReasonExplicitDeny
+	}
+	if hasITARGate && !principal.IsUSPerson {
+		return true, ReasonITAR
+	}
+	if hasClearanceGate {
+		req, _ := clearanceLevel(rule.MinClearance)
+		if principalClearance < req {
+			return true, ReasonClearance
+		}
+	}
+	return false, ""
 }
 
 // rulePassesAttributes evaluates whether a deny rule should fire

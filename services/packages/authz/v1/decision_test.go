@@ -221,13 +221,13 @@ func TestDecide_TruthTable(t *testing.T) {
 			name:       "non-US-person hitting ITAR resource",
 			principal:  principalSpec{user: "u3", roles: []string{"operator", "admin"}, clearance: "itar", usPerson: false},
 			permission: "itar.payload.read",
-			want:       EffectDeny, wantPolicy: "itar-deny", wantReason: ReasonExplicitDeny,
+			want:       EffectDeny, wantPolicy: "itar-deny", wantReason: ReasonITAR,
 		},
 		{
 			name:       "US person below ITAR clearance hits ITAR resource",
 			principal:  principalSpec{user: "u3", roles: []string{"operator", "admin"}, clearance: "cui", usPerson: true},
 			permission: "itar.payload.read",
-			want:       EffectDeny, wantPolicy: "itar-deny", wantReason: ReasonExplicitDeny,
+			want:       EffectDeny, wantPolicy: "itar-deny", wantReason: ReasonClearance,
 		},
 		{
 			name:       "US person at ITAR clearance reads ITAR resource",

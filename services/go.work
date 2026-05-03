@@ -8,6 +8,7 @@ use (
 	./notify
 	./export
 	./scheduler
+	./realtime-gw
 	./eo-catalog
 	./eo-pipeline
 	./eo-analytics
