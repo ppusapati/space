@@ -43,6 +43,31 @@ type TokenIssuer interface {
 	RotateRefresh(ctx context.Context, presented string) (refreshToken string, expiresAt time.Time, userID, tenantID, sessionID string, err error)
 }
 
+// SessionCreator is the cross-service-internal session.Manager
+// surface (TASK-P1-WIRING-RETROFIT-001 D2). When wired, the auth-
+// code redemption path lands a row in the `sessions` table for
+// every issued access token; the session_id claim of the JWT is
+// the row's id, so the cross-service authz interceptor can run
+// `session.Validate` to reject revoked sessions.
+//
+// Optional: when nil, the redemption path falls back to the
+// auth-code's stored session_id (legacy behaviour) so the unit
+// tests that don't bring up a real Postgres still work.
+type SessionCreator interface {
+	Create(ctx context.Context, in SessionCreateInput) (sessionID string, err error)
+}
+
+// SessionCreateInput restated here so internal/oauth2 does NOT
+// import internal/session (one-way arrow).
+type SessionCreateInput struct {
+	UserID             string
+	TenantID           string
+	ClientIP           string
+	UserAgent          string
+	AMR                []string
+	DataClassification string
+}
+
 // TokenResponse is the JSON shape per RFC 6749 §5.1 + OIDC core
 // §3.1.3.3.
 type TokenResponse struct {
@@ -57,10 +82,11 @@ type TokenResponse struct {
 // TokenHandler glues the client store, auth-code store, and token
 // issuer. Construct with NewTokenHandler.
 type TokenHandler struct {
-	clients *ClientStore
-	codes   *AuthCodeStore
-	tokens  TokenIssuer
-	clk     func() time.Time
+	clients  *ClientStore
+	codes    *AuthCodeStore
+	tokens   TokenIssuer
+	sessions SessionCreator // optional; when nil, falls back to the auth-code's session_id
+	clk      func() time.Time
 }
 
 // NewTokenHandler builds the token endpoint over the supplied
@@ -75,6 +101,15 @@ func NewTokenHandler(clients *ClientStore, codes *AuthCodeStore, tokens TokenIss
 		tokens:  tokens,
 		clk:     clock,
 	}
+}
+
+// WithSessions wires a SessionCreator. cmd/iam calls this after
+// constructing both the TokenHandler and the session.Manager so
+// the auth-code redemption path lands a real `sessions` row
+// (RETROFIT-001 D2).
+func (h *TokenHandler) WithSessions(s SessionCreator) *TokenHandler {
+	h.sessions = s
+	return h
 }
 
 // TokenRequest is the parsed form of an incoming /oauth2/token
@@ -203,10 +238,28 @@ func (h *TokenHandler) exchangeAuthorizationCode(ctx context.Context, client *Cl
 		return nil, fmt.Errorf("%w: %v", ErrInvalidGrant, err)
 	}
 
+	// RETROFIT-001 D2: when a SessionCreator is wired, mint a
+	// fresh sessions row for the OAuth-issued JWT so the cross-
+	// service authz interceptor's session.Validate gate operates.
+	// When nil, fall back to the auth-code's stored session_id —
+	// keeps the unit tests DB-free.
+	sessionID := rec.SessionID
+	if h.sessions != nil {
+		sid, err := h.sessions.Create(ctx, SessionCreateInput{
+			UserID:   rec.UserID,
+			TenantID: rec.TenantID,
+			AMR:      []string{"pwd"},
+		})
+		if err != nil {
+			return nil, fmt.Errorf("%w: session create: %v", ErrServer, err)
+		}
+		sessionID = sid
+	}
+
 	access, accessExpires, err := h.tokens.IssueAccess(ctx, token.IssueInput{
 		UserID:    rec.UserID,
 		TenantID:  rec.TenantID,
-		SessionID: rec.SessionID,
+		SessionID: sessionID,
 		Scopes:    rec.Scopes,
 		Audience:  []string{"chetana-api"},
 		AMR:       []string{"pwd"},
@@ -222,7 +275,7 @@ func (h *TokenHandler) exchangeAuthorizationCode(ctx context.Context, client *Cl
 		Scope:       JoinScope(rec.Scopes),
 	}
 	if client.AllowsGrant(GrantRefreshToken) {
-		refresh, _, err := h.tokens.IssueRefresh(ctx, rec.UserID, rec.TenantID, rec.SessionID)
+		refresh, _, err := h.tokens.IssueRefresh(ctx, rec.UserID, rec.TenantID, sessionID)
 		if err != nil {
 			return nil, fmt.Errorf("%w: %v", ErrServer, err)
 		}
@@ -237,7 +290,7 @@ func (h *TokenHandler) exchangeAuthorizationCode(ctx context.Context, client *Cl
 		idToken, _, err := h.tokens.IssueAccess(ctx, token.IssueInput{
 			UserID:    rec.UserID,
 			TenantID:  rec.TenantID,
-			SessionID: rec.SessionID,
+			SessionID: sessionID,
 			Audience:  []string{client.ClientID},
 			AMR:       []string{"pwd"},
 		})

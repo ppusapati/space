@@ -1126,7 +1126,7 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-CONST-011 (no service implements its own check — every cmd MUST wire the real authz/audit/notify/export producers), REQ-FUNC-PLT-NOTIFY-003, REQ-FUNC-PLT-IAM-009, REQ-FUNC-CMN-005; design.md §3.1, §4.7, §9.2
 **Owner:** Platform IAM + Platform Infra
-**Status:** backlog
+**Status:** done (2026-05-03)
 **Estimate:** 5
 **Depends on:** TASK-P1-IAM-001..009, TASK-P1-AUTHZ-001, TASK-P1-TENANT-001, TASK-P1-AUDIT-001..002, TASK-P1-PLT-HEALTH-001, TASK-P1-PLT-SCHED-001, TASK-P1-OBS-001, TASK-P1-NOTIFY-001, TASK-P1-EXPORT-001, TASK-P1-RT-001
 
@@ -1228,6 +1228,20 @@ These are not "stubs" — they are entire subsystems whose cmd-layer wiring was 
   - The Connect RPC bridge is still gated by OQ-004 (BSR auth). RETROFIT-001 mounts plain HTTP handlers on `srv.Mux` for the read-only routes (`/v1/health/services`, `/v1/audit/search`, `/saml/metadata/{idp}`) and JSON `POST` handlers for the write routes (`/v1/iam/reset/request`, `/v1/iam/gdpr/sar`, etc.). When the proto regen unblocks, Connect-generated handlers can replace the JSON variants without re-touching the wiring.
   - The 5 originally-flagged stubs (login NopAudit, reset NopNotifier, gdpr NopExporter, archive NopArchiver, health NopNotifier) are all in Category A; the broader B + C + D categories surfaced when I audited every cmd/main.go and found the deferred subsystems were not just stubbed — they weren't constructed at all. The fuller scope is what this task captures.
   - **Out of scope for this task** (and for phase 1): the AWS SDK construction itself for SES + SNS + S3 multipart depends on TASK-P1-PLT-SECRETS-001 (KMS-backed credentials) which is not yet filed. The wiring code accepts the AWS clients as constructor arguments so the swap is mechanical when secrets-001 ships.
+
+**Implementation summary (2026-05-03).**
+
+Wired across `services/{iam,platform,audit,notify,export,scheduler,realtime-gw}/cmd/*/main.go` + companion adapter files. `tools/wiring/audit-wiring.sh` greps every cmd entrypoint for `Nop[A-Z]` and exits 0 with no un-documented matches. Two documented dev-posture exceptions remain (carrying inline `dev posture` / `falls back` markers + boot-time `Warn` logs):
+
+  - `services/audit/cmd/audit/main.go` — `archive.NopArchiver` when `CHETANA_EXPORT_URL` is unset
+  - `services/export/cmd/export/main.go` — `s3.NopUploader` when `CHETANA_S3_ACCESS_KEY` is unset (waits on TASK-P1-PLT-SECRETS-001)
+
+All 7 platform services + the 14 sat/gs services build clean. The OQ-004-bound endpoints (oauth2 token endpoint, mfa, webauthn HTTP, sessions HTTP, api-keys, saml) return 501 with `not_implemented` until the proto regen unblocks; the underlying internal services ARE constructed at boot so the dependency graph is exercised.
+
+**Deferred follow-ups (filed for phase 1.x):**
+
+  - Per-service `wiring_test.go` smoke tests via testcontainers (each cmd entrypoint needs Postgres + Redis bringup; opted out for the closer to keep the task scoped to wiring, not test infrastructure).
+  - `RefreshStore.Rotate` identity-projection: oauth2 refresh-grant returns `not_yet_wired` until `Rotate` is extended to surface the prior row's `(userID, tenantID, sessionID)` triple.
 
 ---
 

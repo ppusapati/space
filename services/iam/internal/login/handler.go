@@ -25,6 +25,13 @@
 // the Result and the connect mapper copies them onto the proto
 // response. Handlers without an issuer keep the IAM-001 behaviour
 // (auth + audit only) so unit tests don't require a key store.
+//
+// Session creation — TASK-P1-WIRING-RETROFIT-001 (D1). When a
+// SessionCreator is wired, a successful login also lands a row
+// in the `sessions` table via session.Manager.Create; the
+// returned SessionID is what the JWT carries. Handlers without
+// a SessionCreator fall back to a 128-bit random hex token so
+// the login unit tests don't need a Postgres backend.
 
 package login
 
@@ -126,6 +133,32 @@ type TokenIssuer interface {
 	IssueLoginTokens(ctx context.Context, in TokenIssueInput) (TokenIssueOutput, error)
 }
 
+// SessionCreator creates a row in the `sessions` table on a
+// successful login + returns the assigned session_id. Implemented
+// by services/iam/internal/session.Manager via the cmd-layer
+// adapter. Optional: when nil, the handler falls back to an
+// in-process random session id (no `sessions` row written) so the
+// login unit tests run without a DB.
+type SessionCreator interface {
+	Create(ctx context.Context, in SessionCreateInput) (SessionCreateOutput, error)
+}
+
+// SessionCreateInput mirrors session.CreateInput; restated here so
+// internal/login does NOT import internal/session (one-way arrow).
+type SessionCreateInput struct {
+	UserID             string
+	TenantID           string
+	ClientIP           string
+	UserAgent          string
+	AMR                []string
+	DataClassification string
+}
+
+// SessionCreateOutput mirrors session.Created.
+type SessionCreateOutput struct {
+	SessionID string
+}
+
 // TokenIssueInput is the per-login payload handed to TokenIssuer.
 type TokenIssueInput struct {
 	UserID         string
@@ -189,6 +222,13 @@ type HandlerConfig struct {
 	// handler returns Result without token fields (used by unit
 	// tests that don't exercise the token surface).
 	Tokens TokenIssuer
+	// Sessions is the optional session creator (TASK-P1-WIRING-
+	// RETROFIT-001 D1). When set, a successful login lands a row
+	// in the `sessions` table; the returned SessionID is the
+	// JWT's session_id claim. When nil, an in-process random hex
+	// id is used (no row written) — the login unit tests rely on
+	// this branch so they don't need a Postgres backend.
+	Sessions SessionCreator
 	// AMR is the auth-methods-references list stamped onto issued
 	// tokens. Defaults to {"pwd"} (single-factor password). Once
 	// MFA lands the handler will append "mfa".
@@ -416,9 +456,25 @@ func (h *Handler) Login(ctx context.Context, in LoginInput) (Result, error) {
 		return finish(Result{Status: ResultInternalError, Reason: "success record"}, err)
 	}
 
-	sessionID, err := newSessionID()
-	if err != nil {
-		return finish(Result{Status: ResultInternalError, Reason: "session id"}, err)
+	var sessionID string
+	if h.cfg.Sessions != nil {
+		out, err := h.cfg.Sessions.Create(ctx, SessionCreateInput{
+			UserID:    user.ID,
+			TenantID:  h.cfg.TenantID,
+			ClientIP:  in.ClientIP,
+			UserAgent: in.UserAgent,
+			AMR:       h.cfg.AMR,
+		})
+		if err != nil {
+			return finish(Result{Status: ResultInternalError, Reason: "session create"}, err)
+		}
+		sessionID = out.SessionID
+	} else {
+		var err error
+		sessionID, err = newSessionID()
+		if err != nil {
+			return finish(Result{Status: ResultInternalError, Reason: "session id"}, err)
+		}
 	}
 
 	res := Result{
