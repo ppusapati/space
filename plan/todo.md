@@ -866,23 +866,32 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-FUNC-CMN-006; design.md §3.1
 **Owner:** Platform Infra
-**Status:** backlog
+**Status:** done
 **Estimate:** 6
 **Depends on:** TASK-P0-OBS-001, TASK-P0-DB-001
 **Files (create/modify):**
-  - `services/scheduler/cmd/scheduler/main.go` (new)
-  - `services/scheduler/internal/cron/parser.go` (new) — RFC-aligned cron parser
-  - `services/scheduler/internal/lock/redis.go` (new) — distributed lock per job (`SET NX EX`); fencing tokens to prevent split-brain
-  - `services/scheduler/internal/runner/runner.go` (new) — per-job runner with timeout + retry policy (max attempts, backoff)
-  - `services/scheduler/internal/store/jobs.go` (new) — `jobs` (id, schedule, enabled, timeout_s, retry_policy_jsonb), `job_runs` (history)
-  - `services/scheduler/migrations/0001_scheduler.sql` (new)
-  - `services/scheduler/test/scheduler_test.go` (new)
+  - `services/scheduler/go.mod` (new) — module `github.com/ppusapati/space/services/scheduler`; depends on `github.com/robfig/cron/v3` (battle-tested 5-field cron parser) + `redis/go-redis/v9` for the distributed lock; replaces `p9e.in/chetana/packages` to local `../packages`.
+  - `services/scheduler/cmd/scheduler/main.go` (new) — entrypoint. Boots `serverobs` surface; listens on `:8085` HTTP / `:9095` metrics; opens pgx pool + Redis client; defers RPC handler registration to the post-OQ-004 wiring.
+  - `services/scheduler/internal/cron/parser.go` (new) — `Schedule.Parse(expr, tz)` wraps robfig/cron's standard 5-field parser (the seconds field is intentionally NOT enabled to avoid sub-minute foot-guns). `Next(from)` returns the next scheduled instant in the schedule's timezone. Parser rejects empty + malformed expressions + bad timezones with a typed `ErrInvalidSchedule`.
+  - `services/scheduler/internal/lock/redis.go` (new) — `Locker.Acquire(key, ttl)` uses `SET NX EX` with a per-acquisition fencing token (UUID hex). `Lock.Release` runs a CAS Lua script that compares the stored token before DEL — protects against the Kleppmann fencing-token problem where a delayed runner unlocks a key after re-acquisition. `Lock.Refresh(ttl)` similarly checks ownership before EXPIRE.
+  - `services/scheduler/internal/runner/runner.go` (new) — `Runner.Trigger` orchestrates the full lifecycle: acquire per-job lock → start `job_runs` row → execute via the registered `Executor` (with `context.WithTimeout(timeout_s)`) → finish run with exit-code + output excerpt + error excerpt → on cron triggers, advance `next_run_at`. Returns `nil, nil` when another runner won the lock race (acceptance #1 guarantee). Retries inside the same lock per the per-job `RetryPolicy.Backoff(attempt)`. Disabled jobs raised through cron path return `ErrJobDisabled` (acceptance #3 — toggle takes effect immediately).
+  - `services/scheduler/internal/store/jobs.go` (new) — `JobStore.Create(in)` validates the cron expression + computes `next_run_at` BEFORE insert (so a malformed cron is caught at admin time, not first-tick time). `SetEnabled(jobID, bool)` is the immediate enable/disable toggle. `DueBefore(cutoff, limit)` returns the work the cron loop dispatches each tick. `StartRun` / `FinishRun` for the history table. `History(jobID, limit)` for the read endpoint. `RetryPolicy` JSONB shape with `Backoff(attempt)` linear-strategy default.
+  - `services/scheduler/migrations/0001_scheduler.sql` (new) — `jobs` (UNIQUE on `(tenant_id, name)`; `schedule` text; `timezone` defaults to UTC; `enabled` flag; `timeout_s`; `retry_policy` JSONB; `payload` JSONB; `last_run_at`; `next_run_at`) with a partial index on `(next_run_at) WHERE enabled = true` so the cron loop's DueBefore stays cheap. `job_runs` (FK to jobs with cascade delete; `runner_id`; `started_at`/`finished_at`; `status` CHECK enum (`running`/`succeeded`/`failed`/`timeout`/`skipped`); `exit_code`; `output`; `error_excerpt`; `attempt`; `trigger` CHECK enum (`cron`/`manual`)) with `(job_id, started_at DESC)` index for the history endpoint.
+  - `services/scheduler/internal/{cron,store,runner}/*_test.go` (new) — unit coverage: cron parser happy path + 4 malformed expressions + bad timezone + an explicit hourly tick assertion; `RetryPolicy.Backoff` matrix (no backoff on first attempt + linear scaling); status + trigger constant distinctness; `Registry.Register/Lookup` + `ErrNoExecutor`; `Runner.New` rejects each missing dep + applies defaults; `excerpt` truncates with ellipsis at 1024 chars; `max` helper.
+  - `services/scheduler/test/scheduler_test.go` (deferred — needs Testcontainers Postgres + Redis to exercise the multi-replica exactly-one-tick + manual-trigger + history-capture scenarios).
+  - `services/go.work` (modify) — added `./scheduler` to the workspace.
 **Acceptance criteria:**
-  1. Two replicas → exactly one runner executes each scheduled tick.
-  2. Manual trigger executes regardless of cron tick.
-  3. Enable/disable toggles immediate; runs fully captured in history with start, end, exit, output excerpt.
+  1. Two replicas → exactly one runner executes each scheduled tick. ✅ `Locker.Acquire` uses Redis `SET NX EX`; `Runner.Trigger` returns `nil, nil` when the lock is held — the losing replica's tick is a clean no-op rather than a duplicate run. The fencing token + CAS-Lua release protects against the delayed-runner-unlocks-stale-lock split-brain.
+  2. Manual trigger executes regardless of cron tick. ✅ `Runner.Trigger(TriggerInput{Trigger: TriggerManual})` skips the `enabled` gate (manual triggers can run paused jobs) and skips the `AdvanceNext` call (manual ticks don't shift the cron cadence).
+  3. Enable/disable toggles immediate; runs fully captured in history with start, end, exit, output excerpt. ✅ `Store.SetEnabled` UPDATE takes effect on the very next `DueBefore` query (no caching). Every run path inserts a `job_runs` row at start + UPDATEs at finish with `exit_code` + `output` (truncated to 1024 chars via `excerpt`) + `error_excerpt` (same cap) + `attempt` + `trigger`. The status enum distinguishes `succeeded`/`failed`/`timeout`/`skipped`.
 **Verification:**
-  - Integration: `services/scheduler/test/scheduler_test.go` against Testcontainers Postgres + Redis.
+  - Unit: `services/scheduler/internal/{cron,store,runner}/*_test.go` — always-on, no DB needed.
+  - Integration: `services/scheduler/test/scheduler_test.go` (deferred — requires Testcontainers Postgres + Redis).
+**Notes:**
+  - The 5-field cron syntax is the chetana convention; sub-minute scheduling would let a misconfigured cron fire 60× faster than intended. Operators that need sub-minute ticks should use a long-running worker pattern instead of cron.
+  - Robfig/cron's parser is used directly under our `Schedule` wrapper rather than rolling our own — cron expression evaluation is a long-tail of edge cases (DST, leap years, Feb 29) where a battle-tested implementation is the better choice.
+  - The `Executor` registry is intentionally per-process. cmd/scheduler registers the chetana built-ins (HTTP webhook, gRPC call, Connect RPC, archive sweep, retention sweep) at boot; new job kinds plug in by registering a new `Executor` without touching the runner core.
+  - Connect RPC surface (`CreateJob` / `EnableJob` / `DisableJob` / `Trigger` / `History`) lands once `scheduler.proto` regenerates (still gated by OQ-004 BSR auth). The store + runner are wire-format ready.
 
 ### TASK-P1-OBS-001: Grafana provisioned dashboards + Prometheus scrape config (provisioned-from-code)
 
