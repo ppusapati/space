@@ -56,6 +56,62 @@ tasks:
         fi
         python -c "import json,sys; d=json.load(open('{{.RESULTS_DIR}}/phase0/scaffold.json')); print(f\"scaffold: p95={d['p95_ms']:.2f}ms budget={d['budget_p95_ms']}ms passed={d['thresholdsPassed']}\")"
 
+  # Phase-1 NFR gate (TASK-P1-NFR-001 acceptance #1).
+  # Both benches emit a summary JSON under bench/results/phase1/
+  # so the workflow can archive them as build artifacts.
+  iam:
+    desc: "Phase-1 IAM bench: 1 000 req/s sustained for 5 min; gates p95 < 100 ms."
+    deps: [preflight]
+    cmds:
+      - mkdir -p {{.RESULTS_DIR}}/phase1
+      - >
+        k6 run
+        --summary-export={{.RESULTS_DIR}}/phase1/iam-login.summary.json
+        --out json={{.RESULTS_DIR}}/phase1/iam-login.run.json
+        -e CHETANA_BENCH_BASE_URL={{.CHETANA_BENCH_BASE_URL | default "http://localhost:8080"}}
+        -e CHETANA_BENCH_USER_POOL={{.CHETANA_BENCH_USER_POOL | default "http://localhost:8080/seed/bench-users.json"}}
+        bench/k6/iam-login.bench.js
+
+  realtime:
+    desc: "Phase-1 realtime bench: 10 000 WS connections + 1M push/sec; gates p95 push < 500 ms."
+    deps: [preflight]
+    cmds:
+      - mkdir -p {{.RESULTS_DIR}}/phase1
+      - >
+        k6 run
+        --summary-export={{.RESULTS_DIR}}/phase1/realtime-fanout.summary.json
+        --out json={{.RESULTS_DIR}}/phase1/realtime-fanout.run.json
+        -e CHETANA_BENCH_RT_URL={{.CHETANA_BENCH_RT_URL | default "ws://localhost:8086/v1/rt"}}
+        -e CHETANA_BENCH_PRODUCER_URL={{.CHETANA_BENCH_PRODUCER_URL | default "http://localhost:8086/bench/producer"}}
+        -e CHETANA_BENCH_BEARER={{.CHETANA_BENCH_BEARER | default "bench-noauth"}}
+        bench/k6/realtime-fanout.bench.js
+
+  # Phase-1 gate: both benches must pass. Used by .github/workflows/nfr-phase1.yml.
+  phase1:
+    desc: "Run both Phase-1 NFR benches in sequence; non-zero exit on any breach."
+    cmds:
+      - task: iam
+      - task: realtime
+      - task: report:phase1
+
+  report:phase1:
+    desc: "Print a one-line p95 verdict per Phase-1 bench."
+    silent: true
+    cmds:
+      - |
+        for run in iam-login realtime-fanout; do
+          f="{{.RESULTS_DIR}}/phase1/${run}.summary.json"
+          if [ ! -f "$f" ]; then
+            echo "${run}: NO RESULT FILE (${f})"
+            continue
+          fi
+          # k6 summary-export stores `metrics.<name>.values.{p(95),rate,count}`.
+          # We grep raw JSON to keep the report dependency-free
+          # (no python on the GHA k6 image by default).
+          p95=$(grep -oE '"p\(95\)":[0-9.]+' "$f" | head -n1 | cut -d: -f2)
+          echo "${run}: p95=${p95}ms (see $f for full breakdown)"
+        done
+
   clean:
     desc: "Remove all bench result files."
     cmds:
