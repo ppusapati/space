@@ -6,6 +6,7 @@ use (
 	./platform
 	./audit
 	./notify
+	./export
 	./eo-catalog
 	./eo-pipeline
 	./eo-analytics

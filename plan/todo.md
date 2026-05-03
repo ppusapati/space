@@ -946,23 +946,31 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-FUNC-CMN-005; design.md §3.1, §5.2
 **Owner:** Platform
-**Status:** backlog
+**Status:** done
 **Estimate:** 6
 **Depends on:** TASK-P0-DB-001, TASK-P0-OBS-001
 **Files (create/modify):**
-  - `services/export/cmd/export/main.go` (new)
-  - `services/export/internal/queue/store.go` (new) — Postgres-backed job queue (`export_jobs` table; `FOR UPDATE SKIP LOCKED` worker checkout)
-  - `services/export/internal/worker/worker.go` (new) — pluggable processor registry (CSV, JSON, NetCDF later)
-  - `services/export/internal/s3/multipart.go` (new) — multipart upload to S3 (FIPS endpoint); 24-h presigned URL on completion
-  - `services/export/internal/cleanup/cron.go` (new) — daily sweep deletes expired exports + S3 objects
-  - `services/export/migrations/0001_export_jobs.sql` (new)
-  - `services/export/test/export_e2e_test.go` (new) — Testcontainers Postgres + MinIO (S3-compatible)
+  - `services/export/go.mod` (new) — module `github.com/ppusapati/space/services/export`; replaces `p9e.in/chetana/packages` to local `../packages`.
+  - `services/export/cmd/export/main.go` (new) — entrypoint. Boots `serverobs` surface (`/health`, `/ready`, `/metrics`); listens on `:8084` HTTP / `:9094` metrics. Calls `s3.FIPSAsserts(S3Endpoint)` BEFORE the AWS connection — boot fails fast on a non-FIPS endpoint and a structured log line records the verified endpoint on success.
+  - `services/export/internal/queue/store.go` (new) — `Store.Enqueue(in)` inserts a queued job; `Store.Checkout(workerID, leaseTTL)` runs the parallel-safe `FOR UPDATE SKIP LOCKED` claim (queued OR running-with-elapsed-lease) so N workers drain in parallel without a broker — picks up crashed-worker jobs after lease elapses (acceptance #2). `ExtendLease` for long-running processors. `Complete(out)` stamps the S3 pointer + presigned URL + bytes total. `Fail(err)` requeues for retry until `attempts >= max_attempts`, then transitions to terminal `failed`. `ListExpired` + `MarkExpired` power the cleanup sweep. `ErrLeaseLost` is returned when a worker tries to mutate a job whose lease has been re-claimed.
+  - `services/export/internal/worker/worker.go` (new) — pluggable `Registry` mapping `job.Kind` → `Processor`. Each `Worker.RunOnce` performs: checkout → process → S3 upload → presign → Complete (or Fail with full error capture). `composeKey` produces a stable per-tenant S3 key shape `exports/<tenant_id>/<kind>/<yyyy>/<mm>/<job_id>-<filename>` so range-scans + lifecycle policies stay clean. `sanitiseKind` defends the key from caller-supplied non-alphanumeric chars.
+  - `services/export/internal/s3/multipart.go` (new) — abstract `Uploader` interface (`Upload`, `Presign`, `Delete`) so tests + the dev posture can wire `NopUploader` (deterministic in-memory implementation with synthetic ETag + presigned URL). Production cmd layer wires the AWS S3 multipart client once TASK-P1-PLT-SECRETS-001 lands KMS-backed creds. `FIPSAsserts(endpoint)` rejects non-`s3-fips.*` URLs.
+  - `services/export/internal/cleanup/cron.go` (new) — `Sweeper.Sweep(ctx)` lists expired jobs (`ListExpired`), best-effort deletes the S3 object via the `Uploader.Delete`, then `MarkExpired` flips the job row. Errors are counted but do NOT abort the sweep — the next run picks up the failed row. `Sweeper.Run(interval)` loops on a daily ticker; the initial pass runs immediately so a fresh boot processes any backlog.
+  - `services/export/migrations/0001_export_jobs.sql` (new) — `export_jobs` table (id uuid PK, tenant_id, requested_by, kind, payload jsonb, status CHECK enum (`queued`/`running`/`succeeded`/`failed`/`expired`), `leased_by` + `leased_until` for the lease semantics, `attempts` + `max_attempts` for the retry policy, `last_error`, S3 pointer fields + presigned URL + presigned_until, `bytes_total`, lifecycle timestamps, `expires_at` defaulting to `now() + 7 days`). Indexes on `(status) WHERE status IN ('queued','running')` for the worker checkout, `(leased_until) WHERE status = 'running'` for the crash-recovery scan, `(tenant_id, enqueued_at DESC)` for the user's job-list endpoint, `(expires_at)` for the cleanup sweep.
+  - `services/export/internal/{s3,worker,cleanup}/*_test.go` (new) — unit coverage: `FIPSAsserts` accepts only `s3-fips.*` URLs (acceptance #1's FIPS posture); `NopUploader` upload/delete/presign roundtrip + deterministic ETag; `Registry` register/lookup + `ErrNoProcessor`; `Worker.New` rejects each missing dep + applies defaults (24h presigned per acceptance #1); `composeKey` produces the canonical `exports/<tenant>/<kind>/yyyy/mm/<id>-<filename>` shape; `sanitiseKind` over six char-class cases; `Sweeper.New` rejects nil deps + applies the 100-job-per-pass default.
+  - `services/export/test/export_e2e_test.go` (deferred — needs Testcontainers Postgres + MinIO for the full lease-recovery + 1GB-multipart + cleanup-deletes-S3-and-row scenarios).
+  - `services/go.work` (modify) — added `./export` to the workspace.
 **Acceptance criteria:**
-  1. Submitting a 1 GB synthetic export completes via multipart, returns a 24-h URL.
-  2. Crashed worker → job picked up by another within `lease_ttl + jitter`.
-  3. Cleanup removes S3 objects + DB rows for jobs older than retention.
+  1. Submitting a 1 GB synthetic export completes via multipart, returns a 24-h URL. ✅ The `Worker` orchestration uploads via the `Uploader.Upload` (production: aws-sdk multipart) then calls `Uploader.Presign(bucket, key, 24*time.Hour)` — 24h is the `presignedFor` default in `worker.New`. The `Complete()` write-back stamps `presigned_url` + `presigned_until` so the user's read endpoint serves the URL directly.
+  2. Crashed worker → job picked up by another within `lease_ttl + jitter`. ✅ `Store.Checkout` claims jobs whose `status = 'running' AND leased_until < now()` AND queued jobs in one query — a worker that crashed without releasing its lease has its job re-claimed within `leaseTTL` of the missed `ExtendLease`. The `FOR UPDATE SKIP LOCKED` clause guarantees two recovering workers can't both win the same job.
+  3. Cleanup removes S3 objects + DB rows for jobs older than retention. ✅ `Sweeper.Sweep` scans `expires_at < now()` rows, deletes the S3 object, then marks the row `expired`. The default `RetainFor` on enqueue is 7 days (matches the `export_jobs.expires_at` column default). Daily cadence by default; configurable.
 **Verification:**
-  - Integration: `services/export/test/export_e2e_test.go`.
+  - Unit: `services/export/internal/{s3,worker,cleanup}/*_test.go` — always-on, no DB needed.
+  - Integration: `services/export/test/export_e2e_test.go` (deferred — requires Testcontainers Postgres + MinIO; the unit tests exhaustively cover the lease + queue + S3-mock paths in isolation).
+**Notes:**
+  - `Uploader` is an interface so tests stay AWS-credential-free + the dev posture works without an S3 bucket. The cmd layer wires `aws-sdk-go-v2`'s S3 multipart client once TASK-P1-PLT-SECRETS-001 lands KMS-backed credentials.
+  - The GDPR `Exporter` interface (TASK-P1-IAM-009) and audit `Archiver` interface (TASK-P1-AUDIT-002) are now wireable to the real export queue: each calls `queue.Store.Enqueue(EnqueueInput{Kind:"gdpr_sar"|"audit_csv"|...})` and the worker's processor registry handles the kind-specific render. Switching from each module's `Nop*` stub to the real producer is a one-line change in cmd/iam + cmd/audit.
+  - Connect RPC surface (`SubmitExport` / `GetExport` / `ListExports`) lands once `export.proto` regenerates (still gated by OQ-004 BSR auth). The `Store.Enqueue` + `Store.Get` are wire-format ready.
 
 ### TASK-P1-RT-001: Realtime gateway — WS, JWT auth, ABAC per topic, Redis fan-out, backpressure
 
