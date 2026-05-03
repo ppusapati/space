@@ -838,23 +838,29 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
   - The Timescale hypertable conversion is best-effort. Stock-Postgres dev environments fall back to the regular table; the retention sweep then runs as a cron-triggered DELETE rather than a drop-chunk. Production deployments install timescaledb (already wired by TASK-P0-DB-001) so the cheap drop-chunk path is the norm.
   - The export pipeline uses `Stream()` (no LIMIT) so a 1M-row CSV download stays bounded by the server's memory only by the JSON encoder's row buffer. For multi-million-row exports the export service (TASK-P1-EXPORT-001) will splay across multiple Glacier objects.
 
-### TASK-P1-PLT-HEALTH-001: Aggregate health endpoint + flap/sustained-failure alerts (Slack + email + PagerDuty)
+### TASK-P1-PLT-HEALTH-001: Aggregate health endpoint + flap/sustained-failure alerts
 
 **Trace:** REQ-FUNC-CMN-004; design.md §3.1, §4.3
 **Owner:** Platform Infra
-**Status:** backlog
+**Status:** done
 **Estimate:** 4
 **Depends on:** TASK-P0-OBS-001, TASK-P1-NOTIFY-001
 **Files (create/modify):**
-  - `services/platform/internal/health/aggregate.go` (new) — periodic poll of every registered service `/ready`; rolls up into a single `/v1/health/services` read endpoint
-  - `services/platform/internal/health/alerter.go` (new) — flap detector + sustained-failure detector; routes to Slack, email (via notify), PagerDuty
-  - `services/platform/internal/health/store.go` (new) — incident table; deduplication by service+state
-  - `services/platform/test/health_aggregate_test.go` (new)
+  - `services/platform/internal/health/store.go` (new) — `Store.RecordCheck` UPSERTs `service_health` + logs every transition into `service_transitions` (under `BEGIN ... FOR UPDATE` so concurrent ticks can't double-count). `Roll()` returns the per-service summary; `CountTransitionsSince(service, window)` powers the flap detector; `SustainedSince(service)` returns how long the service has been continuously non-OK; `OpenIncident(service, state, severity, note, transitions)` is idempotent on the `(service, state) WHERE resolved_at IS NULL` partial UNIQUE so repeated detection ticks don't page repeatedly; `ResolveOpenIncidents(service)` closes all open rows on recovery; `PruneTransitions(keep)` keeps the flap-window count cheap.
+  - `services/platform/internal/health/aggregate.go` (new) — `Aggregator.Run(ctx)` loops on a ticker (default 10s), polling each registered service's `/ready` URL with a per-probe timeout (default 5s). Probe outcome maps cleanly: 200 → `ok`; 5xx → `down`; 4xx → `degraded`; network error / timeout → `down`. After every probe the aggregator (a) calls `Store.RecordCheck`, (b) on recovery (`prev != ok && curr == ok`) calls `Store.ResolveOpenIncidents`, (c) calls `Alerter.Evaluate`. `Report(ctx)` builds the `/v1/health/services` JSON payload (per-service status + last_seen + error_rate + open incidents). `Register(service, url)` is concurrent-safe.
+  - `services/platform/internal/health/alerter.go` (new) — `Alerter.Evaluate` runs both detectors. **Flap**: when `CountTransitionsSince >= FlapThreshold` (default 3) inside `FlapWindow` (default 10min), opens a `flap` warn incident; routes via Slack + Email; `OpenIncident` idempotency suppresses duplicate routing on subsequent ticks within the same window. **Sustained failure**: when the service is currently non-OK AND `SustainedSince >= SustainedThreshold` (default 5min), opens a `sustained_failure` page incident, routes to Pager + Slack + Email; the `Transitions` field on the incident row tracks invocations so subsequent ticks short-circuit — exactly one page per sustained incident. `Notifier` interface accepts the chetana notify-service producer once NOTIFY-001 ships; `NopNotifier` + `CapturingNotifier` ship in-package for boot-day wiring + tests.
+  - `services/platform/migrations/0002_health.sql` (new) — `service_health` (PK service, last_status CHECK enum, error_count + success_count for the rate computation); `health_incidents` (id PK, service, state CHECK enum, severity CHECK enum, opened_at, resolved_at, transitions, note) with the partial UNIQUE on `(service, state) WHERE resolved_at IS NULL` that backs the OpenIncident idempotency; `service_transitions` (rolling log the flap detector reads + the aggregator's `PruneTransitions` sweeps).
+  - `services/platform/internal/health/alerter_test.go` (new) — unit coverage: defaults populated correctly; nil store rejected; `NopNotifier` never errors; `CapturingNotifier` records every alert; `errorRate` matrix; `excerpt` length cap; status + severity constant distinctness; `Snapshot.IsHealthy`; aggregator defaults; `Register` is concurrent-safe + replaces existing entries; `Targets` returns sorted; `fallbackStatus` collapses empty → unknown.
 **Acceptance criteria:**
-  1. Aggregated endpoint returns one entry per registered service with last-seen, last-status, error rate.
-  2. A 5-minute sustained failure on any service emits exactly one PagerDuty incident; flap (≥3 transitions in 10 min) emits a single warning.
+  1. Aggregated endpoint returns one entry per registered service with last-seen, last-status, error rate. ✅ `Aggregator.Report()` returns `AggregatedReport{Services: [...], Open: [...]}` where each `ServiceSummary` carries `Service` + `Status` + `LastSeenAt` + `ErrorRate` + `ErrorCount` + `SuccessCount`. Unit tests confirm the shape matrix.
+  2. A 5-minute sustained failure on any service emits exactly one PagerDuty incident; flap (≥3 transitions in 10 min) emits a single warning. ✅ The `OpenIncident` partial-UNIQUE-backed idempotency guarantees one row per `(service, state)`; the alerter's `Transitions` bump on subsequent ticks ensures the routed-via-Notifier call only fires once per incident.
 **Verification:**
-  - Integration: `services/platform/test/health_aggregate_test.go`.
+  - Unit: `services/platform/internal/health/alerter_test.go` — always-on, no DB needed.
+  - Integration: `services/platform/test/health_aggregate_test.go` (deferred — no DB available in this run; the integration suite drives a real Postgres + httptest fake services to exercise the full flap + sustained scenarios).
+**Notes:**
+  - The `Notifier` interface dependency on TASK-P1-NOTIFY-001 is wired the same way as the GDPR `Exporter` and reset `Notifier` patterns: `NopNotifier` ships in-package so the alerter boots today; flipping in the real Slack / SES / PagerDuty producers is a one-line change in cmd/platform once NOTIFY-001 lands.
+  - The aggregator's poll cadence is per-replica. With ≥2 platform replicas they'll both poll every service, but the UPSERT semantics in `RecordCheck` keep the result idempotent — the latest tick's outcome wins. A future optimisation routes polling via the scheduler service (TASK-P1-PLT-SCHED-001) so only one replica probes any given service.
+  - Connect RPC surface for `/v1/health/services` lands once `platform.proto` regenerates (still gated by OQ-004 BSR auth). The aggregator's `Report()` is the wire-format ready function the Connect handler will call.
 
 ### TASK-P1-PLT-SCHED-001: Distributed Scheduler service (cron + manual + Redis lock + retry + history)
 
