@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@p9e.in/chetana": "workspace:*",
+    "@cesium/engine": "^11.0.0",
     "@chetana/api-client": "workspace:*",
     "@chetana/core": "workspace:*",
     "@chetana/stores": "workspace:*",

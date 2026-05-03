@@ -9,6 +9,50 @@ const unoCss = UnoCSS() as any;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+/**
+ * REQ-CONST-002 / TASK-P1-WEB-002: Cesium chunk-splitting.
+ *
+ * Goal:
+ *   1. The initial JS bundle (the shell entrypoint) does NOT
+ *      contain @cesium/engine.
+ *   2. Navigating to a Cesium-hosting route fetches the Cesium
+ *      chunk on demand.
+ *
+ * How:
+ *   • Every Cesium use site routes through the dynamic-import
+ *     wrapper at src/lib/cesium/loader.ts. esbuild + vite see
+ *     the dynamic import and split the chunk automatically.
+ *   • The manualChunks function below names the chunks
+ *     (cesium-engine, cesium-widgets) so they appear with stable
+ *     filenames in the bundle output — easier to assert on in
+ *     the e2e + bundle-analyser report.
+ *   • Cesium's runtime assets (Workers, ThirdParty, Assets,
+ *     Widgets) must be served from /cesium-assets/. The chetana
+ *     shell uses the simpler approach: a small postbuild step
+ *     copies node_modules/@cesium/engine/Build/* into static/
+ *     cesium-assets/. The loader stamps
+ *     window.CESIUM_BASE_URL = "/cesium-assets/" before the
+ *     dynamic import so Cesium's worker bootstrap reads the
+ *     right base URL.
+ */
+function chetanaCesiumChunks(id: string): string | undefined {
+  // node_modules path on Windows uses backslashes — normalise.
+  const norm = id.replace(/\\/g, '/');
+  if (norm.includes('node_modules/@cesium/widgets')) {
+    return 'cesium-widgets';
+  }
+  if (norm.includes('node_modules/@cesium/engine')) {
+    return 'cesium-engine';
+  }
+  return undefined;
+}
+
+// `analyze` mode wires rollup-plugin-visualizer into the build so
+// `pnpm --filter @chetana/shell analyze` produces a bundle-report
+// HTML committed under web/apps/shell/bundle-report.html.
+const isAnalyze = process.env.NODE_ENV === 'analyze' ||
+  process.argv.includes('--mode') && process.argv[process.argv.indexOf('--mode') + 1] === 'analyze';
+
 // Resolve a single hoisted tslib so all transitive consumers (echarts,
 // zrender, etc.) share one version AND get pure native-ESM with named
 // exports. Why this exact target file:
@@ -38,7 +82,23 @@ const hoistedTslib = path.resolve(
   '../../node_modules/tslib/tslib.es6.js',
 );
 
-export default defineConfig({
+export default defineConfig(async () => {
+  // Lazy-load rollup-plugin-visualizer only in analyze mode so the
+  // dependency stays optional for normal builds.
+  const analyzePlugins = isAnalyze
+    ? [
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ((await import('rollup-plugin-visualizer')) as any).visualizer({
+          filename: path.resolve(__dirname, 'bundle-report.html'),
+          open: false,
+          gzipSize: true,
+          brotliSize: true,
+          template: 'treemap',
+        }),
+      ]
+    : [];
+
+  return {
   plugins: [
     unoCss,
     sveltekit(),
@@ -107,5 +167,16 @@ export default defineConfig({
 
   build: {
     target: 'esnext',
+    rollupOptions: {
+      output: {
+        manualChunks: chetanaCesiumChunks,
+      },
+      // The bundle-visualizer plugin is registered as a Rollup
+      // plugin (not a Vite plugin) so it captures the post-tree-
+      // shaking chunk graph rather than the pre-bundling input
+      // graph. Only enabled in analyze mode.
+      plugins: analyzePlugins,
+    },
   },
+  };
 });

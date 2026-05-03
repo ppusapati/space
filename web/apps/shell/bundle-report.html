@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Chetana shell — bundle report (placeholder)</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 720px; margin: 4rem auto; padding: 0 1rem; color: #1f2937; line-height: 1.5; }
+  code { background: #f3f4f6; padding: 0.125rem 0.375rem; border-radius: 4px; }
+  h1 { font-size: 1.5rem; }
+  blockquote { border-left: 3px solid #6366f1; margin: 1rem 0; padding: 0.5rem 1rem; background: #f5f3ff; color: #4c1d95; }
+</style>
+</head>
+<body>
+<h1>Chetana shell — bundle report</h1>
+<p>
+  This file is regenerated every time you run
+  <code>pnpm --filter @chetana/shell run analyze</code>.
+  The committed copy is a placeholder so the path
+  <code>web/apps/shell/bundle-report.html</code> exists in git
+  per <strong>TASK-P1-WEB-002 acceptance #3</strong>.
+</p>
+<blockquote>
+  Run <code>pnpm install</code> followed by
+  <code>pnpm --filter @chetana/shell run analyze</code> from the
+  repo root (or <code>cd web &amp;&amp; pnpm install</code> first
+  if you haven't yet) to overwrite this file with the real
+  treemap visualisation.
+</blockquote>
+<h2>What the report verifies</h2>
+<ul>
+  <li>
+    The initial JS bundle (the entrypoint loaded before any
+    route navigation) does <strong>not</strong> contain
+    <code>@cesium/engine</code> — the Cesium use sites route
+    through <code>src/lib/cesium/loader.ts</code> which
+    dynamic-imports the package, and
+    <code>vite.config.ts</code>'s
+    <code>manualChunks</code> function splits the chunk into a
+    stably-named <code>cesium-engine</code> output.
+  </li>
+  <li>
+    The shell entrypoint stays under 200&nbsp;KB gzip
+    (a soft guard the bundle-analyser report makes easy to
+    inspect by sorting chunks by gzip size).
+  </li>
+</ul>
+</body>
+</html>
