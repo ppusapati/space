@@ -11,15 +11,20 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "eslint .",
-    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+    "typecheck": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "analyze": "vite build --mode analyze"
   },
   "dependencies": {
     "@p9e.in/chetana": "workspace:*",
+    "@chetana/api-client": "workspace:*",
     "@chetana/core": "workspace:*",
     "@chetana/stores": "workspace:*",
     "@chetana/ui": "workspace:*"
   },
   "devDependencies": {
+    "@playwright/test": "^1.49.0",
     "@sveltejs/adapter-auto": "^3.3.0",
     "@sveltejs/adapter-node": "^5.5.4",
     "@sveltejs/kit": "^2.10.0",
@@ -28,6 +33,7 @@
     "@unocss/svelte-scoped": "^66.5.11",
     "autoprefixer": "^10.4.23",
     "postcss": "^8.5.6",
+    "rollup-plugin-visualizer": "^5.12.0",
     "svelte": "^5.0.0",
     "svelte-check": "^4.1.0",
     "tailwindcss": "^4.1.18",

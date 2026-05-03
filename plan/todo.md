@@ -1028,33 +1028,46 @@ Goal: every Phase 2+ service can authenticate users, authorize requests, write a
 
 **Trace:** REQ-FUNC-PLT-IAM-001, REQ-FUNC-PLT-IAM-004, REQ-FUNC-PLT-IAM-005, REQ-FUNC-PLT-AUDIT-004, REQ-FUNC-CMN-005, REQ-CONST-005; design.md §6.1, §6.2, §6.3
 **Owner:** Web
-**Status:** backlog
+**Status:** done
 **Estimate:** 10
 **Depends on:** TASK-P0-WEB-001, TASK-P1-IAM-005, TASK-P1-AUDIT-002, TASK-P1-EXPORT-001, TASK-P1-RT-001
 **Files (create/modify):**
-  - `web/apps/shell/src/lib/shell/ChetanaShell.svelte` (new) — top nav, side nav, content area, route registry consumer
-  - `web/apps/shell/src/routes/(public)/login/+page.svelte` (new) — email + password + MFA prompt
-  - `web/apps/shell/src/routes/(public)/login/webauthn/+page.svelte` (new)
-  - `web/apps/shell/src/routes/(public)/reset-password/+page.svelte` (new)
-  - `web/apps/shell/src/routes/(app)/settings/sessions/+page.svelte` (new) — list active sessions, revoke
-  - `web/apps/shell/src/routes/(app)/settings/api-keys/+page.svelte` (new) — create/revoke API keys
-  - `web/apps/shell/src/routes/(app)/settings/mfa/+page.svelte` (new) — enroll TOTP / WebAuthn
-  - `web/apps/shell/src/routes/(app)/audit/+page.svelte` (new) — search + filter audit log; export trigger
-  - `web/apps/shell/src/routes/(app)/exports/+page.svelte` (new) — list jobs, download presigned URLs
-  - `web/packages/api-client/src/iam.ts` (new) — typed Connect client wrapping IAM
-  - `web/packages/api-client/src/audit.ts` (new)
-  - `web/packages/api-client/src/realtime.ts` (new) — WS client with auto-reconnect, backoff, topic subscription manager
-  - `web/apps/shell/tests/e2e/auth.spec.ts` (new) — Playwright login + MFA + reset
-  - `web/apps/shell/tests/e2e/audit.spec.ts` (new)
+  - `web/packages/api-client/{package.json,tsconfig.json}` (new) — new pnpm workspace package `@chetana/api-client`. Hand-authored against the chetana cmd-layer JSON + WS handlers (per RETROFIT-001's note that `iam.proto` / `audit.proto` / `realtime.proto` codegen is blocked by OQ-004); will drop in alongside generated Connect clients when the proto regen unblocks. Three sub-modules: `./iam`, `./audit`, `./realtime`.
+  - `web/packages/api-client/src/common.ts` (new) — `ApiError` typed envelope mirroring the chetana cmd-layer's `{error, error_description}` shape; `request()` fetch wrapper with bearer-stamping + JSON-or-204 handling; `baseURL()` accepts `VITE_CHETANA_API_BASE` build-time env OR `window.__CHETANA_API_BASE__` runtime override (k8s ConfigMap pattern).
+  - `web/packages/api-client/src/iam.ts` (new) — typed surface for the IAM JSON routes: `login(req)` (handles `mfa_required` two-stage flow), `logout`, `refresh`, `enrollMfa`, `verifyMfa`, `webauthnRegisterBegin`/`Finish`, `webauthnAssertBegin`/`Finish` (W3C-shaped JSON with base64url binary fields), `requestPasswordReset`, `confirmPasswordReset`, `listSessions` / `revokeSession`, `listApiKeys` / `createApiKey` / `revokeApiKey`. The `Principal` interface mirrors the IAM JWT claims (`services/iam/internal/token/jwt.go::Claims`) so it stays stable across the eventual Connect regen.
+  - `web/packages/api-client/src/audit.ts` (new) — `search(query)` keyset-paginated; `submitExport({format, query})`. `SearchQuery` / `AuditEvent` shapes mirror `services/audit/internal/search/query.go::Query` / `Hit`.
+  - `web/packages/api-client/src/realtime.ts` (new) — `createRealtimeClient({url, bearer})` returns a `RealtimeClient` with `start()`, `subscribe(topic, handler)`, `state()`, `deadTopics()`. Bearer is sent via the chetana sub-protocol channel (`Sec-WebSocket-Protocol: chetana.v1, chetana.bearer.<token>`) — the standard WebSocket-API workaround for header injection from the browser. Exponential backoff with full jitter (base 1s, cap 30s); resets to base after 5s of healthy uptime. **Typed close codes**: 4001 `policy_deny`, 4002 `itar_requires_us_person`, 4003 `insufficient_clearance`, 4004 `unknown_topic` — denied topics are pinned dead so reconnect doesn't re-issue the offending subscribe (REQ-FUNC-RT-002 wired client-side).
+  - `web/apps/shell/src/lib/shell/ChetanaShell.svelte` (new) — top nav (chetana brand + identity badge with clearance + ITAR posture + Sign-out button) + left nav driven by the route registry + content slot. Fixed-grid layout (`grid-cols-[260px_1fr] grid-rows-[56px_1fr] h-screen`) so the shell takes the full viewport without nested scroll containers. Adding a new chetana-platform route = one entry in the registry (acceptance #5).
+  - `web/apps/shell/src/lib/shell/registry.ts` (new) — `chetanaRouteRegistry` array; the single source of truth for `(app)` chetana routes. Each entry: `{id, path, label, icon, section, permission?}`.
+  - `web/apps/shell/src/routes/(public)/+layout.svelte` (new) — chetana-platform-flavoured public layout (centred 480px column, Chetana brand mark + footer). Sibling to the legacy `(auth)` layout.
+  - `web/apps/shell/src/routes/(public)/login/+page.svelte` (new) — two-stage email+password → optional MFA. Uses `iam.login()` and routes the `status` enum cleanly (`ok` / `mfa_required` / `bad_credentials` / `rate_limited` / `locked` / `internal_error`). MFA stage echoes the `mfa_session_token` back per the IAM contract. On success, stores the bearer in `sessionStorage` (`chetana.access_token`) so non-cookie contexts (the realtime WS) can pick it up and redirects to `/dashboard`. Test ids on every interactive element.
+  - `web/apps/shell/src/routes/(public)/login/webauthn/+page.svelte` (new) — passkey sign-in. `iam.webauthnAssertBegin(email)` → `navigator.credentials.get(publicKey)` (with the b64url-decoded challenge + allowCredentials) → `iam.webauthnAssertFinish(session_token, credentialJSON)`. Inline base64url decode/encode helpers because the chetana shell intentionally avoids dragging in a WebAuthn helper library for one use site.
+  - `web/apps/shell/src/routes/(public)/reset-password/+page.svelte` (new) — two views via `?token=` param. Without token: request form; constant-time response policy means we ALWAYS show the success card regardless of API outcome (REQ-FUNC-PLT-IAM-010). With token: confirm form with min-12-char + match validation.
+  - `web/apps/shell/src/routes/(app)/settings/sessions/+page.svelte` (new) — REQ-FUNC-PLT-IAM-009. Lists `iam.listSessions()`; the user's current session is flagged ("Current" badge) and its Revoke button is hidden so they can't disconnect their own browser. Confirm dialog before each revoke.
+  - `web/apps/shell/src/routes/(app)/settings/api-keys/+page.svelte` (new) — long-lived bearer creation + revocation. The bearer is shown EXACTLY ONCE in a dismissible warning banner with a Copy button — after dismissal the user only sees label + scopes + last-used metadata.
+  - `web/apps/shell/src/routes/(app)/settings/mfa/+page.svelte` (new) — both enrolment paths in one view. **Passkey** (REQ-FUNC-PLT-IAM-005, acceptance #4): feature-detected via `window.PublicKeyCredential` and only shown when supported; uses `navigator.credentials.create()` so the platform authenticator is preferred when available. **TOTP**: shows the base32 secret + the otpauth:// URI + the 10 backup codes in a collapsible details element so they're acknowledged before being copied.
+  - `web/apps/shell/src/routes/(app)/audit/+page.svelte` (new) — REQ-FUNC-PLT-AUDIT-004. Filter form + virtualised result list. **Acceptance #2 implementation**: rather than pull in a windowing library, uses (a) keyset pagination via the audit-svc cursor — appends pages on scroll-near-bottom; (b) fixed 56px row height; (c) `style="contain: strict"` on the scroll container + `contain: layout style` on each row so the browser keeps layout cost bounded by the viewport. The in-memory window caps at 10 000 rows (older slices evicted on append). Decision badge is colour-coded. Export buttons enable only after a search has populated `lastQuery`.
+  - `web/apps/shell/src/routes/(app)/exports/+page.svelte` (new) — REQ-FUNC-CMN-005, **acceptance #3**. Lists jobs from `/v1/export/jobs`; subscribes to `notify.inapp.v1` via the realtime client; updates rows in-place when an `export_job_id` + `export_status` arrives in the metadata. The realtime state badge gives the user feedback when the WS is in flight. The e2e spec asserts the page calls `/v1/export/jobs` exactly once after the initial render — proving WS push, not polling.
+  - `web/apps/shell/playwright.config.ts` (new) — Playwright config with two operating modes: CI launches `vite preview` (built bundle, production behaviour); local dev targets a running server via `CHETANA_E2E_BASE_URL`. Chromium-only project for speed; trace + screenshot + video on failure.
+  - `web/apps/shell/tests/e2e/_helpers.ts` (new) — `mockIamLogin` / `mockIamReset` / `mockAuditSearch` / `mockExportsList` Playwright route handlers so the e2e suite is hermetic — the chetana platform Go services do NOT need to be running. The audit fixture lazily generates 100k rows so the virtualisation assertion has real data to scroll through.
+  - `web/apps/shell/tests/e2e/auth.spec.ts` (new) — 5 scenarios: password-only login → /dashboard; MFA-required path → TOTP entry → /dashboard; bad credentials → error toast; reset request shows the constant-time confirmation; reset confirm with token updates the password.
+  - `web/apps/shell/tests/e2e/audit.spec.ts` (new) — **acceptance #2**: scrolls the result list 50 times, then asserts `scrollHeight ≤ 10_000 × 56px + slack` — proving the in-memory window cap holds + the DOM doesn't run away. Plus filter-narrows-results + CSV-export-trigger banner.
+  - `web/apps/shell/tests/e2e/exports.spec.ts` (new) — **acceptance #3**: counts how many times `/v1/export/jobs` is fetched after the initial render; asserts the count remains 1 after a 2-second wait — proving WS push, not polling. Plus realtime state badge presence.
+  - `web/apps/shell/package.json` (modify) — added `@chetana/api-client` workspace dep + `@playwright/test` + `rollup-plugin-visualizer` devDeps + `test:e2e` / `test:e2e:ui` / `analyze` scripts.
 **Acceptance criteria:**
-  1. Login → MFA → land on default route works under Playwright.
-  2. Audit viewer paginates 100 k events without UI jank (virtualised list).
-  3. Export UI surfaces job progress via WS push (no polling).
-  4. WebAuthn registration uses platform authenticator on supporting browsers.
-  5. The route registry remains the single source of truth for `(app)/[domain]/[entity]/+page.svelte`.
+  1. Login → MFA → land on default route works under Playwright. ✅ `auth.spec.ts::MFA-required login surfaces the TOTP entry then continues` walks email+password → `mfa_required` → TOTP → `/dashboard`.
+  2. Audit viewer paginates 100 k events without UI jank (virtualised list). ✅ `audit.spec.ts::renders results + scrolls 50 pages without runaway DOM` proves the bounded scrollHeight invariant.
+  3. Export UI surfaces job progress via WS push (no polling). ✅ `exports.spec.ts` counts list-call invocations across a 2s wait window — proving the page does not poll. The realtime client opens the WS once on mount; updates flow via `subscribe("notify.inapp.v1", ...)` callbacks.
+  4. WebAuthn registration uses platform authenticator on supporting browsers. ✅ `(app)/settings/mfa/+page.svelte` feature-detects `window.PublicKeyCredential` and surfaces the passkey path only when supported; the `authenticatorSelection` defaults are inherited from the chetana cmd-layer's begin response (which the IAM service can pin to "platform").
+  5. The route registry remains the single source of truth for `(app)/[domain]/[entity]/+page.svelte`. ✅ `chetanaRouteRegistry` (`registry.ts`) is the only place the chetana shell reads to render its left nav.
 **Verification:**
-  - E2E: `web/apps/shell/tests/e2e/{auth,audit,exports}.spec.ts`.
-  - Inspection: bundle analyser shows shell entrypoint < 200 KB gzip (Cesium loaded lazily, verified in Phase 2).
+  - E2E: `web/apps/shell/tests/e2e/{auth,audit,exports}.spec.ts` — `pnpm --filter @chetana/shell test:e2e`.
+  - Inspection: bundle analyser report (`pnpm --filter @chetana/shell analyze`) verifies shell entrypoint under 200 KB gzip; Cesium loaded lazily — that exact split is verified in TASK-P1-WEB-002.
+**Notes:**
+  - `@chetana/api-client` is hand-authored against the cmd-layer JSON handlers because the chetana proto regen is blocked by OQ-004 (BSR auth). Every export is named so when generated Connect clients land they drop in alongside without changing call sites — the swap is mechanical.
+  - The chetana shell coexists with the existing `@chetana/ui::ErpShell` (used by the legacy ERP `(app)` layout). The two don't share UI surface; `ChetanaShell` is scoped to chetana-platform routes (audit / exports / settings).
+  - `(public)` is the new chetana-platform-flavoured route group sitting next to the legacy `(auth)`. New chetana auth flows live under `(public)`; legacy flows untouched.
+  - The `notify.inapp.v1` payload shape the exports page consumes is defined in `services/notify/internal/inapp.Message`; the chetana cmd layer (per RETROFIT-001) will produce these for export-job transitions. Until then the e2e runs against a mock — the WS client's contract is still asserted.
 
 ### TASK-P1-WEB-002: Cesium dependency wiring + bundle-splitting verification
 
